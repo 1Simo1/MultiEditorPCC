@@ -1,0 +1,270 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="1080" d:DesignHeight="1920"
+             xmlns:vm="using:MultiEditorPCC.ViewModels"
+			 x:DataType="vm:SquadreViewModel"
+			 xmlns:ui="using:FluentAvalonia.UI.Controls"
+			 xmlns:uip="using:FluentAvalonia.UI.Controls.Primitives"
+			 xmlns:views="clr-namespace:MultiEditorPCC.Views"
+			 xmlns:lng="clr-namespace:MultiEditorPCC.Locales;assembly=MultiEditorPCC"
+			 xmlns:dc="using:MultiEditorPCC.DataConverters"
+			 x:Name="Squadre"
+			 x:Class="MultiEditorPCC.Views.SquadreView">
+
+
+	<Grid Margin="21" ColumnDefinitions="Auto,*" RowDefinitions="Auto,21">
+
+		 <Grid Grid.Row="0" Grid.Column="0" IsEnabled="{Binding !SchedaVisualizzata}" IsVisible="{Binding !SchedaVisualizzata}" Margin="21 0" MaxWidth="321">
+			 <Grid.Styles>
+				 <Style Selector="TextBlock">
+					 <Setter Property="FontSize" Value="14" />
+				 </Style>
+			 </Grid.Styles>
+			 <StackPanel Orientation="Vertical">
+				 
+				 <TextBlock Text="{x:Static lng:Resources.SearchSelectTeam}" IsVisible="{Binding !SchedaVisualizzata}"
+				   Margin="0" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="1"/>
+				 
+				<TextBlock Text="{x:Static lng:Resources.Country}" VerticalAlignment="Center"/>
+		
+				 <ComboBox ItemsSource="{Binding ElencoPaesi}"
+							  SelectedItem="{Binding Paese}"
+							  VerticalAlignment="Center"
+							  HorizontalAlignment="Stretch"
+							  Margin="0 7"
+						   >
+					<ComboBox.ItemTemplate>
+						<DataTemplate>
+							<StackPanel Orientation="Horizontal">
+								<TextBlock Text="{Binding}" />
+							</StackPanel>
+						</DataTemplate>
+					</ComboBox.ItemTemplate>
+				</ComboBox>
+				
+				<Button VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0 7"
+						Command="{Binding ConfermaSceltaPaeseCommand}" CommandParameter="*" >
+					<TextBlock Text="{x:Static lng:Resources.ConfirmAllCountries}" HorizontalAlignment="Center" />
+				</Button>
+				<TextBlock
+					   VerticalAlignment="Center"
+					   Text="{x:Static lng:Resources.SearchTeamByName}" />
+
+				<TextBox Text="{Binding NomeSquadra}" />
+				<Button VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0 7"
+						Command="{Binding ConfermaSquadrePaeseCommand}">
+					<TextBlock Text="{x:Static lng:Resources.SearchAllTeamsInCountry}" HorizontalAlignment="Center" />
+				</Button>
+				<Button VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0 7"
+						Command="{Binding CercaCommand}">
+					<TextBlock Text="{x:Static lng:Resources.ConfirmSearch}" HorizontalAlignment="Center" />
+				</Button>
+
+				<TextBlock Text="{x:Static lng:Resources.TeamFoundTitle}" />
+
+
+
+				<Border BorderBrush="Yellow" BorderThickness="4"  >
+					<TextBlock Text="{Binding NumeroSquadreTrovate}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+				</Border>
+
+
+				<ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Hidden" MaxHeight="321">
+					<ListBox ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+							 ScrollViewer.VerticalScrollBarVisibility="Auto"
+							 ItemsSource="{Binding SquadreTrovate}"
+							 SelectedItem="{Binding SquadraSelezionata}"
+							 Margin="0 0 0 21"
+						 >
+						<ListBox.ItemTemplate>
+							<DataTemplate>
+								<StackPanel Orientation="Horizontal" Margin="0" Height="21">
+									<TextBlock Text="{Binding Nome}" FontSize="15"/>
+								</StackPanel>
+							</DataTemplate>
+						</ListBox.ItemTemplate>
+					</ListBox>
+				</ScrollViewer>
+
+			</StackPanel>
+
+		</Grid>
+
+		<Grid Grid.Row="0" Grid.Column="1" RowDefinitions="Auto,*" Margin="21 0"
+			  IsEnabled="{Binding !SchedaVisualizzata}"
+			  IsVisible="{Binding !SchedaVisualizzata}"
+			  >
+
+			<ui:InfoBar IsClosable="False" IsOpen="True" Grid.Row="0" Title="{Binding SquadraSelezionata.Nome}">
+			
+				<ui:InfoBar.Content>
+					<StackPanel Orientation="Horizontal">
+					
+						<StackPanel Orientation="Vertical" Margin="21 0">
+							<Button VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="7"
+									Command="{Binding VisualizzaInformazioniSquadraCommand}">
+								<TextBlock Text="{x:Static lng:Resources.ShowTeamInfo}" HorizontalAlignment="Center" />
+							</Button>
+							<Button VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="7"
+									Command="{Binding VisualizzaDettagliStadioCommand}">
+								<TextBlock Text="{x:Static lng:Resources.ShowStadiumDetails}" HorizontalAlignment="Center" />
+							</Button>
+							<Button VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="7"
+									Command="{Binding VisualizzaDettagliAllenatoriCommand}">
+								<TextBlock Text="{x:Static lng:Resources.ShowCoachesDetails}" HorizontalAlignment="Center" />
+							</Button>
+							<StackPanel Orientation="Horizontal" Margin="7">
+								<TextBlock Text="{x:Static lng:Resources.PlayersInTeam}" Margin="0 0 7 0"/>
+								<TextBlock Text=":" Margin="0 0 7 0"/>
+								<TextBlock Text="{Binding SquadraSelezionata.Giocatori.Count}" />
+							</StackPanel>
+						</StackPanel>
+						<StackPanel Orientation="Vertical" Margin="21 0">
+							<Button Command="{Binding EsportaSquadraCommand}" HorizontalAlignment="Stretch" Margin="7">
+								<StackPanel Orientation="Horizontal">
+									<TextBlock Text="{x:Static lng:Resources.ExportTeamToDBE}" />
+									<TextBlock Margin="7 0 0 0" Text="{Binding NomeFileSquadraDBE}" />
+								</StackPanel>
+							</Button>
+
+							<TextBlock Text="{x:Static lng:Resources.ImportTeamFromDBE}" Margin="7"/>
+
+							<ComboBox ItemsSource="{Binding ElencoFileDBESquadraValidi}"
+												  SelectedValue="{Binding NomeFileSquadraDBE}"
+												  HorizontalAlignment="Stretch" Margin="7" />
+
+
+							<Button Command="{Binding ImportaSquadraCommand}" HorizontalAlignment="Stretch" Margin="7" HorizontalContentAlignment="Center">
+								<TextBlock Text="{x:Static lng:Resources.Confirm}" />
+							</Button>
+							
+						</StackPanel>
+					</StackPanel>
+				</ui:InfoBar.Content>
+			</ui:InfoBar>
+
+
+
+			<DataGrid Grid.Row="1" ItemsSource="{Binding GiocatoriSquadraSelezionata}" AutoGenerateColumns="False" IsReadOnly="True"
+					  CanUserSortColumns="True" CanUserResizeColumns="True"
+					  ScrollViewer.VerticalScrollBarVisibility="Visible"
+					  Height="321"
+					  >
+				<DataGrid.Resources>
+					<dc:RuoloImgConverter x:Key="RuoloImgConverter" />
+					<dc:RuoloNomeConverter x:Key="RuoloNomeConverter" />
+					<dc:RepartoSiglaConverter x:Key="RepartoSiglaConverter" />
+				</DataGrid.Resources>
+				<DataGrid.Styles>
+					<Style Selector="TextBlock">
+						<Setter Property="FontSize" Value="16" />
+					</Style>
+				</DataGrid.Styles>
+				<DataGrid.Columns>
+					
+					<DataGridTemplateColumn Width="63">
+						
+						<DataGridTemplateColumn.HeaderTemplate>
+							<DataTemplate>
+								<TextBlock Text="N." ToolTip.Tip="{x:Static lng:Resources.ShirtNumber}" />
+							</DataTemplate>
+						</DataGridTemplateColumn.HeaderTemplate>
+						<DataTemplate>
+							<TextBlock TextAlignment="Center" Text="{Binding Numero}" VerticalAlignment="Center"/>
+						</DataTemplate>
+					</DataGridTemplateColumn>
+					<DataGridTemplateColumn Header="{x:Static lng:Resources.LineUpTitlePlayerName}">
+						<DataTemplate>
+							<TextBlock TextAlignment="Center" Text="{Binding Nome}" VerticalAlignment="Center"/>
+						</DataTemplate>
+					</DataGridTemplateColumn>
+					<DataGridTemplateColumn Header="{x:Static lng:Resources.SpeedAcronym}" Width="72">
+						<DataTemplate>
+							<TextBlock TextAlignment="Center" Text="{Binding Punteggi[1].Punteggio}" VerticalAlignment="Center"/>
+						</DataTemplate>
+					</DataGridTemplateColumn>
+					<DataGridTemplateColumn Header="{x:Static lng:Resources.EnduranceAcronym}" Width="72">
+						<DataTemplate>
+							<TextBlock TextAlignment="Center" Text="{Binding Punteggi[2].Punteggio}" VerticalAlignment="Center"/>
+						</DataTemplate>
+					</DataGridTemplateColumn>
+					<DataGridTemplateColumn Header="{x:Static lng:Resources.AggressivityAcronym}" Width="72">
+						<DataTemplate>
+							<TextBlock TextAlignment="Center" Text="{Binding Punteggi[3].Punteggio}" VerticalAlignment="Center"/>
+						</DataTemplate>
+					</DataGridTemplateColumn>
+					<DataGridTemplateColumn Header="{x:Static lng:Resources.QualityAcronym}" Width="72">
+						<DataTemplate>
+							<TextBlock TextAlignment="Center" Text="{Binding Punteggi[4].Punteggio}" VerticalAlignment="Center"/>
+						</DataTemplate>
+					</DataGridTemplateColumn>
+					<DataGridTemplateColumn Header="{x:Static lng:Resources.PlayerAverageAcronym}" Width="Auto">
+						<DataTemplate>
+							<TextBlock TextAlignment="Center" Text="{Binding Punteggi[0].Punteggio}" VerticalAlignment="Center"/>
+						</DataTemplate>
+					</DataGridTemplateColumn>
+					<DataGridTemplateColumn Width="Auto">
+						<DataGridTemplateColumn.HeaderTemplate>
+							<DataTemplate>
+								<TextBlock Text="A" ToolTip.Tip="{x:Static lng:Resources.PlayerActiveInTeam}" />
+							</DataTemplate>
+						</DataGridTemplateColumn.HeaderTemplate>
+						<DataTemplate>
+							<CheckBox IsChecked="{Binding AttivoInRosa}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+						</DataTemplate>
+					</DataGridTemplateColumn>
+					<DataGridTemplateColumn Header="{x:Static lng:Resources.PlayerRole}">
+						<DataTemplate>
+							<StackPanel Orientation="Horizontal">
+
+								<Image Source="{Binding Ruoli[0],Converter={StaticResource RuoloImgConverter}}"
+								Width="25" Height="14"
+										/>
+								<TextBlock TextAlignment="Center" Text="{Binding Ruoli[0],Converter={StaticResource RuoloNomeConverter}}" VerticalAlignment="Center"/>
+							</StackPanel>
+						</DataTemplate>
+					</DataGridTemplateColumn>
+
+					<DataGridTemplateColumn Header="{x:Static lng:Resources.PositionTitleAcronym}">
+						<DataTemplate>
+							<TextBlock TextAlignment="Center" Text="{Binding Reparto,Converter={StaticResource RepartoSiglaConverter}}" VerticalAlignment="Center"/>
+						</DataTemplate>
+					</DataGridTemplateColumn>
+
+					<DataGridTemplateColumn Header="{x:Static lng:Resources.OpenEditPlayerDetails}">
+						<DataTemplate>
+							<Button Margin="0" Command="{Binding #Squadre.DataContext.DettagliGiocatoreCommand}" CommandParameter="{Binding}">
+								<TextBlock TextAlignment="Center" Text="{x:Static lng:Resources.OpenEditPlayerDetails}" VerticalAlignment="Center"
+										   />
+							</Button>
+						</DataTemplate>
+					</DataGridTemplateColumn>
+
+
+				</DataGrid.Columns>
+			</DataGrid>
+
+
+
+
+		</Grid>
+		
+	
+		
+			<views:DettagliGiocatore 
+				
+				ZIndex="1" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" IsVisible="{Binding SchedaGiocatore}"
+				
+				/>		
+		
+		
+			<views:DettagliAllenatore 
+				
+				ZIndex="1" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" IsVisible="{Binding SchedaAllenatore}"
+				
+				/>	
+		
+	</Grid>
+</UserControl>

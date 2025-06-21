@@ -1,0 +1,207 @@
+﻿using Microsoft.Extensions.DependencyInjection;
+using MultiEditorPCC.Dat.DbSet;
+using MultiEditorPCC.Lib;
+using MvvmGen;
+using MvvmGen.Events;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Reactive.Linq;
+using static MultiEditorPCC.EventiMVVM;
+
+namespace MultiEditorPCC.ViewModels;
+
+[ViewModel]
+[Inject(typeof(IEventAggregator))]
+public partial class SquadreViewModel : IEventSubscriber<SquadraSelezionataElenco,
+                                                         ChiusuraDialogDettagliGiocatoreSelezionato,
+                                                         ChiusuraDialogDettagliAllenatoriSquadraSelezionata>
+{
+    [Property] private List<Paese> _elencoPaesi;
+    [Property] private Paese _paese;
+    [Property] private String _nomeSquadra;
+    [Property] private int _numeroSquadreTrovate;
+    [Property] private ObservableCollection<Squadra> _squadreTrovate;
+    [Property] private ObservableCollection<Giocatore> _giocatoriSquadraSelezionata;
+
+    [PropertyPublishEvent(typeof(SquadraSelezionataElenco), EventConstructorArgs = "value")]
+    [Property]
+    private Squadra _squadraSelezionata;
+
+    /* Flag per memorizzare se una qualsiasi scheda (giocatore, allenatore, stadio)
+     * è stata selezionata per visualizzare i dettagli: in questo caso, la parte della
+     * squadra non sarà visibile, ma solo la scheda dettaglio del tipo scelto
+     * (SchedaGiocatore, SchedaAllenatore, SchedaStadio) */
+    [Property] private bool _schedaVisualizzata;
+
+    [Property] private bool _schedaGiocatore;
+    [Property] private bool _schedaAllenatore;
+    [Property] private bool _schedaStadio;
+    [Property] private bool _schedaInformazioniSquadra;
+
+    [Property] private String _nomeFileSquadraDBE;
+    [Property] private ObservableCollection<String> _elencoFileDBESquadraValidi;
+
+
+    [Property] private Giocatore _giocatoreSelezionato;
+
+    partial void OnInitialize()
+    {
+        ElencoPaesi = Enum.GetValues<Paese>().ToList();
+        NumeroSquadreTrovate = 0;
+
+        SchedaGiocatore = false;
+        SchedaAllenatore = false;
+        SchedaStadio = false;
+        SchedaInformazioniSquadra = false;
+
+        SchedaVisualizzata = SchedaGiocatore || SchedaAllenatore || SchedaStadio || SchedaInformazioniSquadra;
+
+    }
+
+
+    [Command]
+    private void ConfermaSceltaPaese(object PaeseSelezionato)
+    {
+        if (PaeseSelezionato != null && PaeseSelezionato.ToString().Equals("*"))
+        {
+            Paese = 0;
+        }
+    }
+
+    [Command]
+    private void ConfermaSquadrePaese()
+    {
+        NomeSquadra = String.Empty;
+    }
+
+
+    [Command]
+    private void Cerca()
+    {
+
+        SquadraSelezionata = null;
+        NomeFileSquadraDBE = null;
+
+        var a = AppSvc.Services.GetRequiredService<ArchivioSvc>();
+
+        if (String.IsNullOrEmpty(NomeSquadra?.Trim()) && Paese == 0)
+        {//Tutte le squadre 
+            SquadreTrovate = new(a.DatiProgettoAttivo.Squadre);
+
+        }
+
+        if (String.IsNullOrEmpty(NomeSquadra?.Trim()) && Paese != 0)
+        {//Squadre del Paese specificato
+            SquadreTrovate = new(a.DatiProgettoAttivo.Squadre.Where(sq => sq.Nazione == Paese));
+
+        }
+
+        if (!String.IsNullOrEmpty(NomeSquadra?.Trim()) && Paese == 0)
+        {//Squadre trovate per nome
+            SquadreTrovate = new(a.DatiProgettoAttivo.Squadre.Where(sq => sq.Nome.Contains(NomeSquadra)));
+        }
+
+        if (!String.IsNullOrEmpty(NomeSquadra?.Trim()) && Paese != 0)
+        {//Ricerca esatta, all'interno del Paese scelto, delle squadre con nome simile a quello specificato
+            SquadreTrovate = new(a.DatiProgettoAttivo.Squadre.Where(sq => sq.Nome.Contains(NomeSquadra) && sq.Nazione == Paese));
+
+        }
+
+        NumeroSquadreTrovate = SquadreTrovate.Count;
+    }
+
+    public void OnEvent(SquadraSelezionataElenco eventData)
+    {
+        GiocatoriSquadraSelezionata = new();
+
+        if (SquadraSelezionata == null || !SquadraSelezionata.Giocatori.Any()) return;
+
+        var e = App.Services.GetRequiredService<EditorSvc>();
+        ElencoFileDBESquadraValidi = new(e.CercaDBEValidi(ArchivioSvc.TipoDatoDB.SQUADRA));
+        NomeFileSquadraDBE = $"SQ{SquadraSelezionata.Id.ToString().PadLeft(5, '0')}.DBE";
+
+
+        if (SquadraSelezionata.Giocatori.First().Numero == -1)
+        {
+            var d = AppSvc.Services.GetRequiredService<IDatSvc>();
+            SquadraSelezionata = d.ComponiInformazioniCompleteSquadra(SquadraSelezionata);
+        }
+
+        GiocatoriSquadraSelezionata = new(SquadraSelezionata.Giocatori.OrderBy(g => g.Slot));
+    }
+
+    [Command]
+    private void DettagliGiocatore(object giocatore)
+    {
+        if (giocatore != null)
+        {
+            SchedaGiocatore = true;
+            SchedaVisualizzata = true;
+        }
+
+        EventAggregator.Publish<VisualizzaDettagliGiocatoreSelezionato>(new((Giocatore)giocatore));
+
+    }
+
+
+    [Command]
+    private void VisualizzaInformazioniSquadra()
+    {
+        if (SquadraSelezionata == null) return;
+        SchedaInformazioniSquadra = true;
+        SchedaVisualizzata = true;
+    }
+
+    [Command]
+    private void VisualizzaDettagliStadio()
+    {
+        if (SquadraSelezionata == null) return;
+        SchedaStadio = true;
+        SchedaVisualizzata = true;
+    }
+
+
+    [Command]
+    private void VisualizzaDettagliAllenatori()
+    {
+        if (SquadraSelezionata == null) return;
+        EventAggregator.Publish<VisualizzaDettagliAllenatoriSquadraSelezionata>(new(SquadraSelezionata));
+        SchedaAllenatore = true;
+        SchedaVisualizzata = true;
+    }
+
+    [Command]
+    private void EsportaSquadra()
+    {
+        if (SquadraSelezionata == null) return;
+    }
+
+    [Command]
+    private void ImportaSquadra()
+    {
+        if (NomeFileSquadraDBE == null) return;
+    }
+
+
+    public void OnEvent(ChiusuraDialogDettagliGiocatoreSelezionato eventData)
+    {
+        var a = AppSvc.Services.GetRequiredService<ArchivioSvc>().DatiProgettoAttivo.Giocatori;
+
+        a[a.IndexOf(a.Find(g => g.Id == eventData.Giocatore.Id))] = eventData.Giocatore;
+
+        var d = AppSvc.Services.GetRequiredService<IDatSvc>();
+        SquadraSelezionata = d.ComponiInformazioniCompleteSquadra(SquadraSelezionata);
+        SchedaGiocatore = false;
+        SchedaVisualizzata = false;
+        GiocatoriSquadraSelezionata = new(SquadraSelezionata.Giocatori.OrderBy(g => g.Slot));
+    }
+
+    public void OnEvent(ChiusuraDialogDettagliAllenatoriSquadraSelezionata eventData)
+    {
+        SquadraSelezionata.Allenatori = eventData.Allenatori;
+        var d = AppSvc.Services.GetRequiredService<IDatSvc>();
+        SquadraSelezionata = d.ComponiInformazioniCompleteSquadra(SquadraSelezionata);
+    }
+}

@@ -1,0 +1,94 @@
+﻿@inherits LayoutComponentBase
+@using BlazorStrap
+@using MultiEditorPCC.Components.Pages
+@inject IBlazorStrap _blazorStrap
+@inject IConfiguration Configuration
+@inject NavigationManager Navigation
+
+<BSContainer Container="Container.Fluid">
+    <BSRow Align="Align.Center" Class="my-auto">
+        <BSCol Align="Align.Start" Class="my-auto">
+            <button @onclick="ToggleNav">
+                &times;
+            </button>
+            <BSRow Class="me-0 col-4">
+                <BSCol>@Lng["Theme"]</BSCol>
+                <BSCol><select @onchange="NuovoTema">
+                    @foreach (var theme in _themes)
+                    {
+
+                        if (theme.ToLower().Equals(Selected))
+                        {
+                            <option value="@theme" selected>@theme</option>
+                        }
+                        else
+                        {
+                            <option value="@theme">@theme</option>
+                        }
+
+
+                    }
+                </select>
+                </BSCol>
+            </BSRow>
+
+            <BSRow Class="me-0 col-4">
+                <BSCol>@Lng["Select_Language"]</BSCol>
+                <BSCol>
+                <select @bind="selectedLng" @bind:after="ChangeLanguage">
+
+                    @foreach (var lng in Configuration.GetSection("Lng")
+                    .GetChildren().ToDictionary(k => k.Key, v => v.Value))
+                    {
+                        var isSelected = lng.Key.Equals(selectedLng)
+                        ? "selected" : String.Empty;
+                        ;
+                        <option value="@lng.Key">@lng.Value</option>
+                        @* <option value="@lng.Key" selected=@isSelected>@lng.Value</option> *@
+                    }
+                </select>
+                </BSCol>
+            </BSRow>
+        </BSCol>
+      
+       
+
+        <BSCol Align=Align.Center Class="my-auto">
+            <h3>@Titolo</h3>
+        </BSCol>
+    </BSRow>
+    
+    <BSRow Align="Align.Center" Class="my-auto">
+        <BSCol Align="Align.Start" />
+        <BSCol Align="Align.Center">
+          <InfoProgetto />
+            @* <MsgAvviso /> *@
+        </BSCol>
+        <BSCol Align="Align.End" />
+    </BSRow>
+
+    <BSRow>
+        <BSCol Class="@NavClass" Column="2">
+
+            <BSListGroup>
+
+                @foreach (var item in Nav)
+                {
+                    <BSListGroupItem Url="@item.Link">
+
+                        <i class="@item.IconString"></i> @item.Title
+
+                    </BSListGroupItem>
+                }
+
+            </BSListGroup>
+
+         
+        </BSCol>
+        <BSCol MarginEnd="Margins.Auto" Auto="true" Column="10">
+            @Body
+            <BSCore />
+        </BSCol>
+    </BSRow>
+
+</BSContainer>

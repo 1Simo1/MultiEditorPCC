@@ -1,0 +1,135 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="1920" d:DesignHeight="1080"
+             xmlns:vm="using:MultiEditorPCC.ViewModels"
+             xmlns:views="using:MultiEditorPCC.Views"
+		     x:DataType="vm:IntroViewModel"
+			 xmlns:ui="using:FluentAvalonia.UI.Controls"
+			 xmlns:lng="clr-namespace:MultiEditorPCC.Locales;assembly=MultiEditorPCC"
+			 x:Name="Intro"
+			 x:Class="MultiEditorPCC.Views.IntroView">
+
+
+	<Grid ColumnDefinitions="Auto,*">
+		<Grid.Styles>
+			<Style Selector="TextBlock">
+				<Setter Property="FontSize" Value="16" />
+			</Style>
+		</Grid.Styles>
+
+		<ui:InfoBar IsOpen="True" IsIconVisible="True" IsClosable="False" Severity="Informational" Grid.Column="0"
+						Title="{x:Static lng:Resources.NewProject}" Margin="0 0 21 0"
+				>
+			<ui:InfoBar.Content>
+				<Grid ColumnDefinitions="Auto,Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+					  Margin="0">
+
+					<TextBlock Text="{x:Static lng:Resources.ProjectName}" Margin="0 0 0 21"
+							   Grid.Column="0" Grid.Row="2" VerticalAlignment="Bottom" Grid.ColumnSpan="2"/>
+					<TextBox Margin="0 3" Text="{Binding Nome}" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2"/>
+
+					<StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2">
+						<TextBlock Text="{x:Static lng:Resources.GameFolder}"
+							    VerticalAlignment="Center"/>
+						<Button Click="Folder_Click" Margin="21 0">
+							<TextBlock Text="{x:Static lng:Resources.SelectGameFolder}" />
+						</Button>
+					</StackPanel>
+					
+					
+
+					
+
+					<TextBlock Margin="21" 
+							   Grid.Row="1"
+							   Text="{Binding Cartella}" 
+		
+							   VerticalAlignment="Bottom"/>
+
+					<TextBlock Text="{x:Static lng:Resources.GameVersion}" Margin="0 0 0 21"
+							   Grid.Column="0" Grid.Row="4" VerticalAlignment="Bottom"/>
+					<TextBlock Margin="21" Text="{Binding VersionePCC}" Grid.Column="1" Grid.Row="4"/>
+
+					<ui:InfoBar Severity="Warning" 
+								Title="{x:Static lng:Resources.AdvancedMode}"
+								IsOpen="True" IsClosable="False" Margin="0 21"
+								Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2">
+						<ui:InfoBar.Content>
+							<StackPanel Orientation="Vertical" HorizontalAlignment="Left">
+								<Button Command="{Binding NuovoProgettoModAvanzataCommand}"
+										HorizontalContentAlignment="Center"
+										HorizontalAlignment="Stretch">
+									<TextBlock Text="{x:Static lng:Resources.EditorFreeProjectTemplate}" />
+								</Button>
+							<TextBlock Text="{x:Static lng:Resources.EditorFreeProjectTemplateWarningText}" 
+									    Width="721" TextWrapping="Wrap"
+										Margin="0 3 3 21"
+									    TextAlignment="Start"
+									   />
+							</StackPanel>
+						</ui:InfoBar.Content>
+					</ui:InfoBar>
+					
+					
+					
+					<TextBlock Text="{x:Static lng:Resources.NewProjectOptions}" Margin="0 3"
+							   Grid.Column="0" Grid.Row="8" Grid.ColumnSpan="2"  VerticalAlignment="Bottom"/>
+
+					
+					
+					<TextBlock Text="{x:Static lng:Resources.WriteEditorProjectFiles}" Margin="0 0 5 11"
+							   Grid.Column="0" Grid.Row="9" VerticalAlignment="Bottom"/>
+					<CheckBox  Grid.Column="1" Grid.Row="9" IsChecked="{Binding EstraiFileNuovoProgetto}" VerticalAlignment="Bottom" Margin="0"/>
+
+
+					<TextBlock Text="{x:Static lng:Resources.WriteNewProjectDB}" Margin="0 0 5 11"
+							   Grid.Column="0" Grid.Row="10" VerticalAlignment="Bottom"/>
+					<CheckBox  Grid.Column="1" Grid.Row="10" IsChecked="{Binding ScriviDBNuovoProgetto}" VerticalAlignment="Bottom" Margin="0"/>
+
+
+					<Button Command="{Binding ConfermaNuovoProgettoCommand}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+							Grid.Column="0" Grid.Row="11" Grid.ColumnSpan="2">Conferma</Button>
+
+
+
+				</Grid>
+			</ui:InfoBar.Content>
+		</ui:InfoBar>
+
+		<ui:InfoBar IsOpen="True" IsClosable="False" IsIconVisible="False" Severity="Informational" Title="{x:Static lng:Resources.OpenProject}" Grid.Column="1">
+			<ui:InfoBar.Content>
+				<DataGrid ItemsSource="{Binding ProgettiEditor,Mode=TwoWay}" AutoGenerateColumns="False">
+					<DataGrid.Columns>
+						<DataGridTextColumn Header="Nome" Binding="{Binding Nome}" Width="Auto" />
+						<DataGridTextColumn Header="Cartella" Binding="{Binding Cartella}" Width="Auto" />
+						<DataGridTextColumn Header="V" Binding="{Binding VersionePCC}" Width="Auto" />
+						<DataGridTemplateColumn Header="Info" Width="Auto">
+							<DataTemplate>
+								<StackPanel Orientation="Vertical">
+									<TextBlock Text="{Binding DataRegistrazione}" />
+									<TextBlock Text="{Binding Modifica}" />
+									<TextBlock Text="{Binding VersioneProgetto}" />
+								</StackPanel>
+							</DataTemplate>
+						</DataGridTemplateColumn>
+						<DataGridTemplateColumn Header="*" Width="*">
+							<DataTemplate>
+								<Button Command="{Binding #Intro.DataContext.ApriProgettoCommand}"
+									CommandParameter="{Binding id}"
+									Margin="21"
+										VerticalAlignment="Stretch"
+										HorizontalAlignment="Stretch"
+										HorizontalContentAlignment="Center"
+								>Apri</Button>
+							</DataTemplate>
+						</DataGridTemplateColumn>
+					</DataGrid.Columns>
+				</DataGrid>
+			</ui:InfoBar.Content>
+		</ui:InfoBar>
+
+	</Grid>
+
+</UserControl>

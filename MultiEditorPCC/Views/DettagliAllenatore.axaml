@@ -1,0 +1,56 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="1800" d:DesignHeight="1500"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+			 xmlns:lng="clr-namespace:MultiEditorPCC.Locales;assembly=MultiEditorPCC"
+			 xmlns:dc="using:MultiEditorPCC.DataConverters"
+			 xmlns:vm="using:MultiEditorPCC.ViewModels"
+			 x:DataType="vm:DettagliAllenatoreViewModel"
+			 x:Class="MultiEditorPCC.Views.DettagliAllenatore"
+			 x:Name="SchedaDettaglioAllenatore"
+			 >
+
+	
+	<ui:InfoBar Severity="Informational" IsIconVisible="False"
+					    IsClosable="False" IsEnabled="True" IsOpen="True"
+			IsVisible="{Binding SchedaAllenatore}"
+				>
+
+		<!--{Binding GiocatoreSelezionato.NomeCompleto}-->
+
+		<ui:InfoBar.Content>
+			<StackPanel Orientation="Vertical">
+				<StackPanel Orientation="Horizontal">
+					<TextBlock Text="{x:Static lng:Resources.Coaches}" Margin="0 0 7 0"/>
+					<TextBlock Text="{Binding NomeSquadra}" />
+				</StackPanel>
+				<Grid RowDefinitions="Auto,*,Auto" ColumnDefinitions="Auto,*">
+				<Button Command="{Binding ChiudiSchedaCommand}" Margin="0" Grid.Row="0" Grid.Column="0">
+					<TextBlock Text="{x:Static lng:Resources.CloseCoachesDetails}" />
+				</Button>
+				<Expander HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Grid.Row="0" Grid.Column="1"
+						  Margin="21 0"
+						  >
+					<Expander.Header>
+						<TextBlock Text="{x:Static lng:Resources.Texts}" />
+					</Expander.Header>
+				<ItemsControl ItemsSource="{Binding Allenatori}">
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<TextBox Text="{Binding}" TextWrapping="Wrap" />
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+				</Expander>
+
+				</Grid>
+				
+			</StackPanel>
+			
+		</ui:InfoBar.Content>
+
+	</ui:InfoBar>
+
+</UserControl>

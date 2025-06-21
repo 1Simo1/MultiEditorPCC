@@ -1,0 +1,45 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="BlazorStrap" Version="5.2.103.250102" />
+		<PackageReference Include="BlazorStrap.V5" Version="5.2.103.122024" />
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Localization" Version="8.0.15" />
+		
+	</ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MultiEditorPCC.Lib\MultiEditorPCC.Lib.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Locales\Resource.en-US.Designer.cs">
+      <DependentUpon>Resource.en-US.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Locales\Resource.it-IT.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resource.it-IT.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Locales\Resource.en-US.resx">
+      <LastGenOutput>Resource.en-US.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFilecodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Locales\Resource.it-IT.resx">
+      <Generator>PublicResXFilecodeGenerator</Generator>
+      <LastGenOutput>Resource.it-IT.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>

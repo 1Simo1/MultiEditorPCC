@@ -1,0 +1,25 @@
+﻿@rendermode InteractiveServer
+@using BlazorStrap
+@using MultiEditorPCC.Lib
+@inject Setup Setup
+
+
+@if (Setup.ProgettoAttivoEditor != null)
+{
+    <BSAlert Color="@BSColor.Info" HasIcon="true">
+        <ul>
+            <li>Nome progetto : @Setup.ProgettoAttivoEditor.Nome</li>
+            <li>Versione PCC : @Setup.ProgettoAttivoEditor.VersionePCC</li>
+            <li>Versione progetto : @Setup.ProgettoAttivoEditor.VersioneProgetto</li>
+        </ul>
+    </BSAlert>
+} else
+{
+    <BSAlert Color="@BSColor.Warning" HasIcon="true">
+        <ul>
+            <li>Nome progetto : -</li>
+            <li>Versione PCC : -</li>
+            <li>Versione progetto : -</li>
+        </ul>
+    </BSAlert>
+}

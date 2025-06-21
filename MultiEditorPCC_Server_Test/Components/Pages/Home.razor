@@ -1,0 +1,58 @@
+﻿@page "/"
+@inject Setup Setup
+@rendermode InteractiveServer
+@using BlazorStrap
+@using MultiEditorPCC.Lib
+
+@inject Setup Setup
+
+<PageTitle>Editor PCC</PageTitle>
+
+@if (Setup.ProgettoAttivoEditor != null)
+{
+	<BSAlert Color="@BSColor.Info" HasIcon="true">
+		<ul>
+			<li>Nome progetto : @Setup.ProgettoAttivoEditor.Nome</li>
+			<li>Versione PCC : @Setup.ProgettoAttivoEditor.VersionePCC</li>
+			<li>Versione progetto : @Setup.ProgettoAttivoEditor.VersioneProgetto</li>
+		</ul>
+	</BSAlert>
+}
+else
+{
+	<h1>Nuovo Progetto</h1>
+
+	<BSRow Class="col-3">
+		<BSCol>
+			<BSLabel>@Lng["Game_Version"]</BSLabel>
+		</BSCol>
+		<BSCol>
+			<select @bind="versioneSelezionata" @bind:after="ImpostaVersione">
+				@foreach (var v in Setup.versioniPCC_Editor)
+				{
+					<option value="@v.VersionePCC">
+						@* @v.Path *@
+						@v.VersionePCC
+					</option>
+
+				}
+
+			</select>
+		</BSCol>
+	</BSRow>
+
+
+
+	<select>
+		@foreach (var dir in cartelleValide)
+		{
+			<option value="@dir">@dir</option>
+
+		}
+
+	</select>
+
+}
+
+
+

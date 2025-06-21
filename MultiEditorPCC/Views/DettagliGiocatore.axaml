@@ -1,0 +1,614 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="1800" d:DesignHeight="1500"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+			 xmlns:lng="clr-namespace:MultiEditorPCC.Locales;assembly=MultiEditorPCC"
+			 xmlns:dc="using:MultiEditorPCC.DataConverters"
+			 xmlns:vm="using:MultiEditorPCC.ViewModels"
+			 x:DataType="vm:DettagliGiocatoreViewModel"
+			 x:Class="MultiEditorPCC.Views.DettagliGiocatore"
+			 x:Name="SchedaDettaglioGiocatore"
+			 >
+
+	<UserControl.Resources>
+		<dc:NumberBoxConverter x:Key="NumberBoxConverter" />
+		<dc:PunteggioImgConverter x:Key="PunteggioImgConverter" />
+		<dc:RuoloImgConverter x:Key="RuoloImgConverter" />
+		<dc:RuoloNomeConverter x:Key="RuoloNomeConverter" />
+	</UserControl.Resources>
+
+	<ui:InfoBar Severity="Informational" Title="{Binding GiocatoreSelezionato.NomeCompleto}"
+					    IsClosable="False" IsEnabled="True" IsOpen="True" d:IsVisible="True" IsVisible="{Binding SchedaGiocatore}">
+		<ui:InfoBar.Content>
+			<Grid RowDefinitions="Auto,*,Auto" ColumnDefinitions="Auto,*">
+				<Button Command="{Binding ChiudiSchedaCommand}" Margin="0" Grid.Row="0" Grid.Column="0">
+					<TextBlock Text="{x:Static lng:Resources.ClosePlayerDetails}" />
+				</Button>
+				<Expander HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Grid.Row="0" Grid.Column="1"
+						  Margin="21 0"
+						  >
+					<Expander.Header>
+						<TextBlock Text="{x:Static lng:Resources.Texts}" />
+					</Expander.Header>
+					<ItemsControl ItemsSource="{Binding GiocatoreSelezionato.Testi}">
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<TextBox Text="{Binding}" TextWrapping="Wrap" />
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+				</Expander>
+
+
+
+				<ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Hidden"
+						  x:Name="SchedaGiocatoreScrollViewer" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+						  >
+					<Grid RowDefinitions="Auto,*,21" ColumnDefinitions="Auto,*,*"
+						
+						 Loaded="Grid_Loaded"
+					  >
+
+						<TextBlock Grid.Row="2" Grid.Column="1"/>
+
+
+						<Grid Grid.Row="1" Grid.Column="0" Margin="0 0 0 21"
+												  RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+												  ColumnDefinitions="*,*,*">
+
+							<TextBlock Text="{x:Static lng:Resources.PlayerAttributeSpeed}" Grid.Column="0" Grid.Row="0" VerticalAlignment="Center"/>
+							<ui:NumberBox Minimum="0" Maximum="99" Grid.Column="1" Grid.Row="0" Margin="11"
+									Value="{Binding GiocatoreSelezionato.Punteggi[1].Punteggio,
+												  Converter={StaticResource NumberBoxConverter}}"
+									ValueChanged="NumberBox_ValueChanged"
+										  SpinButtonPlacementMode="Inline" Name="v1"
+									/>
+							<Image Width="100" Height="10" Grid.Column="2" Grid.Row="0"
+									   VerticalAlignment="Center"
+									Source="{Binding #v1.Value,
+							     Converter={StaticResource PunteggioImgConverter}}" />
+
+							<TextBlock Text="{x:Static lng:Resources.PlayerAttributeEndurance}" Grid.Column="0" Grid.Row="1" VerticalAlignment="Center"/>
+							<ui:NumberBox Minimum="0" Maximum="99" Grid.Column="1" Grid.Row="1" Margin="11"
+										  Value="{Binding GiocatoreSelezionato.Punteggi[2].Punteggio,
+								  Converter={StaticResource NumberBoxConverter}}"
+										  SpinButtonPlacementMode="Inline" Name="v2"
+									ValueChanged="NumberBox_ValueChanged"
+									  />
+							<Image Width="100" Height="10" Grid.Column="2" Grid.Row="1"
+								Source="{Binding #v2.Value,
+							     Converter={StaticResource PunteggioImgConverter}}" />
+
+							<TextBlock Text="{x:Static lng:Resources.PlayerAttributeAggressivity}" Grid.Column="0" Grid.Row="2" VerticalAlignment="Center" />
+							<ui:NumberBox Minimum="0" Maximum="99" Grid.Column="1" Grid.Row="2" Margin="11"
+										  Value="{Binding GiocatoreSelezionato.Punteggi[3].Punteggio,
+								  Converter={StaticResource NumberBoxConverter}}"
+										  SpinButtonPlacementMode="Inline" Name="v3"
+									ValueChanged="NumberBox_ValueChanged"
+									  />
+							<Image Width="100" Height="10" Grid.Column="2" Grid.Row="2"
+								Source="{Binding #v3.Value,
+							     Converter={StaticResource PunteggioImgConverter}}" />
+
+							<TextBlock Text="{x:Static lng:Resources.PlayerAttributeQuality}" Grid.Column="0" Grid.Row="3" VerticalAlignment="Center"/>
+							<ui:NumberBox Minimum="0" Maximum="99" Grid.Column="1" Grid.Row="3" Margin="11"
+										  Value="{Binding GiocatoreSelezionato.Punteggi[4].Punteggio,
+								  Converter={StaticResource NumberBoxConverter}}"
+										  SpinButtonPlacementMode="Inline" Name="v4"
+									ValueChanged="NumberBox_ValueChanged"
+									  />
+							<Image Width="100" Height="10" Grid.Column="2" Grid.Row="3"
+								Source="{Binding #v4.Value,
+							     Converter={StaticResource PunteggioImgConverter}}" />
+
+
+
+							<TextBlock Text="{x:Static lng:Resources.PlayerAttributeAverage}" Grid.Column="0" Grid.Row="4" VerticalAlignment="Center"/>
+							<Border Background="DarkGreen" Grid.Column="1" Grid.Row="4" Padding="21" Margin="11">
+								<TextBlock Text="{Binding GiocatoreSelezionato.Punteggi[0].Punteggio,
+								   Converter={StaticResource NumberBoxConverter}}"
+										   HorizontalAlignment="Center"
+										   Name="v0"
+									/>
+							</Border>
+							<Image Width="100" Height="10" Grid.Column="2" Grid.Row="4"
+								Source="{Binding #v0.Text, Converter={StaticResource PunteggioImgConverter}}" />
+
+							<TextBlock Text="{x:Static lng:Resources.PlayerAttributeHandling}" Grid.Column="0" Grid.Row="5" VerticalAlignment="Center" />
+							<ui:NumberBox Minimum="0" Maximum="99" Grid.Column="1" Grid.Row="5" Margin="11"
+										  Value="{Binding GiocatoreSelezionato.Punteggi[10].Punteggio,
+						  Converter={StaticResource NumberBoxConverter}}"
+										  SpinButtonPlacementMode="Inline" Name="v10"
+							/>
+							<Image Width="100" Height="10" Grid.Column="2" Grid.Row="5"
+								Source="{Binding #v10.Value,
+					     Converter={StaticResource PunteggioImgConverter}}" />
+
+							<TextBlock Text="{x:Static lng:Resources.PlayerAttributePassing}" Grid.Column="0" Grid.Row="6" VerticalAlignment="Center"/>
+							<ui:NumberBox Minimum="0" Maximum="99" Grid.Column="1" Grid.Row="6" Margin="11"
+										  Value="{Binding GiocatoreSelezionato.Punteggi[7].Punteggio,
+						  Converter={StaticResource NumberBoxConverter}}"
+										  SpinButtonPlacementMode="Inline" Name="v7"
+							/>
+							<Image Width="100" Height="10" Grid.Column="2" Grid.Row="6"
+								Source="{Binding #v7.Value,
+					     Converter={StaticResource PunteggioImgConverter}}" />
+
+							<TextBlock Text="{x:Static lng:Resources.PlayerAttributeDribbling}" Grid.Column="0" Grid.Row="7" VerticalAlignment="Center"/>
+							<ui:NumberBox Minimum="0" Maximum="99" Grid.Column="1" Grid.Row="7" Margin="11"
+										  Value="{Binding GiocatoreSelezionato.Punteggi[6].Punteggio,
+						  Converter={StaticResource NumberBoxConverter}}"
+										  SpinButtonPlacementMode="Inline" Name="v6"
+							/>
+							<Image Width="100" Height="10" Grid.Column="2" Grid.Row="7"
+								Source="{Binding #v6.Value,
+					     Converter={StaticResource PunteggioImgConverter}}" />
+
+							<TextBlock Text="{x:Static lng:Resources.PlayerAttributeHeading}" Grid.Column="0" Grid.Row="8" VerticalAlignment="Center"/>
+							<ui:NumberBox Minimum="0" Maximum="99" Grid.Column="1" Grid.Row="8" Margin="11"
+										  Value="{Binding GiocatoreSelezionato.Punteggi[5].Punteggio,
+						  Converter={StaticResource NumberBoxConverter}}"
+										  SpinButtonPlacementMode="Inline" Name="v5"
+							/>
+							<Image Width="100" Height="10" Grid.Column="2" Grid.Row="8"
+								Source="{Binding #v5.Value,
+					     Converter={StaticResource PunteggioImgConverter}}" />
+
+							<TextBlock Text="{x:Static lng:Resources.PlayerAttributeTackling}" Grid.Column="0" Grid.Row="9" VerticalAlignment="Center"/>
+							<ui:NumberBox Minimum="0" Maximum="99" Grid.Column="1" Grid.Row="9" Margin="11"
+										  Value="{Binding GiocatoreSelezionato.Punteggi[9].Punteggio,
+						  Converter={StaticResource NumberBoxConverter}}"
+										  SpinButtonPlacementMode="Inline" Name="v9"
+							/>
+							<Image Width="100" Height="10" Grid.Column="2" Grid.Row="9"
+								Source="{Binding #v9.Value,
+					     Converter={StaticResource PunteggioImgConverter}}" />
+
+							<TextBlock Text="{x:Static lng:Resources.PlayerAttributeShooting}" Grid.Column="0" Grid.Row="10" VerticalAlignment="Center"/>
+							<ui:NumberBox Minimum="0" Maximum="99" Grid.Column="1" Grid.Row="10" Margin="11"
+										  Value="{Binding GiocatoreSelezionato.Punteggi[8].Punteggio,
+						  Converter={StaticResource NumberBoxConverter}}"
+										  SpinButtonPlacementMode="Inline" Name="v8"
+							/>
+							<Image Width="100" Height="10" Grid.Column="2" Grid.Row="10"
+								Source="{Binding #v8.Value,
+					     Converter={StaticResource PunteggioImgConverter}}" />
+
+							<TextBlock Text="{x:Static lng:Resources.PlayerAttributeFoot}" Grid.Column="0" Grid.Row="11" VerticalAlignment="Center"/>
+
+
+							<ComboBox Grid.Column="1" Grid.Row="11" Margin="11" Grid.ColumnSpan="2"
+									  HorizontalAlignment="Stretch"
+									  ItemsSource="{Binding #SchedaDettaglioGiocatore.DataContext.SelezionePiedePreferito}"
+									  SelectedValue="{Binding GiocatoreSelezionato.Punteggi[11].Punteggio}" />
+
+
+
+							<TextBlock Text="{x:Static lng:Resources.PlayerAttributePenalties}" Grid.Column="0" Grid.Row="12" VerticalAlignment="Center"/>
+							<ui:NumberBox Minimum="0" Maximum="99" Grid.Column="1" Grid.Row="12" Margin="11"
+										  Value="{Binding GiocatoreSelezionato.Punteggi[12].Punteggio,
+						  Converter={StaticResource NumberBoxConverter}}"
+										  SpinButtonPlacementMode="Inline" Name="v12"
+							/>
+							<Image Width="100" Height="10" Grid.Column="2" Grid.Row="12"
+								Source="{Binding #v12.Value,
+					     Converter={StaticResource PunteggioImgConverter}}" />
+
+							<TextBlock Text="{x:Static lng:Resources.PlayerAttributeLeftFreeKick}" Grid.Column="0" Grid.Row="13" VerticalAlignment="Center"/>
+							<ui:NumberBox Minimum="0" Maximum="99" Grid.Column="1" Grid.Row="13" Margin="11"
+										  Value="{Binding GiocatoreSelezionato.Punteggi[15].Punteggio,
+						  Converter={StaticResource NumberBoxConverter}}"
+										  SpinButtonPlacementMode="Inline" Name="v15"
+							/>
+							<Image Width="100" Height="10" Grid.Column="2" Grid.Row="13"
+								Source="{Binding #v15.Value,
+					     Converter={StaticResource PunteggioImgConverter}}" />
+
+							<TextBlock Text="{x:Static lng:Resources.PlayerAttributeRightFreeKick}" Grid.Column="0" Grid.Row="14" VerticalAlignment="Center"/>
+							<ui:NumberBox Minimum="0" Maximum="99" Grid.Column="1" Grid.Row="14" Margin="11"
+										  Value="{Binding GiocatoreSelezionato.Punteggi[16].Punteggio,
+						  Converter={StaticResource NumberBoxConverter}}"
+										  SpinButtonPlacementMode="Inline" Name="v16"
+							/>
+							<Image Width="100" Height="10" Grid.Column="2" Grid.Row="14"
+								Source="{Binding #v16.Value,
+					     Converter={StaticResource PunteggioImgConverter}}" />
+
+							<TextBlock Text="{x:Static lng:Resources.PlayerAttributeLeftCorner}" Grid.Column="0" Grid.Row="15" VerticalAlignment="Center"/>
+							<ui:NumberBox Minimum="0" Maximum="99" Grid.Column="1" Grid.Row="15" Margin="11"
+										  Value="{Binding GiocatoreSelezionato.Punteggi[13].Punteggio,
+						  Converter={StaticResource NumberBoxConverter}}"
+										  SpinButtonPlacementMode="Inline" Name="v13"
+							/>
+							<Image Width="100" Height="10" Grid.Column="2" Grid.Row="15"
+								Source="{Binding #v13.Value,
+					     Converter={StaticResource PunteggioImgConverter}}" />
+
+							<TextBlock Text="{x:Static lng:Resources.PlayerAttributeRightCorner}" Grid.Column="0" Grid.Row="16" VerticalAlignment="Center"/>
+							<ui:NumberBox Minimum="0" Maximum="99" Grid.Column="1" Grid.Row="16" Margin="11"
+										  Value="{Binding GiocatoreSelezionato.Punteggi[14].Punteggio,
+						  Converter={StaticResource NumberBoxConverter}}"
+										  SpinButtonPlacementMode="Inline" Name="v14"
+							/>
+							<Image Width="100" Height="10" Grid.Column="2" Grid.Row="16"
+								Source="{Binding #v14.Value,
+					     Converter={StaticResource PunteggioImgConverter}}" />
+
+
+						</Grid>
+
+
+						<Grid Grid.Row="1" Grid.Column="1" Margin="21">
+							<Border BorderThickness="1" BorderBrush="Azure">
+								<StackPanel Orientation="Vertical" Margin="21">
+									<TextBlock Text="{x:Static lng:Resources.PlayerName}" Margin="0 7"/>
+									<TextBox Text="{Binding GiocatoreSelezionato.Nome}" Margin="0 7"/>
+									<TextBlock Text="{x:Static lng:Resources.PlayerFullName}" Margin="0 7"/>
+									<TextBox Text="{Binding GiocatoreSelezionato.NomeCompleto}" Margin="0 7"/>
+									<StackPanel Orientation="Horizontal">
+										<TextBlock Text="{x:Static lng:Resources.ShirtNumber}"
+												   VerticalAlignment="Center"
+												   Margin="0 7 21 7"/>
+										<ui:NumberBox Minimum="1" Maximum="99" Grid.Column="1" Grid.Row="0" Margin="11"
+											Value="{Binding GiocatoreSelezionato.Numero, Converter={StaticResource NumberBoxConverter}}"
+											SpinButtonPlacementMode="Inline"
+									/>
+									</StackPanel>
+
+									<Grid ColumnDefinitions="Auto,*" Margin="0 7">
+										<TextBlock Text="{x:Static lng:Resources.PlayerFieldPosition}"
+												   Grid.Column="0"
+												   VerticalAlignment="Center"
+												   Margin="0 7 21 7"/>
+
+										<ComboBox Grid.Column="1"
+											HorizontalAlignment="Stretch"
+											ItemsSource="{Binding #SchedaDettaglioGiocatore.DataContext.SelezioneRepartoGiocatore}"
+											SelectedItem="{Binding GiocatoreSelezionato.Reparto}" />
+									</Grid>
+
+									<Grid ColumnDefinitions="Auto,21,100*" Margin="0 7">
+										<TextBlock Text="{x:Static lng:Resources.PlayerRole}"
+												   Grid.Column="0"
+												   VerticalAlignment="Center"
+												   Margin="0 0 7 0"/>
+										<TextBlock Text=""
+												   Grid.Column="1"
+												   VerticalAlignment="Center"
+												   Margin="0"/>
+										<ComboBox Grid.Column="2"
+											HorizontalAlignment="Stretch"
+											ItemsSource="{Binding #SchedaDettaglioGiocatore.DataContext.SelezioneRuoloGiocatore}"
+											SelectedValue="{Binding GiocatoreSelezionato.Ruoli[0]}">
+											<ComboBox.ItemTemplate>
+												<DataTemplate>
+													<StackPanel Orientation="Horizontal">
+														<Image Source="{Binding .,Converter={StaticResource RuoloImgConverter}}"
+															Width="25" Height="14"
+													/>
+														<TextBlock TextAlignment="Center" Text="{Binding .,Converter={StaticResource RuoloNomeConverter}}" VerticalAlignment="Center"/>
+													</StackPanel>
+												</DataTemplate>
+											</ComboBox.ItemTemplate>
+										</ComboBox>
+									</Grid>
+
+									<Grid ColumnDefinitions="Auto,21,100*" Margin="0 7">
+										<TextBlock Text="{x:Static lng:Resources.PlayerRole}"
+												   Grid.Column="0"
+												   VerticalAlignment="Center"
+												   Margin="0 0 7 0"/>
+										<TextBlock Text="2"
+												   Grid.Column="1"
+												   VerticalAlignment="Center"
+												   Margin="0"/>
+										<ComboBox Grid.Column="2"
+											HorizontalAlignment="Stretch"
+											ItemsSource="{Binding #SchedaDettaglioGiocatore.DataContext.SelezioneRuoloGiocatore}"
+											SelectedValue="{Binding GiocatoreSelezionato.Ruoli[1]}">
+											<ComboBox.ItemTemplate>
+												<DataTemplate>
+													<StackPanel Orientation="Horizontal">
+														<Image Source="{Binding .,Converter={StaticResource RuoloImgConverter}}"
+															Width="25" Height="14"
+													/>
+														<TextBlock TextAlignment="Center" Text="{Binding .,Converter={StaticResource RuoloNomeConverter}}" VerticalAlignment="Center"/>
+													</StackPanel>
+												</DataTemplate>
+											</ComboBox.ItemTemplate>
+										</ComboBox>
+									</Grid>
+
+									<Grid ColumnDefinitions="Auto,21,100*" Margin="0 7">
+										<TextBlock Text="{x:Static lng:Resources.PlayerRole}"
+												   Grid.Column="0"
+												   VerticalAlignment="Center"
+												   Margin="0 0 7 0"/>
+										<TextBlock Text="3"
+												   Grid.Column="1"
+												   VerticalAlignment="Center"
+												   Margin="0"/>
+										<ComboBox Grid.Column="2"
+											HorizontalAlignment="Stretch"
+											ItemsSource="{Binding #SchedaDettaglioGiocatore.DataContext.SelezioneRuoloGiocatore}"
+											SelectedValue="{Binding GiocatoreSelezionato.Ruoli[2]}">
+											<ComboBox.ItemTemplate>
+												<DataTemplate>
+													<StackPanel Orientation="Horizontal">
+														<Image Source="{Binding .,Converter={StaticResource RuoloImgConverter}}"
+															Width="25" Height="14"
+													/>
+														<TextBlock TextAlignment="Center" Text="{Binding .,Converter={StaticResource RuoloNomeConverter}}" VerticalAlignment="Center"/>
+													</StackPanel>
+												</DataTemplate>
+											</ComboBox.ItemTemplate>
+										</ComboBox>
+									</Grid>
+
+									<Grid ColumnDefinitions="Auto,21,100*" Margin="0 7">
+										<TextBlock Text="{x:Static lng:Resources.PlayerRole}"
+												   Grid.Column="0"
+												   VerticalAlignment="Center"
+												   Margin="0 0 7 0"/>
+										<TextBlock Text="4"
+												   Grid.Column="1"
+												   VerticalAlignment="Center"
+												   Margin="0"/>
+										<ComboBox Grid.Column="2"
+											HorizontalAlignment="Stretch"
+											ItemsSource="{Binding #SchedaDettaglioGiocatore.DataContext.SelezioneRuoloGiocatore}"
+											SelectedValue="{Binding GiocatoreSelezionato.Ruoli[3]}">
+											<ComboBox.ItemTemplate>
+												<DataTemplate>
+													<StackPanel Orientation="Horizontal">
+														<Image Source="{Binding .,Converter={StaticResource RuoloImgConverter}}"
+															Width="25" Height="14"
+													/>
+														<TextBlock TextAlignment="Center" Text="{Binding .,Converter={StaticResource RuoloNomeConverter}}" VerticalAlignment="Center"/>
+													</StackPanel>
+												</DataTemplate>
+											</ComboBox.ItemTemplate>
+										</ComboBox>
+									</Grid>
+
+									<Grid ColumnDefinitions="Auto,21,100*" Margin="0 7">
+										<TextBlock Text="{x:Static lng:Resources.PlayerRole}"
+												   Grid.Column="0"
+												   VerticalAlignment="Center"
+												   Margin="0 0 7 0"/>
+										<TextBlock Text="5"
+												   Grid.Column="1"
+												   VerticalAlignment="Center"
+												   Margin="0"/>
+										<ComboBox Grid.Column="2"
+											HorizontalAlignment="Stretch"
+											ItemsSource="{Binding #SchedaDettaglioGiocatore.DataContext.SelezioneRuoloGiocatore}"
+											SelectedValue="{Binding GiocatoreSelezionato.Ruoli[4]}">
+											<ComboBox.ItemTemplate>
+												<DataTemplate>
+													<StackPanel Orientation="Horizontal">
+														<Image Source="{Binding .,Converter={StaticResource RuoloImgConverter}}"
+															Width="25" Height="14"
+													/>
+														<TextBlock TextAlignment="Center" Text="{Binding .,Converter={StaticResource RuoloNomeConverter}}" VerticalAlignment="Center"/>
+													</StackPanel>
+												</DataTemplate>
+											</ComboBox.ItemTemplate>
+										</ComboBox>
+									</Grid>
+
+									<Grid ColumnDefinitions="Auto,21,100*" Margin="0 7">
+										<TextBlock Text="{x:Static lng:Resources.PlayerRole}"
+												   Grid.Column="0"
+												   VerticalAlignment="Center"
+												   Margin="0 0 7 0"/>
+										<TextBlock Text="6"
+												   Grid.Column="1"
+												   VerticalAlignment="Center"
+												   Margin="0"/>
+										<ComboBox Grid.Column="2"
+											HorizontalAlignment="Stretch"
+											ItemsSource="{Binding #SchedaDettaglioGiocatore.DataContext.SelezioneRuoloGiocatore}"
+											SelectedValue="{Binding GiocatoreSelezionato.Ruoli[5]}">
+											<ComboBox.ItemTemplate>
+												<DataTemplate>
+													<StackPanel Orientation="Horizontal">
+														<Image Source="{Binding .,Converter={StaticResource RuoloImgConverter}}"
+															Width="25" Height="14"
+													/>
+														<TextBlock TextAlignment="Center" Text="{Binding .,Converter={StaticResource RuoloNomeConverter}}" VerticalAlignment="Center"/>
+													</StackPanel>
+												</DataTemplate>
+											</ComboBox.ItemTemplate>
+										</ComboBox>
+									</Grid>
+
+
+									<Grid ColumnDefinitions="Auto,21,100*" Margin="0 7">
+										<TextBlock Text="{x:Static lng:Resources.Country}"
+												   Grid.Column="0"
+												   VerticalAlignment="Center"
+												   Margin="0 0 7 0"/>
+										<TextBlock Text=""
+												   Grid.Column="1"
+												   VerticalAlignment="Center"
+												   Margin="0"/>
+										<ComboBox Grid.Column="2"
+											HorizontalAlignment="Stretch"
+											ItemsSource="{Binding #SchedaDettaglioGiocatore.DataContext.SelezionePaese}"
+											SelectedValue="{Binding GiocatoreSelezionato.Nazione}">
+											<ComboBox.ItemTemplate>
+												<DataTemplate>
+													<StackPanel Orientation="Horizontal">
+														<!--<Image Source="{Binding .,Converter={StaticResource PaeseImgConverter}}"
+														Width="25" Height="14"
+													/>-->
+														<TextBlock TextAlignment="Center" Text="{Binding}" VerticalAlignment="Center"/>
+													</StackPanel>
+												</DataTemplate>
+											</ComboBox.ItemTemplate>
+										</ComboBox>
+									</Grid>
+
+									<Grid ColumnDefinitions="Auto,21,100*" Margin="0 7">
+										<TextBlock Text="{x:Static lng:Resources.BirthCountry}"
+												   Grid.Column="0"
+												   VerticalAlignment="Center"
+												   Margin="0 0 7 0"/>
+										<TextBlock Text=""
+												   Grid.Column="1"
+												   VerticalAlignment="Center"
+												   Margin="0"/>
+										<ComboBox Grid.Column="2"
+											HorizontalAlignment="Stretch"
+											ItemsSource="{Binding #SchedaDettaglioGiocatore.DataContext.SelezionePaese}"
+											SelectedValue="{Binding GiocatoreSelezionato.PaeseNascita}">
+											<ComboBox.ItemTemplate>
+												<DataTemplate>
+													<StackPanel Orientation="Horizontal">
+														<!--<Image Source="{Binding .,Converter={StaticResource PaeseImgConverter}}"
+														Width="25" Height="14"
+													/>-->
+														<TextBlock TextAlignment="Center" Text="{Binding}" VerticalAlignment="Center"/>
+													</StackPanel>
+												</DataTemplate>
+											</ComboBox.ItemTemplate>
+										</ComboBox>
+									</Grid>
+
+									<StackPanel Orientation="Horizontal">
+										<TextBlock Text="{x:Static lng:Resources.Nationalized}" Margin="0 7 21 7" />
+										<CheckBox IsChecked="{Binding GiocatoreSelezionato.Nazionalizzato}" />
+									</StackPanel>
+
+									<UniformGrid Columns="4" Margin="0 7">
+										<TextBlock Text="{x:Static lng:Resources.SkinColor}" VerticalAlignment="Center"/>
+										<ComboBox ItemsSource="{Binding #SchedaDettaglioGiocatore.DataContext.SelezioneColorePelle}"
+												  SelectedValue="{Binding GiocatoreSelezionato.codColorePelle}"
+												  HorizontalAlignment="Stretch" Margin="0 0 7 7"
+											  />
+										<TextBlock Text="{x:Static lng:Resources.HairColor}" VerticalAlignment="Center"/>
+										<ComboBox ItemsSource="{Binding #SchedaDettaglioGiocatore.DataContext.SelezioneColoreCapelli}"
+												  SelectedValue="{Binding GiocatoreSelezionato.codColoreCapelli}"
+												  HorizontalAlignment="Stretch" Margin="0 0 7 7"
+											  />
+										<TextBlock Text="{x:Static lng:Resources.HairStyle}" VerticalAlignment="Center"/>
+										<ComboBox ItemsSource="{Binding #SchedaDettaglioGiocatore.DataContext.SelezioneStileCapelli}"
+												  SelectedValue="{Binding GiocatoreSelezionato.codStileCapelli}"
+												  HorizontalAlignment="Stretch" Margin="0 0 7 7"
+											  />
+										<TextBlock Text="{x:Static lng:Resources.BeardStyle}" VerticalAlignment="Center"/>
+										<ComboBox ItemsSource="{Binding #SchedaDettaglioGiocatore.DataContext.SelezioneStileBarba}"
+												  SelectedValue="{Binding GiocatoreSelezionato.codStileBarba}"
+												  HorizontalAlignment="Stretch" Margin="0 0 7 7"
+											  />
+									</UniformGrid>
+
+
+									<StackPanel Orientation="Horizontal">
+										<TextBlock Text="{x:Static lng:Resources.BirthDate}" Margin="0 7 21 7" />
+										<ui:NumberBox Minimum="1" Maximum="31"
+									Value="{Binding GiocatoreSelezionato.GiornoNascita,
+												  Converter={StaticResource NumberBoxConverter}}"
+									ValueChanged="BirthDate_ValueChanged"
+										  SpinButtonPlacementMode="Inline"
+										  x:Name="gg"
+									/>
+										<TextBlock Text="/"  VerticalAlignment="Center"/>
+										<ui:NumberBox Minimum="1" Maximum="12"
+									Value="{Binding GiocatoreSelezionato.MeseNascita,
+												  Converter={StaticResource NumberBoxConverter}}"
+									ValueChanged="BirthDate_ValueChanged"
+										  SpinButtonPlacementMode="Inline"
+													  x:Name="mm"
+									/>
+										<TextBlock Text="/" VerticalAlignment="Center"/>
+
+										<ui:NumberBox
+									Value="{Binding GiocatoreSelezionato.AnnoNascita,
+												  Converter={StaticResource NumberBoxConverter}}"
+									ValueChanged="BirthDate_ValueChanged"
+										  SpinButtonPlacementMode="Inline"
+									x:Name="aaaa"
+									/>
+
+
+
+									</StackPanel>
+
+
+									<UniformGrid Columns="4" Margin="0 7">
+										<TextBlock Text="{x:Static lng:Resources.Height}" VerticalAlignment="Center"/>
+										<ui:NumberBox Minimum="1" Maximum="255"
+										Value="{Binding GiocatoreSelezionato.Altezza}"
+										SpinButtonPlacementMode="Inline"
+									/>
+
+
+										<TextBlock Text="{x:Static lng:Resources.Weight}" VerticalAlignment="Center"/>
+										<ui:NumberBox Minimum="1" Maximum="255"
+										Value="{Binding GiocatoreSelezionato.Peso}"
+										SpinButtonPlacementMode="Inline"
+									/>
+
+									</UniformGrid>
+
+
+
+								</StackPanel>
+
+
+
+
+
+
+
+							</Border>
+
+						</Grid>
+
+
+						<UniformGrid Grid.Row="1" Grid.Column="2" Margin="21" VerticalAlignment="Top" Columns="1">
+							<Button Command="{Binding EsportaGiocatoreCommand}">
+								<StackPanel Orientation="Horizontal">
+									<TextBlock Text="{x:Static lng:Resources.ExportPlayerToDBE}" />
+									<TextBlock Margin="7 0 0 0" Text="{Binding NomeFileDBE}" />
+								</StackPanel>
+							</Button>
+								<StackPanel Orientation="Horizontal">
+									<TextBlock Text="{x:Static lng:Resources.IgnoreTexts}" VerticalAlignment="Top"/>
+									<CheckBox IsChecked="{Binding IgnoraTesti}" VerticalAlignment="Top"/>
+								</StackPanel>
+
+
+							<TextBlock Text="{x:Static lng:Resources.ImportPlayerFromDBE}" />
+
+							<ComboBox ItemsSource="{Binding ElencoFileDBEValidi}"
+												  SelectedValue="{Binding NomeFileDBE}"
+												  HorizontalAlignment="Stretch" Margin="0 0 7 7" />
+							
+							
+							<Button Command="{Binding ImportaGiocatoreCommand}">
+									<TextBlock Text="{x:Static lng:Resources.Confirm}" />
+							</Button>
+							
+							
+						</UniformGrid>
+
+
+
+					</Grid>
+				</ScrollViewer>
+
+
+
+
+
+			</Grid>
+		</ui:InfoBar.Content>
+
+	</ui:InfoBar>
+
+</UserControl>
