@@ -11,11 +11,21 @@
   </ItemGroup>
 
   <ItemGroup>
+    <AvaloniaResource Remove="Assets\Fonts\**" />
     <AvaloniaResource Remove="Assets\svgs\**" />
+    <AvaloniaResource Remove="Assets\svg\**" />
+    <AvaloniaXaml Remove="Assets\Fonts\**" />
     <AvaloniaXaml Remove="Assets\svgs\**" />
+    <AvaloniaXaml Remove="Assets\svg\**" />
+    <Compile Remove="Assets\Fonts\**" />
     <Compile Remove="Assets\svgs\**" />
+    <Compile Remove="Assets\svg\**" />
+    <EmbeddedResource Remove="Assets\Fonts\**" />
     <EmbeddedResource Remove="Assets\svgs\**" />
+    <EmbeddedResource Remove="Assets\svg\**" />
+    <None Remove="Assets\Fonts\**" />
     <None Remove="Assets\svgs\**" />
+    <None Remove="Assets\svg\**" />
   </ItemGroup>
 
   <ItemGroup>
