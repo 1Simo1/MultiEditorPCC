@@ -185,13 +185,17 @@
 					</StackPanel>
 				</ui:InfoBar.Content>
 			</ui:InfoBar>
-		
 
-		
+
+		<TextBox Text="{Binding TestoCP}" DockPanel.Dock="Bottom" Margin="0 0 21 21" IsReadOnly="True"/>		
 
 		<ContentControl Content="{Binding Pag}" Margin="21"
 						Background="{DynamicResource ThemeBackgroundBrush}"/>
 		
+	
+
+
+
 	</DockPanel>
 		
 </UserControl>
