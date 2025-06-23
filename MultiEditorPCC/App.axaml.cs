@@ -64,6 +64,7 @@ public static class ServiceCollectionExtensions
         collection.AddSingleton<EditorSvc>();
         collection.AddSingleton<IDatSvc, DatSvc>();
         collection.AddSingleton<NavSvc>();
+        collection.AddTransient<SquadreViewModel>();
         collection.AddTransient<DettagliGiocatoreViewModel>();
         collection.AddTransient<DettagliAllenatoreViewModel>();
         collection.AddTransient<MainViewModel>();

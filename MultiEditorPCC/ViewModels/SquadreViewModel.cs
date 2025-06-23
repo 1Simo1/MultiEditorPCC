@@ -206,4 +206,5 @@ public partial class SquadreViewModel : IEventSubscriber<SquadraSelezionataElenc
         SchedaAllenatore = false;
         SchedaVisualizzata = false;
     }
+
 }

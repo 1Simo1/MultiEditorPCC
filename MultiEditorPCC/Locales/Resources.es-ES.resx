@@ -426,4 +426,10 @@
   <data name="ExPlayer" xml:space="preserve">
     <value />
   </data>
+  <data name="ExportCoachToDBE" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ImportCoachFromDBE" xml:space="preserve">
+    <value />
+  </data>
 </root>

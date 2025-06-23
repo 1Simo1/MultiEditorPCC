@@ -72,7 +72,7 @@ public partial class DettagliGiocatoreViewModel : IEventSubscriber<VisualizzaDet
     {
         var d = AppSvc.Services.GetRequiredService<IDatSvc>();
 
-        var e = App.Services.GetRequiredService<EditorSvc>();
+        var e = AppSvc.Services.GetRequiredService<EditorSvc>();
 
         Giocatore giocatore = GiocatoreSelezionato;
 
@@ -94,14 +94,17 @@ public partial class DettagliGiocatoreViewModel : IEventSubscriber<VisualizzaDet
 
         var e = App.Services.GetRequiredService<EditorSvc>();
 
-        //TODO Temp: sostituire poi con scelta tra nome di default
-        //(quello calcolato qui in nomeFile) o un qualsiasi file valido scelto
-        //dalla cartella del progetto dell'editor
-        String nomeFile = $"GT{GiocatoreSelezionato.Id.ToString().PadLeft(5, '0')}";
         String nomeFileEditor = $"{AppDomain.CurrentDomain.BaseDirectory}files{Path.DirectorySeparatorChar}";
         nomeFileEditor += $"{e.ProgettoAttivoEditor.Nome}{Path.DirectorySeparatorChar}{NomeFileDBE}";
 
-        GiocatoreSelezionato = d.ImportaElementoDaFileEditor<Giocatore>(nomeFileEditor);
+        //Come idea nell'importare dati da file DBE, immagino in questa prima versione di memorizzare l'id del giocatore
+        //che sto importando, in modo che venga sovrascritto nella squadra corretta
+        int id = GiocatoreSelezionato.Id;
+
+        var temp = d.ImportaElementoDaFileEditor<Giocatore>(nomeFileEditor);
+        temp.Id = id;
+
+        GiocatoreSelezionato = temp;
 
 
 

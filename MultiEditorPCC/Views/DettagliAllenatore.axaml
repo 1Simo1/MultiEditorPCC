@@ -38,22 +38,55 @@
 					</ListBox>
 				</StackPanel>
 
-				<StackPanel Orientation="Vertical" Grid.Column="1">
+				<StackPanel Orientation="Vertical" Grid.Column="1" Margin="21">
+					
+						<TextBlock Text="{x:Static lng:Resources.Name}" Margin="0 7"/>
+						<TextBox Text="{Binding AllenatoreSelezionato.Nome}" Margin="0 7"/>
+						<TextBlock Text="{x:Static lng:Resources.FullName}" Margin="0 7"/>
+						<TextBox Text="{Binding AllenatoreSelezionato.NomeCompleto}" Margin="0 7"/>
+					<StackPanel Orientation="Horizontal">
+						<TextBlock Text="{x:Static lng:Resources.ExPlayer}" Margin="0 7 21 7" />
+						<CheckBox IsChecked="{Binding AllenatoreSelezionato.exGiocatore}" />
+					</StackPanel>
+
 					<Expander HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Grid.Row="0" Grid.Column="1"
 						  Margin="21 0"
 						  >
 					<Expander.Header>
 						<TextBlock Text="{x:Static lng:Resources.Texts}" />
 					</Expander.Header>
-				<ItemsControl ItemsSource="{Binding Allenatori}">
+				<ItemsControl ItemsSource="{Binding AllenatoreSelezionato.Testi}">
 						<ItemsControl.ItemTemplate>
 							<DataTemplate>
-								<TextBox Text="{Binding Nome}" TextWrapping="Wrap" />
+								<TextBox Text="{Binding}" TextWrapping="Wrap" />
 							</DataTemplate>
 						</ItemsControl.ItemTemplate>
 					</ItemsControl>
 				</Expander>
 
+					<StackPanel Orientation="Vertical" Margin="21 0">
+						<Button Command="{Binding EsportaAllenatoreCommand}" HorizontalAlignment="Stretch" Margin="7">
+							<StackPanel Orientation="Horizontal">
+								<TextBlock Text="{x:Static lng:Resources.ExportCoachToDBE}" />
+								<TextBlock Margin="7 0 0 0" Text="{Binding NomeFileDBE}" />
+							</StackPanel>
+						</Button>
+
+						<TextBlock Text="{x:Static lng:Resources.ImportCoachFromDBE}" Margin="7"/>
+
+						<ComboBox ItemsSource="{Binding ElencoFileDBEValidi}"
+											  SelectedValue="{Binding NomeFileDBE}"
+											  HorizontalAlignment="Stretch" Margin="7" />
+
+
+						<Button Command="{Binding ImportaAllenatoreCommand}" HorizontalAlignment="Stretch" Margin="7" HorizontalContentAlignment="Center">
+							<TextBlock Text="{x:Static lng:Resources.Confirm}" />
+						</Button>
+
+					</StackPanel>
+					
+					
+					
 				</StackPanel>
 
 

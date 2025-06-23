@@ -250,9 +250,9 @@
 
 
 		</Grid>
-		
-	
-		
+
+
+		<Grid IsVisible="{Binding SchedaVisualizzata}">
 			<views:DettagliGiocatore 
 				
 				ZIndex="1" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" IsVisible="{Binding SchedaGiocatore}"
@@ -264,7 +264,7 @@
 				
 				ZIndex="1" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" IsVisible="{Binding SchedaAllenatore}"
 				
-				/>	
-		
+				/>
+		</Grid>
 	</Grid>
 </UserControl>

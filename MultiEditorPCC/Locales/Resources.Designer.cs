@@ -216,6 +216,15 @@ namespace MultiEditorPCC.Locales {
         /// <summary>
         ///   Cerca una stringa localizzata simile a .
         /// </summary>
+        public static string ExportCoachToDBE {
+            get {
+                return ResourceManager.GetString("ExportCoachToDBE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a .
+        /// </summary>
         public static string ExportPlayerToDBE {
             get {
                 return ResourceManager.GetString("ExportPlayerToDBE", resourceCulture);
@@ -291,6 +300,15 @@ namespace MultiEditorPCC.Locales {
         public static string IgnoreTexts {
             get {
                 return ResourceManager.GetString("IgnoreTexts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a .
+        /// </summary>
+        public static string ImportCoachFromDBE {
+            get {
+                return ResourceManager.GetString("ImportCoachFromDBE", resourceCulture);
             }
         }
         

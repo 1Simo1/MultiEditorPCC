@@ -435,4 +435,10 @@
   <data name="ExPlayer" xml:space="preserve">
     <value>Ex giocatore</value>
   </data>
+  <data name="ExportCoachToDBE" xml:space="preserve">
+    <value>Esporta allenatore nel file</value>
+  </data>
+  <data name="ImportCoachFromDBE" xml:space="preserve">
+    <value>Importa allenatore da file</value>
+  </data>
 </root>
