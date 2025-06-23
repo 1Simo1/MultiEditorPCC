@@ -302,11 +302,12 @@ public static partial class FileEditor
             offset = 5 + lna;
             a.Giocabile = Dati[offset] == 1;
             int lnca = Dati[offset + 1];
+            offset += 2;
             if (lnca > 0)
             {
-                a.NomeCompleto = Encoding.UTF8.GetString(Dati.GetRange(offset + 1, lnca).ToArray());
+                a.NomeCompleto = Encoding.UTF8.GetString(Dati.GetRange(offset, lnca).ToArray());
             }
-            offset += lnca + 2;
+            offset += lnca;
             a.exGiocatore = Dati[offset] == 1;
             int nt = Dati[offset + 1];
             offset += 2;
@@ -484,15 +485,18 @@ public static partial class FileEditor
         Dati.Add((byte)Versione);
         Dati.Add((byte)(giocatore.Id % 256));
         Dati.Add((byte)((giocatore.Id - (giocatore.Id % 256)) / 256));
-        Dati.Add((byte)giocatore.Nome.Length);
-        if (giocatore.Nome.Length > 0)
+
+        var sb = Encoding.UTF8.GetBytes(giocatore.Nome);
+        Dati.Add((byte)sb.Length);
+        if (sb.Length > 0)
         {
-            Dati.AddRange(Encoding.UTF8.GetBytes(giocatore.Nome));
+            Dati.AddRange(sb);
         }
-        Dati.Add((byte)giocatore.NomeCompleto.Length);
-        if (giocatore.NomeCompleto.Length > 0)
+        sb = Encoding.UTF8.GetBytes(giocatore.NomeCompleto);
+        Dati.Add((byte)sb.Length);
+        if (sb.Length > 0)
         {
-            Dati.AddRange(Encoding.UTF8.GetBytes(giocatore.NomeCompleto));
+            Dati.AddRange(sb);
         }
 
         int giocabile = giocatore.Giocabile ? 1 : 0;
@@ -585,18 +589,25 @@ public static partial class FileEditor
         Dati.Add((byte)Versione);
         Dati.Add((byte)(allenatore.Id % 256));
         Dati.Add((byte)((allenatore.Id - (allenatore.Id % 256)) / 256));
-        Dati.Add((byte)allenatore.Nome.Length);
-        if (allenatore.Nome.Length > 0)
+
+        var sb = Encoding.UTF8.GetBytes(allenatore.Nome);
+        Dati.Add((byte)sb.Length);
+        if (sb.Length > 0)
         {
-            Dati.AddRange(Encoding.UTF8.GetBytes(allenatore.Nome));
+            Dati.AddRange(sb);
         }
+
         int giocabile = allenatore.Giocabile ? 1 : 0;
         Dati.Add((byte)giocabile);
-        Dati.Add((byte)allenatore.NomeCompleto.Length);
-        if (allenatore.NomeCompleto.Length > 0)
+
+        sb = Encoding.UTF8.GetBytes(allenatore.NomeCompleto);
+        Dati.Add((byte)sb.Length);
+        if (sb.Length > 0)
         {
-            Dati.AddRange(Encoding.UTF8.GetBytes(allenatore.NomeCompleto));
+            Dati.AddRange(sb);
         }
+
+
         int exGiocatore = allenatore.exGiocatore ? 1 : 0;
         Dati.Add((byte)exGiocatore);
 
