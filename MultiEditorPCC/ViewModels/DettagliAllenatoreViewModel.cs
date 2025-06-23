@@ -14,6 +14,7 @@ public partial class DettagliAllenatoreViewModel : IEventSubscriber<VisualizzaDe
 {
     [Property] private String _nomeSquadra;
     [Property] private ObservableCollection<Allenatore> _allenatori;
+    [Property] private Allenatore _allenatoreSelezionato;
 
     [Property] private bool _schedaAllenatore;
 
@@ -27,6 +28,7 @@ public partial class DettagliAllenatoreViewModel : IEventSubscriber<VisualizzaDe
     {
         Allenatori = new(eventData.Squadra.Allenatori);
         NomeSquadra = eventData.Squadra.Nome;
+        AllenatoreSelezionato = Allenatori.Last();
         SchedaAllenatore = true;
     }
 

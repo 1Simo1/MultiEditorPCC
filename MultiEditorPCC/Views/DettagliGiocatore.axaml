@@ -2,7 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="1800" d:DesignHeight="1500"
+             mc:Ignorable="d" d:DesignWidth="1800" d:DesignHeight="5021"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
 			 xmlns:lng="clr-namespace:MultiEditorPCC.Locales;assembly=MultiEditorPCC"
 			 xmlns:dc="using:MultiEditorPCC.DataConverters"
@@ -12,6 +12,7 @@
 			 x:Name="SchedaDettaglioGiocatore"
 			 >
 
+
 	<UserControl.Resources>
 		<dc:NumberBoxConverter x:Key="NumberBoxConverter" />
 		<dc:PunteggioImgConverter x:Key="PunteggioImgConverter" />
@@ -19,8 +20,11 @@
 		<dc:RuoloNomeConverter x:Key="RuoloNomeConverter" />
 	</UserControl.Resources>
 
+
 	<ui:InfoBar Severity="Informational" Title="{Binding GiocatoreSelezionato.NomeCompleto}"
-					    IsClosable="False" IsEnabled="True" IsOpen="True" d:IsVisible="True" IsVisible="{Binding SchedaGiocatore}">
+					    IsClosable="False" IsEnabled="True" IsOpen="True" IsVisible="{Binding SchedaGiocatore}"
+						x:Name="InfoDettagliGiocatore"
+	 >
 		<ui:InfoBar.Content>
 			<Grid RowDefinitions="Auto,*,Auto" ColumnDefinitions="Auto,*">
 				<Button Command="{Binding ChiudiSchedaCommand}" Margin="0" Grid.Row="0" Grid.Column="0">
@@ -577,10 +581,10 @@
 									<TextBlock Margin="7 0 0 0" Text="{Binding NomeFileDBE}" />
 								</StackPanel>
 							</Button>
-								<StackPanel Orientation="Horizontal">
-									<TextBlock Text="{x:Static lng:Resources.IgnoreTexts}" VerticalAlignment="Top"/>
-									<CheckBox IsChecked="{Binding IgnoraTesti}" VerticalAlignment="Top"/>
-								</StackPanel>
+							<StackPanel Orientation="Horizontal">
+								<TextBlock Text="{x:Static lng:Resources.IgnoreTexts}" VerticalAlignment="Top"/>
+								<CheckBox IsChecked="{Binding IgnoraTesti}" VerticalAlignment="Top"/>
+							</StackPanel>
 
 
 							<TextBlock Text="{x:Static lng:Resources.ImportPlayerFromDBE}" />
@@ -588,13 +592,13 @@
 							<ComboBox ItemsSource="{Binding ElencoFileDBEValidi}"
 												  SelectedValue="{Binding NomeFileDBE}"
 												  HorizontalAlignment="Stretch" Margin="0 0 7 7" />
-							
-							
+
+
 							<Button Command="{Binding ImportaGiocatoreCommand}">
-									<TextBlock Text="{x:Static lng:Resources.Confirm}" />
+								<TextBlock Text="{x:Static lng:Resources.Confirm}" />
 							</Button>
-							
-							
+
+
 						</UniformGrid>
 
 

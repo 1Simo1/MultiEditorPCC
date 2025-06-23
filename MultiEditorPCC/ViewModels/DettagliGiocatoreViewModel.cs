@@ -107,5 +107,4 @@ public partial class DettagliGiocatoreViewModel : IEventSubscriber<VisualizzaDet
 
     }
 
-
 }

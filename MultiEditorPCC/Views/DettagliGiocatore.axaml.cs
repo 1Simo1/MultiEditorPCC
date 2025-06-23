@@ -12,8 +12,17 @@ public partial class DettagliGiocatore : UserControl
     {
 
         InitializeComponent();
-        this.DataContext = AppSvc.Services.GetService<DettagliGiocatoreViewModel>();
+        var dataContext = AppSvc.Services.GetService<DettagliGiocatoreViewModel>();
+        this.DataContext = dataContext;
 
+        if (Design.IsDesignMode)
+        {
+            dataContext.SchedaGiocatore = true;
+            Design.SetDataContext(this, dataContext);
+            //this.Height = 3021;
+            SchedaGiocatoreScrollViewer.Height = 3621;
+            InfoDettagliGiocatore.MinHeight = SchedaGiocatoreScrollViewer.Height;
+        }
     }
 
     private void NumberBox_ValueChanged(FluentAvalonia.UI.Controls.NumberBox sender, FluentAvalonia.UI.Controls.NumberBoxValueChangedEventArgs args)

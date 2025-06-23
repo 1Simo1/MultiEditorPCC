@@ -12,25 +12,34 @@
 			 x:Name="SchedaDettaglioAllenatore"
 			 >
 
-	
 	<ui:InfoBar Severity="Informational" IsIconVisible="False"
-					    IsClosable="False" IsEnabled="True" IsOpen="True"
-			IsVisible="{Binding SchedaAllenatore}"
-				>
-
-		<!--{Binding GiocatoreSelezionato.NomeCompleto}-->
-
+			    IsClosable="False" IsEnabled="True" IsOpen="True"
+				IsVisible="{Binding SchedaAllenatore}">
 		<ui:InfoBar.Content>
-			<StackPanel Orientation="Vertical">
-				<StackPanel Orientation="Horizontal">
-					<TextBlock Text="{x:Static lng:Resources.Coaches}" Margin="0 0 7 0"/>
-					<TextBlock Text="{Binding NomeSquadra}" />
+			<Grid ColumnDefinitions="Auto,*">
+				<StackPanel Orientation="Vertical" Grid.Column="0">
+					<Button Command="{Binding ChiudiSchedaCommand}" Margin="0 0 0 7" Grid.Row="0" Grid.Column="0">
+						<TextBlock Text="{x:Static lng:Resources.CloseCoachesDetails}" />
+					</Button>
+					<StackPanel Orientation="Horizontal">
+						<TextBlock Text="{x:Static lng:Resources.Coaches}" Margin="0 0 7 0"/>
+						<TextBlock Text="{Binding NomeSquadra}" />
+					</StackPanel>
+
+
+					<ListBox ItemsSource="{Binding Allenatori}"
+							 SelectedItem="{Binding AllenatoreSelezionato}"
+							 >
+						<ListBox.ItemTemplate>
+							<DataTemplate>
+								<TextBlock Text="{Binding Nome}" TextWrapping="Wrap" />
+							</DataTemplate>
+						</ListBox.ItemTemplate>
+					</ListBox>
 				</StackPanel>
-				<Grid RowDefinitions="Auto,*,Auto" ColumnDefinitions="Auto,*">
-				<Button Command="{Binding ChiudiSchedaCommand}" Margin="0" Grid.Row="0" Grid.Column="0">
-					<TextBlock Text="{x:Static lng:Resources.CloseCoachesDetails}" />
-				</Button>
-				<Expander HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Grid.Row="0" Grid.Column="1"
+
+				<StackPanel Orientation="Vertical" Grid.Column="1">
+					<Expander HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Grid.Row="0" Grid.Column="1"
 						  Margin="21 0"
 						  >
 					<Expander.Header>
@@ -39,16 +48,16 @@
 				<ItemsControl ItemsSource="{Binding Allenatori}">
 						<ItemsControl.ItemTemplate>
 							<DataTemplate>
-								<TextBox Text="{Binding}" TextWrapping="Wrap" />
+								<TextBox Text="{Binding Nome}" TextWrapping="Wrap" />
 							</DataTemplate>
 						</ItemsControl.ItemTemplate>
 					</ItemsControl>
 				</Expander>
 
-				</Grid>
-				
-			</StackPanel>
-			
+				</StackPanel>
+
+
+			</Grid>
 		</ui:InfoBar.Content>
 
 	</ui:InfoBar>

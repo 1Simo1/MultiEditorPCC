@@ -11,8 +11,14 @@ public partial class DettagliAllenatore : UserControl
     {
 
         InitializeComponent();
-        this.DataContext = AppSvc.Services.GetService<DettagliAllenatoreViewModel>();
+        var dataContext = AppSvc.Services.GetService<DettagliAllenatoreViewModel>();
+        this.DataContext = dataContext;
 
+        if (Design.IsDesignMode)
+        {
+            dataContext.SchedaAllenatore = true;
+            Design.SetDataContext(this, dataContext);
+        }
     }
 
 

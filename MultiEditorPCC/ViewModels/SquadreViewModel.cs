@@ -203,5 +203,7 @@ public partial class SquadreViewModel : IEventSubscriber<SquadraSelezionataElenc
         SquadraSelezionata.Allenatori = eventData.Allenatori;
         var d = AppSvc.Services.GetRequiredService<IDatSvc>();
         SquadraSelezionata = d.ComponiInformazioniCompleteSquadra(SquadraSelezionata);
+        SchedaAllenatore = false;
+        SchedaVisualizzata = false;
     }
 }
