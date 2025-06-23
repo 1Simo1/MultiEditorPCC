@@ -342,10 +342,10 @@
   <data name="PlayerAttributeTackling" xml:space="preserve">
     <value>Entrate</value>
   </data>
-  <data name="PlayerName" xml:space="preserve">
+  <data name="Name" xml:space="preserve">
     <value>Nome</value>
   </data>
-  <data name="PlayerFullName" xml:space="preserve">
+  <data name="FullName" xml:space="preserve">
     <value>Nome completo</value>
   </data>
   <data name="EditorFreeProjectTemplate" xml:space="preserve">
@@ -431,5 +431,8 @@
   </data>
   <data name="CloseCoachesDetails" xml:space="preserve">
     <value>Chiudi scheda allenatori</value>
+  </data>
+  <data name="ExPlayer" xml:space="preserve">
+    <value>Ex giocatore</value>
   </data>
 </root>

@@ -207,6 +207,15 @@ namespace MultiEditorPCC.Locales {
         /// <summary>
         ///   Cerca una stringa localizzata simile a .
         /// </summary>
+        public static string ExPlayer {
+            get {
+                return ResourceManager.GetString("ExPlayer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a .
+        /// </summary>
         public static string ExportPlayerToDBE {
             get {
                 return ResourceManager.GetString("ExportPlayerToDBE", resourceCulture);
@@ -219,6 +228,15 @@ namespace MultiEditorPCC.Locales {
         public static string ExportTeamToDBE {
             get {
                 return ResourceManager.GetString("ExportTeamToDBE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a .
+        /// </summary>
+        public static string FullName {
+            get {
+                return ResourceManager.GetString("FullName", resourceCulture);
             }
         }
         
@@ -300,6 +318,15 @@ namespace MultiEditorPCC.Locales {
         public static string LineUpTitlePlayerName {
             get {
                 return ResourceManager.GetString("LineUpTitlePlayerName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a .
+        /// </summary>
+        public static string Name {
+            get {
+                return ResourceManager.GetString("Name", resourceCulture);
             }
         }
         
@@ -597,24 +624,6 @@ namespace MultiEditorPCC.Locales {
         public static string PlayerFieldPositionNameMID {
             get {
                 return ResourceManager.GetString("PlayerFieldPositionNameMID", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Cerca una stringa localizzata simile a .
-        /// </summary>
-        public static string PlayerFullName {
-            get {
-                return ResourceManager.GetString("PlayerFullName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Cerca una stringa localizzata simile a .
-        /// </summary>
-        public static string PlayerName {
-            get {
-                return ResourceManager.GetString("PlayerName", resourceCulture);
             }
         }
         

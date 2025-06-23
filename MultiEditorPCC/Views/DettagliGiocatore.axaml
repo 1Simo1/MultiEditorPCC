@@ -247,9 +247,9 @@
 						<Grid Grid.Row="1" Grid.Column="1" Margin="21">
 							<Border BorderThickness="1" BorderBrush="Azure">
 								<StackPanel Orientation="Vertical" Margin="21">
-									<TextBlock Text="{x:Static lng:Resources.PlayerName}" Margin="0 7"/>
+									<TextBlock Text="{x:Static lng:Resources.Name}" Margin="0 7"/>
 									<TextBox Text="{Binding GiocatoreSelezionato.Nome}" Margin="0 7"/>
-									<TextBlock Text="{x:Static lng:Resources.PlayerFullName}" Margin="0 7"/>
+									<TextBlock Text="{x:Static lng:Resources.FullName}" Margin="0 7"/>
 									<TextBox Text="{Binding GiocatoreSelezionato.NomeCompleto}" Margin="0 7"/>
 									<StackPanel Orientation="Horizontal">
 										<TextBlock Text="{x:Static lng:Resources.ShirtNumber}"
