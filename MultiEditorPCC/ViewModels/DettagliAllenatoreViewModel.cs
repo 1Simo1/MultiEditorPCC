@@ -97,7 +97,14 @@ public partial class DettagliAllenatoreViewModel : IEventSubscriber<VisualizzaDe
         var temp = d.ImportaElementoDaFileEditor<Allenatore>(nomeFileEditor);
         temp.Id = (uint)id;
 
+        AllenatoreSelezionato = new();
         AllenatoreSelezionato = temp;
+
+        Allenatori[Allenatori.IndexOf(Allenatori.Where(a => a.Id == temp.Id).First())] = temp;
+
+
+
+
     }
 
 
