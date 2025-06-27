@@ -225,6 +225,15 @@ namespace MultiEditorPCC.Locales {
         /// <summary>
         ///   Cerca una stringa localizzata simile a .
         /// </summary>
+        public static string ExportDBToCSV {
+            get {
+                return ResourceManager.GetString("ExportDBToCSV", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a .
+        /// </summary>
         public static string ExportPlayerToDBE {
             get {
                 return ResourceManager.GetString("ExportPlayerToDBE", resourceCulture);
@@ -984,6 +993,15 @@ namespace MultiEditorPCC.Locales {
         public static string Teams {
             get {
                 return ResourceManager.GetString("Teams", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a .
+        /// </summary>
+        public static string TeamsIntoPlayersCSV {
+            get {
+                return ResourceManager.GetString("TeamsIntoPlayersCSV", resourceCulture);
             }
         }
         

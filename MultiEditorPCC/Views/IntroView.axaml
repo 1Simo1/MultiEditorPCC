@@ -122,7 +122,9 @@
 										VerticalAlignment="Stretch"
 										HorizontalAlignment="Stretch"
 										HorizontalContentAlignment="Center"
-								>Apri</Button>
+								>
+									<TextBlock Text="{x:Static lng:Resources.OpenProject}" />
+								</Button>
 							</DataTemplate>
 						</DataGridTemplateColumn>
 					</DataGrid.Columns>

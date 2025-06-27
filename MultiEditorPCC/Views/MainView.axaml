@@ -47,7 +47,7 @@
 				>
 				<ui:InfoBar.Content>
 
-
+					<StackPanel Orientation="Horizontal">
 					<StackPanel Orientation="Vertical" Margin="21 0">
 
 						<StackPanel Orientation="Horizontal" VerticalAlignment="Center">
@@ -59,16 +59,28 @@
 							<TextBlock Text="{x:Static lng:Resources.GameFolder}" />
 							<TextBlock Margin="21 0" Text="{Binding Cartella}" />
 						</StackPanel>
-						<StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,21">
+						<StackPanel Orientation="Horizontal" VerticalAlignment="Center">
 							<TextBlock Text="{x:Static lng:Resources.GameVersion}" />
 							<TextBlock Margin="21 0" Text="{Binding VersionePCC}" />
 						</StackPanel>
-
-
-
+						
+						
+						
 					</StackPanel>
 
+						<Button Command="{Binding EsportaDBSuCSVCommand}"
+								IsEnabled="{Binding !CSVop}"
+								>
+							<TextBlock Text="{x:Static lng:Resources.ExportDBToCSV}" />
+						</Button>
 
+						<StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0">
+							<TextBlock Text="{x:Static lng:Resources.TeamsIntoPlayersCSV}" Margin="7"/>
+							<CheckBox IsChecked="{Binding AssociaSquadraGiocatoreCSV}" VerticalAlignment="Top"/>
+						</StackPanel>
+						
+						
+					</StackPanel>
 
 				</ui:InfoBar.Content>
 			</ui:InfoBar>

@@ -1,9 +1,9 @@
-using System;
 using Avalonia.Controls;
 using Avalonia.Platform.Storage;
 using Microsoft.Extensions.DependencyInjection;
 using MultiEditorPCC.Lib;
 using MultiEditorPCC.ViewModels;
+using System;
 
 namespace MultiEditorPCC.Views;
 
@@ -12,9 +12,6 @@ public partial class IntroView : UserControl
     public IntroView()
     {
         InitializeComponent();
-
-
-
     }
 
     private async void Folder_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)

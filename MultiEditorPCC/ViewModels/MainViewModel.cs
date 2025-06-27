@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using MultiEditorPCC.Lib;
 using MvvmGen;
 using MvvmGen.Events;
 using MvvmGen.ViewModels;
@@ -9,10 +10,9 @@ using static MultiEditorPCC.EventiMVVM;
 namespace MultiEditorPCC.ViewModels;
 
 [ViewModel]
-public partial class MainViewModel : IEventSubscriber<ConfermatoNuovoProgettoAttivo>
+[Inject(typeof(IEventAggregator))]
+public partial class MainViewModel : IEventSubscriber<ConfermatoNuovoProgettoAttivo, RichiestaCSV>
 {
-
-
     public String nomePagina { get; set; }
 
     [Property] private ViewModelBase _pag;
@@ -25,6 +25,12 @@ public partial class MainViewModel : IEventSubscriber<ConfermatoNuovoProgettoAtt
 
     [Property] private String _testoCP;
 
+    [Property] private bool _associaSquadraGiocatoreCSV;
+
+
+    [Property] private bool _cSVop;
+
+
     private readonly String a = $@"MjAyNSBTaW1vbmUgcGV
                                    yIFBDQ2FsY2lvNEV2ZXIgaHR0
                                    cHM6Ly9wY2NhbGNpbzRldmVyLmZ
@@ -36,12 +42,11 @@ public partial class MainViewModel : IEventSubscriber<ConfermatoNuovoProgettoAtt
     partial void OnInitialize()
     {
         TestoCP = Encoding.ASCII.GetString(Convert.FromBase64String(a)).Replace("PCCV", "PCC V");
-
+        AssociaSquadraGiocatoreCSV = false;
+        CSVop = false;
 
         if (Pag == null)
         {
-
-
             nomePagina = "Intro";
             Pag = App.Services.GetRequiredService<NavSvc>().Nav(nomePagina);
         }
@@ -55,7 +60,7 @@ public partial class MainViewModel : IEventSubscriber<ConfermatoNuovoProgettoAtt
 
         Pag = App.Services.GetRequiredService<NavSvc>().Nav(Nome.ToString());
 
-        if (Pag == null) nomePagina = String.Empty;
+        if (Pag == null) return; //nomePagina = String.Empty;
 
     }
 
@@ -64,5 +69,36 @@ public partial class MainViewModel : IEventSubscriber<ConfermatoNuovoProgettoAtt
         Nome = e.Progetto.Nome;
         Cartella = e.Progetto.Cartella;
         VersionePCC = e.Progetto.VersionePCC;
+        CSVop = false;
+    }
+
+
+
+    [Command]
+    private void EsportaDBSuCSV()
+    {
+        CSVop = true;
+
+        EventAggregator.Publish<RichiestaCSV>(new(true, true));
+    }
+
+    public void OnEvent(RichiestaCSV eventData)
+    {
+        if (eventData == null || !eventData.CSV_op_attiva) return;
+
+        if (eventData.mod_exp)
+        {
+            var p = App.Services.GetRequiredService<EditorSvc>().ProgettoAttivoEditor;
+
+            if (p == null) return;
+
+            App.Services.GetRequiredService<IDatSvc>().EsportaDBEditorSuFileCSV(p, AssociaSquadraGiocatoreCSV);
+        }
+
+        CSVop = false;
+
+        EventAggregator.Publish<RichiestaCSV>(new(false, true));
+
+        return;
     }
 }

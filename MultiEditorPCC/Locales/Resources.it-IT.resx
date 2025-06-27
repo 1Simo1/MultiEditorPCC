@@ -441,4 +441,10 @@
   <data name="ImportCoachFromDBE" xml:space="preserve">
     <value>Importa allenatore da file</value>
   </data>
+  <data name="ExportDBToCSV" xml:space="preserve">
+    <value>Esporta Database su file CSV</value>
+  </data>
+  <data name="TeamsIntoPlayersCSV" xml:space="preserve">
+    <value>Memorizza squadra nel CSV dei giocatori</value>
+  </data>
 </root>

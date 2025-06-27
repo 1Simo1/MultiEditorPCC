@@ -52,6 +52,11 @@ public interface IDatSvc
 
     T ImportaElementoDaFileEditor<T>(String PathDBE) where T : class;
 
+
+    Task<bool> EsportaDBEditorSuFileCSV(ProgettoEditorPCC progettoEditor, bool aggiungiSquadraGiocatore = false);
+
+    T ImportaDBEditorDaFileCSV<T>(String PathCSV) where T : class;
+
 }
 
 public class DatSvc : IDatSvc
@@ -180,7 +185,7 @@ public class DatSvc : IDatSvc
         }
         else //versionePCC 6 o precedente (esamino un archivio NON FDI)
         {
-
+            //TODO
         }
 
 
@@ -326,5 +331,71 @@ public class DatSvc : IDatSvc
         return null;
 
 
+    }
+
+    public async Task<bool> EsportaDBEditorSuFileCSV(ProgettoEditorPCC progettoEditor, bool aggiungiSquadraGiocatore = false)
+    {
+        try
+        {
+            var a = AppSvc.Services.GetRequiredService<ArchivioSvc>();
+
+            String percorsoCSV = $"{AppDomain.CurrentDomain.BaseDirectory}files{Path.DirectorySeparatorChar}";
+            percorsoCSV += $"{progettoEditor.Nome}{Path.DirectorySeparatorChar}";
+
+            DatabaseCSV.ScriviCSVSquadre(a.DatiProgettoAttivo.Squadre);
+            File.WriteAllText($"{percorsoCSV}Squadre.csv", DatabaseCSV.contenutoCSV);
+            DatabaseCSV.ScriviCSVAllenatori(a.DatiProgettoAttivo.Allenatori);
+            File.WriteAllText($"{percorsoCSV}Allenatori.csv", DatabaseCSV.contenutoCSV);
+            DatabaseCSV.ScriviCSVStadi(a.DatiProgettoAttivo.Stadi);
+            File.WriteAllText($"{percorsoCSV}Stadi.csv", DatabaseCSV.contenutoCSV);
+
+            var elencoGiocatori = a.DatiProgettoAttivo.Giocatori;
+
+
+            var elencoSquadre = a.DatiProgettoAttivo.Squadre;
+
+            foreach (var gc in elencoGiocatori)
+            {
+                int id = gc.Id;
+
+                a.DatiProgettoAttivo.Giocatori
+                    [a.DatiProgettoAttivo.Giocatori.IndexOf(
+                        a.DatiProgettoAttivo.Giocatori.Find(g => g.Id == id))].Testi.Clear();
+
+
+                if (aggiungiSquadraGiocatore)
+                {
+
+                    var sq = elencoSquadre.Where(sq => sq.Giocatori.Find(gc => gc.Id == id) != null).FirstOrDefault();
+                    String Squadra = String.Empty;
+                    if (sq != null) Squadra = sq.Nome;
+
+                    a.DatiProgettoAttivo.Giocatori
+                        [a.DatiProgettoAttivo.Giocatori.IndexOf(
+                            a.DatiProgettoAttivo.Giocatori.Find(g => g.Id == id))].Testi.Add(Squadra);
+                }
+
+            }
+
+
+            DatabaseCSV.ScriviCSVGiocatori(a.DatiProgettoAttivo.Giocatori);
+            File.WriteAllText($"{percorsoCSV}Giocatori.csv", DatabaseCSV.contenutoCSV);
+
+            a.DatiProgettoAttivo.Giocatori = elencoGiocatori;
+
+
+        }
+        catch (Exception ex)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    public T ImportaDBEditorDaFileCSV<T>(string PathCSV) where T : class
+    {
+        //TODO Implementare import tipo db da file CSV
+        throw new NotImplementedException();
     }
 }

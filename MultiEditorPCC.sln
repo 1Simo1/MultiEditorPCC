@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiEditorPCC.Desktop", "M
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConfrontaByteFileCartella", "Utils\ConfrontaByteFileCartella\ConfrontaByteFileCartella.csproj", "{E0505961-7623-2E67-A98F-B2FA58E41150}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsonCSVDataUtils", "Utils\JsonCSVDataUtils\JsonCSVDataUtils.csproj", "{581E2648-55DA-9BED-BFF2-EB6A691383DB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,10 @@ Global
 		{E0505961-7623-2E67-A98F-B2FA58E41150}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E0505961-7623-2E67-A98F-B2FA58E41150}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E0505961-7623-2E67-A98F-B2FA58E41150}.Release|Any CPU.Build.0 = Release|Any CPU
+		{581E2648-55DA-9BED-BFF2-EB6A691383DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{581E2648-55DA-9BED-BFF2-EB6A691383DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{581E2648-55DA-9BED-BFF2-EB6A691383DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{581E2648-55DA-9BED-BFF2-EB6A691383DB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -66,6 +72,7 @@ Global
 		{5510251F-DCD8-7690-1B44-E432C132B2E9} = {6C83A596-D32D-B35F-00DD-F0C99B673980}
 		{D42ABE6B-71E0-A93A-C810-944FF22687BD} = {6C83A596-D32D-B35F-00DD-F0C99B673980}
 		{E0505961-7623-2E67-A98F-B2FA58E41150} = {946A42EE-47D7-427C-B150-4715E41A06E5}
+		{581E2648-55DA-9BED-BFF2-EB6A691383DB} = {946A42EE-47D7-427C-B150-4715E41A06E5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8BAD797F-6E6A-4C3E-8DB2-95D6867A7AD5}

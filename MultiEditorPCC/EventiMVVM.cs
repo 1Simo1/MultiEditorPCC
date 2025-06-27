@@ -15,4 +15,7 @@ public class EventiMVVM
     public record ChiusuraDialogDettagliGiocatoreSelezionato(Giocatore Giocatore);
     public record ChiusuraDialogDettagliAllenatoriSquadraSelezionata(List<Allenatore> Allenatori);
 
+    public record RichiestaCSV(bool CSV_op_attiva, bool mod_exp);
+
+
 }
