@@ -176,12 +176,14 @@ public partial class SquadreViewModel : IEventSubscriber<SquadraSelezionataElenc
     private void EsportaSquadra()
     {
         if (SquadraSelezionata == null) return;
+        //TODO EsportaSquadra
     }
 
     [Command]
     private void ImportaSquadra()
     {
         if (NomeFileSquadraDBE == null) return;
+        //TODO ImportaSquadra
     }
 
 
