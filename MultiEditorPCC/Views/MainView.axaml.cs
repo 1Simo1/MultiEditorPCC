@@ -21,12 +21,18 @@ public partial class MainView : UserControl
     {
         if (MenuOptions.Orientation == Avalonia.Layout.Orientation.Vertical)
         {
-            SideMenu.SetValue(DockPanel.DockProperty, Dock.Top);
+            SideMenu.SetValue(Grid.RowProperty, 1);
+            SideMenu.SetValue(Grid.ColumnSpanProperty, 2);
+            Contenuto.SetValue(Grid.ColumnProperty, 0);
+            Contenuto.SetValue(Grid.ColumnSpanProperty, 2);
             MenuOptions.Orientation = Avalonia.Layout.Orientation.Horizontal;
             return;
         }
 
-        SideMenu.SetValue(DockPanel.DockProperty, Dock.Left);
+        SideMenu.SetValue(Grid.RowProperty, 2);
+        SideMenu.SetValue(Grid.ColumnSpanProperty, 1);
+        Contenuto.SetValue(Grid.ColumnProperty, 1);
+        Contenuto.SetValue(Grid.ColumnSpanProperty, 1);
         MenuOptions.Orientation = Avalonia.Layout.Orientation.Vertical;
 
     }

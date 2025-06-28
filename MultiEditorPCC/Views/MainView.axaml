@@ -13,41 +13,43 @@
 			 xmlns:lng="clr-namespace:MultiEditorPCC.Locales;assembly=MultiEditorPCC"
 			 >
 
-<UserControl.Styles>
-	<Style Selector="Button">
-		<Setter Property="Margin" Value="3 21" />
-	</Style>
-<Style Selector="ui|SymbolIcon">
-	<Setter Property="Margin" Value="3 0" />
-</Style>
-</UserControl.Styles>
+	<UserControl.Styles>
+		<Style Selector="Button">
+			<Setter Property="Margin" Value="3 21" />
+		</Style>
+		<Style Selector="ui|SymbolIcon">
+			<Setter Property="Margin" Value="3 0" />
+		</Style>
+	</UserControl.Styles>
 
-	<DockPanel>
 
-		<Grid ColumnDefinitions="Auto,*,Auto" DockPanel.Dock="Top" Margin="21">
-			<StackPanel Orientation="Vertical" Grid.Column="0">
-				<Image Source="avares://MultiEditorPCC/Assets/MultiEditorPCC.png" Width="64" Height="64" RenderTransformOrigin=".5,.5"/>
-				<TextBlock TextAlignment="Center" FontSize="21">
-					Multi PCC Editor
-				</TextBlock>
+	<Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,*,Auto" Margin="21">
 
-				<UniformGrid Columns="2">
-					<Button Click="Toggle_Theme" HorizontalAlignment="Center" Margin="0 21">
-						<ui:SymbolIcon Symbol="DarkTheme" />
-					</Button>
+		<StackPanel Orientation="Vertical" Grid.Column="0" Grid.Row="0">
+			<Image Source="avares://MultiEditorPCC/Assets/MultiEditorPCC.png" Width="64" Height="64" RenderTransformOrigin=".5,.5"/>
+			<TextBlock TextAlignment="Center" FontSize="21">
+				Multi PCC Editor
+			</TextBlock>
 
-					<Button Click="Switch_Menu_Orientation" HorizontalAlignment="Center" Margin="0 21">
-						<ui:SymbolIcon Symbol="Switch" />
-					</Button>
-				</UniformGrid>
-			</StackPanel>
-			<ui:InfoBar HorizontalAlignment="Stretch" Grid.Column="1" Margin="21 0"
-				IsOpen="True" IsIconVisible="True" IsClosable="False" Severity="Informational"
+			<UniformGrid Columns="2">
+				<Button Click="Toggle_Theme" HorizontalAlignment="Center" Margin="0 21">
+					<ui:SymbolIcon Symbol="DarkTheme" />
+				</Button>
+
+				<Button Click="Switch_Menu_Orientation" HorizontalAlignment="Center" Margin="0 21">
+					<ui:SymbolIcon Symbol="Switch" />
+				</Button>
+			</UniformGrid>
+		</StackPanel>
+
+		<ui:InfoBar HorizontalAlignment="Stretch"
+					Grid.Column="1" Grid.Row="0" Margin="21 0"
+				    IsOpen="True" IsIconVisible="True" IsClosable="False" Severity="Informational"
 					Title="{x:Static lng:Resources.ProjectInfoTitle}"
 				>
-				<ui:InfoBar.Content>
+			<ui:InfoBar.Content>
 
-					<StackPanel Orientation="Horizontal">
+				<StackPanel Orientation="Horizontal">
 					<StackPanel Orientation="Vertical" Margin="21 0">
 
 						<StackPanel Orientation="Horizontal" VerticalAlignment="Center">
@@ -63,151 +65,152 @@
 							<TextBlock Text="{x:Static lng:Resources.GameVersion}" />
 							<TextBlock Margin="21 0" Text="{Binding VersionePCC}" />
 						</StackPanel>
-						
-						
-						
+
+
+
 					</StackPanel>
 
-						<Button Command="{Binding EsportaDBSuCSVCommand}"
-								IsEnabled="{Binding !CSVop}"
+					<Button Command="{Binding EsportaDBSuCSVCommand}"
+							IsEnabled="{Binding !CSVop}"
 								>
-							<TextBlock Text="{x:Static lng:Resources.ExportDBToCSV}" />
-						</Button>
+						<TextBlock Text="{x:Static lng:Resources.ExportDBToCSV}" />
+					</Button>
 
-						<StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0">
-							<TextBlock Text="{x:Static lng:Resources.WriteTeamFullTacticsCSV}" Margin="7"/>
-							<CheckBox IsChecked="{Binding ScriviTatticaCompletaSquadraGiocatoreCSV}" VerticalAlignment="Top"/>
-						</StackPanel>
-						
-						
+					<StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0">
+						<TextBlock Text="{x:Static lng:Resources.WriteTeamFullTacticsCSV}" Margin="7"/>
+						<CheckBox IsChecked="{Binding ScriviTatticaCompletaSquadraGiocatoreCSV}" VerticalAlignment="Top"/>
 					</StackPanel>
 
-				</ui:InfoBar.Content>
-			</ui:InfoBar>
 
-		</Grid>
-		
-			<ui:InfoBar IsOpen="True" x:Name="SideMenu" DockPanel.Dock="Left"
+				</StackPanel>
+
+			</ui:InfoBar.Content>
+		</ui:InfoBar>
+
+
+		<ui:InfoBar IsOpen="True" x:Name="SideMenu" DockPanel.Dock="Left"
+					Grid.Column="0" Grid.Row="2"
 						IsIconVisible="False" IsClosable="False" Severity="Informational">
-				<ui:InfoBar.Content>
-					<StackPanel Orientation="Vertical" x:Name="MenuOptions">
+			<ui:InfoBar.Content>
+				<StackPanel Orientation="Vertical" x:Name="MenuOptions">
 
 
-						<Button Command="{Binding NavCommand}"
-										CommandParameter="Intro"
-										HorizontalAlignment="Stretch"
-										HorizontalContentAlignment="Left"
-						>
-							<StackPanel Orientation="Horizontal">
-								<ui:SymbolIcon Symbol="HomeFilled" />
-								<TextBlock Text="Pagina iniziale" />
-							</StackPanel>
-
-						</Button>
-
-
-						<Button Command="{Binding NavCommand}"
-											CommandParameter="Squadre"
-											HorizontalAlignment="Stretch"
-											HorizontalContentAlignment="Left"
-						>
-							<StackPanel Orientation="Horizontal">
-								<ui:SymbolIcon Symbol="ClipboardFilled" />
-								<TextBlock Text="{x:Static lng:Resources.Teams
-										   }" />
-							</StackPanel>
-
-						</Button>
-
-						<Button Command="{Binding NavCommand}"
-											CommandParameter="Giocatori"
-											HorizontalAlignment="Stretch"
-											HorizontalContentAlignment="Left"
-						>
-							<StackPanel Orientation="Horizontal">
-								<ui:SymbolIcon Symbol="PeopleFilled" />
-								<TextBlock Text="Giocatori" />
-							</StackPanel>
-
-						</Button>
-
-						<Button Command="{Binding NavCommand}"
-													CommandParameter="Allenatori"
-													HorizontalAlignment="Stretch"
-													HorizontalContentAlignment="Left"
-						>
-							<StackPanel Orientation="Horizontal">
-								<ui:SymbolIcon Symbol="Manage" />
-								<TextBlock Text="Allenatori" />
-							</StackPanel>
-
-						</Button>
-
-						<Button Command="{Binding NavCommand}"
-									CommandParameter="Archivi"
+					<Button Command="{Binding NavCommand}"
+									CommandParameter="Intro"
 									HorizontalAlignment="Stretch"
 									HorizontalContentAlignment="Left"
 						>
-							<StackPanel Orientation="Horizontal">
-								<ui:SymbolIcon Symbol="FolderFilled" />
-								<TextBlock Text="Gestione Archivi" />
-							</StackPanel>
+						<StackPanel Orientation="Horizontal">
+							<ui:SymbolIcon Symbol="HomeFilled" />
+							<TextBlock Text="Pagina iniziale" />
+						</StackPanel>
 
-						</Button>
+					</Button>
 
-						<Button Command="{Binding NavCommand}"
-				CommandParameter="Casuale"
-				HorizontalAlignment="Stretch"
-				HorizontalContentAlignment="Left"
+
+					<Button Command="{Binding NavCommand}"
+										CommandParameter="Squadre"
+										HorizontalAlignment="Stretch"
+										HorizontalContentAlignment="Left"
 						>
-							<StackPanel Orientation="Horizontal">
-								<ui:SymbolIcon Symbol="RadioButtonFilled" />
-								<TextBlock Text="Modalità Casuale" />
-							</StackPanel>
+						<StackPanel Orientation="Horizontal">
+							<ui:SymbolIcon Symbol="ClipboardFilled" />
+							<TextBlock Text="{x:Static lng:Resources.Teams
+										   }" />
+						</StackPanel>
 
-						</Button>
+					</Button>
 
-						<Button Command="{Binding NavCommand}"
-				CommandParameter="Download"
-				HorizontalAlignment="Stretch"
-				HorizontalContentAlignment="Left"
+					<Button Command="{Binding NavCommand}"
+										CommandParameter="Giocatori"
+										HorizontalAlignment="Stretch"
+										HorizontalContentAlignment="Left"
 						>
-							<StackPanel Orientation="Horizontal">
-								<ui:SymbolIcon Symbol="Download" />
-								<TextBlock Text="Scarica dati esterni" />
-							</StackPanel>
+						<StackPanel Orientation="Horizontal">
+							<ui:SymbolIcon Symbol="PeopleFilled" />
+							<TextBlock Text="Giocatori" />
+						</StackPanel>
 
-						</Button>
+					</Button>
 
-						<Button Command="{Binding NavCommand}"
-				CommandParameter="Salva"
-				HorizontalAlignment="Stretch"
-				HorizontalContentAlignment="Left"
+					<Button Command="{Binding NavCommand}"
+												CommandParameter="Allenatori"
+												HorizontalAlignment="Stretch"
+												HorizontalContentAlignment="Left"
 						>
-							<StackPanel Orientation="Horizontal">
-								<ui:SymbolIcon Symbol="SaveFilled" />
-								<TextBlock Text="Salva" />
-							</StackPanel>
+						<StackPanel Orientation="Horizontal">
+							<ui:SymbolIcon Symbol="Manage" />
+							<TextBlock Text="Allenatori" />
+						</StackPanel>
 
-						</Button>
+					</Button>
+
+					<Button Command="{Binding NavCommand}"
+								CommandParameter="Archivi"
+								HorizontalAlignment="Stretch"
+								HorizontalContentAlignment="Left"
+						>
+						<StackPanel Orientation="Horizontal">
+							<ui:SymbolIcon Symbol="FolderFilled" />
+							<TextBlock Text="Gestione Archivi" />
+						</StackPanel>
+
+					</Button>
+
+					<Button Command="{Binding NavCommand}"
+			CommandParameter="Casuale"
+			HorizontalAlignment="Stretch"
+			HorizontalContentAlignment="Left"
+						>
+						<StackPanel Orientation="Horizontal">
+							<ui:SymbolIcon Symbol="RadioButtonFilled" />
+							<TextBlock Text="Modalità Casuale" />
+						</StackPanel>
+
+					</Button>
+
+					<Button Command="{Binding NavCommand}"
+			CommandParameter="Download"
+			HorizontalAlignment="Stretch"
+			HorizontalContentAlignment="Left"
+						>
+						<StackPanel Orientation="Horizontal">
+							<ui:SymbolIcon Symbol="Download" />
+							<TextBlock Text="Scarica dati esterni" />
+						</StackPanel>
+
+					</Button>
+
+					<Button Command="{Binding NavCommand}"
+			CommandParameter="Salva"
+			HorizontalAlignment="Stretch"
+			HorizontalContentAlignment="Left"
+						>
+						<StackPanel Orientation="Horizontal">
+							<ui:SymbolIcon Symbol="SaveFilled" />
+							<TextBlock Text="Salva" />
+						</StackPanel>
+
+					</Button>
 
 
 
 
-					</StackPanel>
-				</ui:InfoBar.Content>
-			</ui:InfoBar>
+				</StackPanel>
+			</ui:InfoBar.Content>
+		</ui:InfoBar>
+
+		<ContentControl Content="{Binding Pag}" Margin="7" Grid.Row="2" Grid.Column="1"
+						Background="{DynamicResource ThemeBackgroundBrush}"
+						x:Name="Contenuto"
+						/>
 
 
-		<TextBox Text="{Binding TestoCP}" DockPanel.Dock="Bottom" Margin="0 0 21 21" IsReadOnly="True"/>		
+		<TextBox Text="{Binding TestoCP}" DockPanel.Dock="Bottom" Margin="0 0 21 21"
+				 Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
+				 
+				 IsReadOnly="True"/>
 
-		<ContentControl Content="{Binding Pag}" Margin="21"
-						Background="{DynamicResource ThemeBackgroundBrush}"/>
-		
-	
+	</Grid>
 
-
-
-	</DockPanel>
-		
 </UserControl>

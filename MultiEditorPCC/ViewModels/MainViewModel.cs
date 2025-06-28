@@ -63,6 +63,8 @@ public partial class MainViewModel : IEventSubscriber<ConfermatoNuovoProgettoAtt
 
         if (Pag == null) return; //nomePagina = String.Empty;
 
+        nomePagina = Nome.ToString();
+
     }
 
     public void OnEvent(ConfermatoNuovoProgettoAttivo e)
