@@ -75,8 +75,8 @@
 						</Button>
 
 						<StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0">
-							<TextBlock Text="{x:Static lng:Resources.TeamsIntoPlayersCSV}" Margin="7"/>
-							<CheckBox IsChecked="{Binding AssociaSquadraGiocatoreCSV}" VerticalAlignment="Top"/>
+							<TextBlock Text="{x:Static lng:Resources.WriteTeamFullTacticsCSV}" Margin="7"/>
+							<CheckBox IsChecked="{Binding ScriviTatticaCompletaSquadraGiocatoreCSV}" VerticalAlignment="Top"/>
 						</StackPanel>
 						
 						

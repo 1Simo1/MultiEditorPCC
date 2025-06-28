@@ -438,4 +438,7 @@
   <data name="TeamsIntoPlayersCSV" xml:space="preserve">
     <value />
   </data>
+  <data name="WriteTeamFullTacticsCSV" xml:space="preserve">
+    <value />
+  </data>
 </root>

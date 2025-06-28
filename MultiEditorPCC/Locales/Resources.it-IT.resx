@@ -447,4 +447,7 @@
   <data name="TeamsIntoPlayersCSV" xml:space="preserve">
     <value>Memorizza squadra nel CSV dei giocatori</value>
   </data>
+  <data name="WriteTeamFullTacticsCSV" xml:space="preserve">
+    <value>Scrivi anche la tattica completa della squadra</value>
+  </data>
 </root>

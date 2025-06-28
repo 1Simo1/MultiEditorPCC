@@ -53,8 +53,13 @@ public interface IDatSvc
     T ImportaElementoDaFileEditor<T>(String PathDBE) where T : class;
 
 
-    Task<bool> EsportaDBEditorSuFileCSV(ProgettoEditorPCC progettoEditor, bool aggiungiSquadraGiocatore = false);
-
+    Task<bool> EsportaDBEditorSuFileCSV(ProgettoEditorPCC progettoEditor,
+                                        bool aggiungiTatticaCompletaSquadra = true,
+                                        List<Squadra> squadre = null,
+                                        List<Giocatore> giocatori = null,
+                                        List<Allenatore> allenatori = null,
+                                        List<Stadio> stadi = null
+                                       );
     T ImportaDBEditorDaFileCSV<T>(String PathCSV) where T : class;
 
 }
@@ -333,7 +338,13 @@ public class DatSvc : IDatSvc
 
     }
 
-    public async Task<bool> EsportaDBEditorSuFileCSV(ProgettoEditorPCC progettoEditor, bool aggiungiSquadraGiocatore = false)
+    public async Task<bool> EsportaDBEditorSuFileCSV(ProgettoEditorPCC progettoEditor,
+                                                    bool aggiungiTatticaCompletaSquadra = false,
+                                                    List<Squadra> squadre = null,
+                                                    List<Giocatore> giocatori = null,
+                                                    List<Allenatore> allenatori = null,
+                                                    List<Stadio> stadi = null
+                                                    )
     {
         try
         {
@@ -342,46 +353,68 @@ public class DatSvc : IDatSvc
             String percorsoCSV = $"{AppDomain.CurrentDomain.BaseDirectory}files{Path.DirectorySeparatorChar}";
             percorsoCSV += $"{progettoEditor.Nome}{Path.DirectorySeparatorChar}";
 
-            DatabaseCSV.ScriviCSVSquadre(a.DatiProgettoAttivo.Squadre);
+            DatabaseCSV.scriviTatticaCompleta = aggiungiTatticaCompletaSquadra;
+
+            if (squadre == null || !squadre.Any())
+            {
+                DatabaseCSV.ScriviCSVSquadre(a.DatiProgettoAttivo.Squadre);
+            }
+            else DatabaseCSV.ScriviCSVSquadre(squadre);
+
             File.WriteAllText($"{percorsoCSV}Squadre.csv", DatabaseCSV.contenutoCSV);
-            DatabaseCSV.ScriviCSVAllenatori(a.DatiProgettoAttivo.Allenatori);
+
+            if (allenatori == null || !allenatori.Any())
+            {
+                DatabaseCSV.ScriviCSVAllenatori(a.DatiProgettoAttivo.Allenatori);
+            }
+            else DatabaseCSV.ScriviCSVAllenatori(allenatori);
+
             File.WriteAllText($"{percorsoCSV}Allenatori.csv", DatabaseCSV.contenutoCSV);
-            DatabaseCSV.ScriviCSVStadi(a.DatiProgettoAttivo.Stadi);
+
+            if (stadi == null || !stadi.Any())
+            {
+                DatabaseCSV.ScriviCSVStadi(a.DatiProgettoAttivo.Stadi);
+            }
+            else DatabaseCSV.ScriviCSVStadi(stadi);
+
             File.WriteAllText($"{percorsoCSV}Stadi.csv", DatabaseCSV.contenutoCSV);
 
-            var elencoGiocatori = a.DatiProgettoAttivo.Giocatori;
 
+            List<Giocatore> elencoGiocatori = new();
 
-            var elencoSquadre = a.DatiProgettoAttivo.Squadre;
+            if (giocatori == null || !giocatori.Any())
+            {
+                elencoGiocatori = a.DatiProgettoAttivo.Giocatori;
+            }
+            else elencoGiocatori = giocatori;
+
+            List<Squadra> elencoSquadre = new();
+
+            if (squadre == null || !squadre.Any())
+            {
+                elencoSquadre = a.DatiProgettoAttivo.Squadre;
+            }
+            else elencoSquadre = squadre;
+
 
             foreach (var gc in elencoGiocatori)
             {
                 int id = gc.Id;
 
-                a.DatiProgettoAttivo.Giocatori
-                    [a.DatiProgettoAttivo.Giocatori.IndexOf(
-                        a.DatiProgettoAttivo.Giocatori.Find(g => g.Id == id))].Testi.Clear();
+                var sq = elencoSquadre.Where(sq => sq.Giocatori.Find(gc => gc.Id == id) != null).FirstOrDefault();
+                String Squadra = String.Empty;
+                if (sq != null) Squadra = sq.Nome;
 
+                var nSquadra = sq != null ? sq.Id : 0;
 
-                if (aggiungiSquadraGiocatore)
-                {
-
-                    var sq = elencoSquadre.Where(sq => sq.Giocatori.Find(gc => gc.Id == id) != null).FirstOrDefault();
-                    String Squadra = String.Empty;
-                    if (sq != null) Squadra = sq.Nome;
-
-                    a.DatiProgettoAttivo.Giocatori
-                        [a.DatiProgettoAttivo.Giocatori.IndexOf(
-                            a.DatiProgettoAttivo.Giocatori.Find(g => g.Id == id))].Testi.Add(Squadra);
-                }
-
+                DatabaseCSV.dettagliSquadreGiocatore.Add(id, new((int)nSquadra, Squadra));
             }
 
 
-            DatabaseCSV.ScriviCSVGiocatori(a.DatiProgettoAttivo.Giocatori);
+            DatabaseCSV.ScriviCSVGiocatori(elencoGiocatori);
             File.WriteAllText($"{percorsoCSV}Giocatori.csv", DatabaseCSV.contenutoCSV);
 
-            a.DatiProgettoAttivo.Giocatori = elencoGiocatori;
+            if (giocatori == null || !giocatori.Any()) a.DatiProgettoAttivo.Giocatori = elencoGiocatori;
 
 
         }

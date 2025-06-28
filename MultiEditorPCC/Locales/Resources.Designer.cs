@@ -1049,5 +1049,14 @@ namespace MultiEditorPCC.Locales {
                 return ResourceManager.GetString("WriteNewProjectDB", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a .
+        /// </summary>
+        public static string WriteTeamFullTacticsCSV {
+            get {
+                return ResourceManager.GetString("WriteTeamFullTacticsCSV", resourceCulture);
+            }
+        }
     }
 }

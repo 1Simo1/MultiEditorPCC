@@ -29,8 +29,6 @@ public class MultiEditorPCCDbContext : Microsoft.EntityFrameworkCore.DbContext
     {
         modelBuilder.Entity<CartellaGioco>().HasKey(c => c.Path);
         modelBuilder.Entity<PunteggioGiocatore>().HasKey(p => p.Tipo);
-
-
         base.OnModelCreating(modelBuilder);
     }
 

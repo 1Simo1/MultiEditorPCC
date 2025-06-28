@@ -16,7 +16,6 @@ public class Giocatore
     public bool AltriDati { get; set; }
 
     public bool AttivoInRosa { get; set; } = true;
-
     public List<Ruolo> Ruoli { get; set; }
 
     public Paese Nazione { get; set; }
@@ -75,6 +74,7 @@ public class Giocatore
 
         return p;
     }
+
 }
 
 public enum ColorePelle

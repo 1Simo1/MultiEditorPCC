@@ -5,13 +5,14 @@ using MvvmGen.Events;
 using MvvmGen.ViewModels;
 using System;
 using System.Text;
+using System.Threading.Tasks;
 using static MultiEditorPCC.EventiMVVM;
 
 namespace MultiEditorPCC.ViewModels;
 
 [ViewModel]
 [Inject(typeof(IEventAggregator))]
-public partial class MainViewModel : IEventSubscriber<ConfermatoNuovoProgettoAttivo, RichiestaCSV>
+public partial class MainViewModel : IEventSubscriber<ConfermatoNuovoProgettoAttivo>
 {
     public String nomePagina { get; set; }
 
@@ -25,7 +26,7 @@ public partial class MainViewModel : IEventSubscriber<ConfermatoNuovoProgettoAtt
 
     [Property] private String _testoCP;
 
-    [Property] private bool _associaSquadraGiocatoreCSV;
+    [Property] private bool _scriviTatticaCompletaSquadraGiocatoreCSV;
 
 
     [Property] private bool _cSVop;
@@ -42,7 +43,7 @@ public partial class MainViewModel : IEventSubscriber<ConfermatoNuovoProgettoAtt
     partial void OnInitialize()
     {
         TestoCP = Encoding.ASCII.GetString(Convert.FromBase64String(a)).Replace("PCCV", "PCC V");
-        AssociaSquadraGiocatoreCSV = false;
+        ScriviTatticaCompletaSquadraGiocatoreCSV = false;
         CSVop = false;
 
         if (Pag == null)
@@ -75,30 +76,20 @@ public partial class MainViewModel : IEventSubscriber<ConfermatoNuovoProgettoAtt
 
 
     [Command]
-    private void EsportaDBSuCSV()
+    private async void EsportaDBSuCSV()
     {
         CSVop = true;
 
-        EventAggregator.Publish<RichiestaCSV>(new(true, true));
-    }
+        var p = App.Services.GetRequiredService<EditorSvc>().ProgettoAttivoEditor;
 
-    public void OnEvent(RichiestaCSV eventData)
-    {
-        if (eventData == null || !eventData.CSV_op_attiva) return;
+        if (p == null) return;
 
-        if (eventData.mod_exp)
-        {
-            var p = App.Services.GetRequiredService<EditorSvc>().ProgettoAttivoEditor;
-
-            if (p == null) return;
-
-            App.Services.GetRequiredService<IDatSvc>().EsportaDBEditorSuFileCSV(p, AssociaSquadraGiocatoreCSV);
-        }
+        var x = await Task.Run(() => App.Services.GetRequiredService<IDatSvc>().EsportaDBEditorSuFileCSV(p, ScriviTatticaCompletaSquadraGiocatoreCSV));
 
         CSVop = false;
 
-        EventAggregator.Publish<RichiestaCSV>(new(false, true));
-
-        return;
+        //EventAggregator.Publish<RichiestaCSV>(new(true, true));
     }
+
+
 }

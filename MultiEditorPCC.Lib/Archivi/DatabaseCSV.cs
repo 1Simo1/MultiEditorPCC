@@ -29,6 +29,10 @@ public static partial class DatabaseCSV
         AllowComments = true
     };
 
+    public static bool scriviTatticaCompleta { get; set; } = false;
+
+    public static Dictionary<int, Tuple<int, String>> dettagliSquadreGiocatore { get; set; } = new();
+
     public static List<Squadra> LeggiSquadre()
     {
         List<Squadra> squadre = new();
@@ -125,8 +129,6 @@ public static partial class DatabaseCSV
                 csv.Context.RegisterClassMap<GiocatoreMap>();
                 csv.WriteRecords(giocatori);
                 streamWriter.Flush();
-                //String avviso = "";//"#Le colonne indicate con un * accanto al nome, non vengono lette dall'editor, ma possono aggiungere informazioni utili a chi legge questo file";
-
                 contenutoCSV = $"{Encoding.UTF8.GetString(memoryStream.ToArray())}";
             }
             catch (Exception e)
@@ -145,6 +147,7 @@ public static partial class DatabaseCSV
         {
             try
             {
+                csv.Context.RegisterClassMap<AllenatoreMap>();
                 csv.WriteRecords(allenatori);
                 streamWriter.Flush();
                 contenutoCSV = Encoding.UTF8.GetString(memoryStream.ToArray());
@@ -165,6 +168,7 @@ public static partial class DatabaseCSV
         {
             try
             {
+                csv.Context.RegisterClassMap<StadioMap>();
                 csv.WriteRecords(stadi);
                 streamWriter.Flush();
                 contenutoCSV = Encoding.UTF8.GetString(memoryStream.ToArray());
@@ -178,6 +182,29 @@ public static partial class DatabaseCSV
     }
 }
 
+
+public class StadioMap : ClassMap<Stadio>
+{
+    public StadioMap()
+    {
+        AutoMap(CultureInfo.InvariantCulture);
+        Map().Name("V").Constant(1);
+        Map().Name("TipoInfo").Constant((int)ArchivioSvc.TipoDatoDB.STADIO);
+    }
+}
+
+
+public class AllenatoreMap : ClassMap<Allenatore>
+{
+    public AllenatoreMap()
+    {
+        AutoMap(CultureInfo.InvariantCulture);
+        Map().Name("V").Constant(1);
+        Map().Name("TipoInfo").Constant((int)ArchivioSvc.TipoDatoDB.ALLENATORE);
+    }
+}
+
+
 public class GiocatoreMap : ClassMap<Giocatore>
 {
     public GiocatoreMap()
@@ -185,16 +212,21 @@ public class GiocatoreMap : ClassMap<Giocatore>
         AutoMap(CultureInfo.InvariantCulture);
         Map(g => g.Ruoli).TypeConverter<ElencoRuoliConverter>();
         Map(g => g.Punteggi).TypeConverter<PunteggiConverter>();
-        Map(g => g.Testi).Name("Squadra *");
+        Map(g => g.Id, false).Name("CodiceSquadra").TypeConverter<GiocatoriCodiceSquadraConverter>(); ;
+        Map(g => g.Id, false).Name("Squadra").TypeConverter<GiocatoriNomeSquadraConverter>();
+        Map().Name("V").Constant(1);
+        Map().Name("TipoInfo").Constant((int)ArchivioSvc.TipoDatoDB.GIOCATORE);
     }
 }
 
 
 public class SquadraMap : ClassMap<Squadra>
 {
+
+    public static bool scriviTatticaCompleta { get; set; } = false;
     public SquadraMap()
     {
-
+        scriviTatticaCompleta = DatabaseCSV.scriviTatticaCompleta;
         AutoMap(CultureInfo.InvariantCulture);
         Map(sq => sq.Stadio).Ignore();
         Map(sq => sq.Stadio.Id).Name("V").Constant(1);
@@ -218,8 +250,9 @@ public class SquadraMap : ClassMap<Squadra>
         Map(sq => sq.SecondiPosti).Ignore();
         Map(sq => sq.LTrofeiPalmares).Ignore();
         Map(sq => sq.Tattica.Id).Name("TipoInfo").Constant((int)ArchivioSvc.TipoDatoDB.SQUADRA);
-        Map(sq => sq.Tattica.TatticaCompleta).TypeConverter<TatticaCompletaConverter>();
-        Map(sq => sq.Giocatori).TypeConverter<ElencoGiocatoriSquadraConverter>();
+        if (scriviTatticaCompleta) Map(sq => sq.Tattica.TatticaCompleta).TypeConverter<TatticaCompletaConverter>();
+        //Map(sq => sq.Giocatori).TypeConverter<ElencoGiocatoriSquadraConverter>();
+        Map(sq => sq.Giocatori).Ignore();
         Map(sq => sq.Allenatori).Name("codiceAllenatore").TypeConverter<AllenatoreAttivoSquadraConverter>();
 
     }
@@ -269,7 +302,8 @@ internal class StadioConverter : DefaultTypeConverter
 
 }
 
-internal class ElencoGiocatoriSquadraConverter : DefaultTypeConverter
+
+internal class GiocatoriCodiceSquadraConverter : DefaultTypeConverter
 {
     public override object? ConvertFromString(string? text, IReaderRow row, MemberMapData memberMapData)
     {
@@ -278,24 +312,55 @@ internal class ElencoGiocatoriSquadraConverter : DefaultTypeConverter
 
     public override string? ConvertToString(object? value, IWriterRow row, MemberMapData memberMapData)
     {
-        String elencoCodiciGiocatori = String.Empty;
-
-        List<Giocatore> GiocatoriSquadra = (List<Giocatore>)value;
-
-        bool primo = true;
-
-        foreach (var g in GiocatoriSquadra)
-        {
-            if (!primo) elencoCodiciGiocatori += "|";
-            elencoCodiciGiocatori += g.Id.ToString();
-            if (primo) primo = false;
-        }
-
-        return elencoCodiciGiocatori;
+        if (value == null) return "0";
+        return DatabaseCSV.dettagliSquadreGiocatore[int.Parse(value.ToString())].Item1.ToString();
     }
 
+}
+
+internal class GiocatoriNomeSquadraConverter : DefaultTypeConverter
+{
+    public override object? ConvertFromString(string? text, IReaderRow row, MemberMapData memberMapData)
+    {
+        return base.ConvertFromString(text, row, memberMapData);
+    }
+
+    public override string? ConvertToString(object? value, IWriterRow row, MemberMapData memberMapData)
+    {
+        if (value == null) return String.Empty;
+        return DatabaseCSV.dettagliSquadreGiocatore[int.Parse(value.ToString())].Item2;
+    }
 
 }
+
+// TODO Decommentare se lascio i codici giocatori anche nel csv squadre
+//internal class ElencoGiocatoriSquadraConverter : DefaultTypeConverter
+//{
+//    public override object? ConvertFromString(string? text, IReaderRow row, MemberMapData memberMapData)
+//    {
+//        return base.ConvertFromString(text, row, memberMapData);
+//    }
+
+//    public override string? ConvertToString(object? value, IWriterRow row, MemberMapData memberMapData)
+//    {
+//        String elencoCodiciGiocatori = String.Empty;
+
+//        List<Giocatore> GiocatoriSquadra = (List<Giocatore>)value;
+
+//        bool primo = true;
+
+//        foreach (var g in GiocatoriSquadra)
+//        {
+//            if (!primo) elencoCodiciGiocatori += "|";
+//            elencoCodiciGiocatori += g.Id.ToString();
+//            if (primo) primo = false;
+//        }
+
+//        return elencoCodiciGiocatori;
+//    }
+
+
+//}
 
 internal class ElencoRuoliConverter : DefaultTypeConverter
 {
