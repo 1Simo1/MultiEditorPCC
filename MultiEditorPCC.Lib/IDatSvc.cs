@@ -353,6 +353,9 @@ public class DatSvc : IDatSvc
             String percorsoCSV = $"{AppDomain.CurrentDomain.BaseDirectory}files{Path.DirectorySeparatorChar}";
             percorsoCSV += $"{progettoEditor.Nome}{Path.DirectorySeparatorChar}";
 
+            String nf = "";
+
+
             DatabaseCSV.scriviTatticaCompleta = aggiungiTatticaCompletaSquadra;
 
             if (squadre == null || !squadre.Any())
@@ -361,7 +364,13 @@ public class DatSvc : IDatSvc
             }
             else DatabaseCSV.ScriviCSVSquadre(squadre);
 
-            File.WriteAllText($"{percorsoCSV}Squadre.csv", DatabaseCSV.contenutoCSV);
+            nf = "Squadre";
+            if (squadre.Count == 1)
+            {
+                nf = $"{squadre.First().Nome.Replace(" ", "_")}#{squadre.First().Id}";
+            }
+
+            File.WriteAllText($"{percorsoCSV}{nf}.csv", DatabaseCSV.contenutoCSV);
 
             if (allenatori == null || !allenatori.Any())
             {
@@ -369,7 +378,14 @@ public class DatSvc : IDatSvc
             }
             else DatabaseCSV.ScriviCSVAllenatori(allenatori);
 
-            File.WriteAllText($"{percorsoCSV}Allenatori.csv", DatabaseCSV.contenutoCSV);
+            nf = "Allenatori";
+            if (squadre.Count == 1)
+            {
+                nf = $"Allenatore#{squadre.First().Nome.Replace(" ", "_")}#{squadre.First().Id}";
+            }
+            File.WriteAllText($"{percorsoCSV}{nf}.csv", DatabaseCSV.contenutoCSV);
+
+
 
             if (stadi == null || !stadi.Any())
             {
@@ -377,7 +393,12 @@ public class DatSvc : IDatSvc
             }
             else DatabaseCSV.ScriviCSVStadi(stadi);
 
-            File.WriteAllText($"{percorsoCSV}Stadi.csv", DatabaseCSV.contenutoCSV);
+            nf = "Stadi";
+            if (squadre.Count == 1)
+            {
+                nf = $"Stadio#{squadre.First().Nome.Replace(" ", "_")}#{squadre.First().Id}";
+            }
+            File.WriteAllText($"{percorsoCSV}{nf}.csv", DatabaseCSV.contenutoCSV);
 
 
             List<Giocatore> elencoGiocatori = new();
@@ -412,11 +433,15 @@ public class DatSvc : IDatSvc
 
 
             DatabaseCSV.ScriviCSVGiocatori(elencoGiocatori);
-            File.WriteAllText($"{percorsoCSV}Giocatori.csv", DatabaseCSV.contenutoCSV);
+
+            nf = "Giocatori";
+            if (squadre.Count == 1)
+            {
+                nf = $"Giocatori#{squadre.First().Nome.Replace(" ", "_")}#{squadre.First().Id}";
+            }
+            File.WriteAllText($"{percorsoCSV}{nf}.csv", DatabaseCSV.contenutoCSV);
 
             if (giocatori == null || !giocatori.Any()) a.DatiProgettoAttivo.Giocatori = elencoGiocatori;
-
-
         }
         catch (Exception ex)
         {

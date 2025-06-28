@@ -450,4 +450,10 @@
   <data name="WriteTeamFullTacticsCSV" xml:space="preserve">
     <value>Scrivi anche la tattica completa della squadra</value>
   </data>
+  <data name="ExportTeamToCSV" xml:space="preserve">
+    <value>Esporta dati squadra nei file CSV</value>
+  </data>
+  <data name="ImportTeamFromCSV" xml:space="preserve">
+    <value>Importa squadra da CSV</value>
+  </data>
 </root>

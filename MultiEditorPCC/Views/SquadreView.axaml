@@ -2,7 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="1080" d:DesignHeight="1920"
+             mc:Ignorable="d" d:DesignWidth="2160" d:DesignHeight="1920"
              xmlns:vm="using:MultiEditorPCC.ViewModels"
 			 x:DataType="vm:SquadreViewModel"
 			 xmlns:ui="using:FluentAvalonia.UI.Controls"
@@ -141,6 +141,13 @@
 							</Button>
 							
 						</StackPanel>
+
+						<StackPanel Orientation="Vertical" Margin="21 0">
+							<Button Command="{Binding EsportaSquadraCSVCommand}" HorizontalAlignment="Stretch" Margin="7">
+								<TextBlock Text="{x:Static lng:Resources.ExportTeamToCSV}" />
+							</Button>
+						</StackPanel>
+					
 					</StackPanel>
 				</ui:InfoBar.Content>
 			</ui:InfoBar>

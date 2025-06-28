@@ -187,6 +187,20 @@ public partial class SquadreViewModel : IEventSubscriber<SquadraSelezionataElenc
     }
 
 
+    [Command]
+    private void EsportaSquadraCSV()
+    {
+        if (SquadraSelezionata == null) return;
+        var d = AppSvc.Services.GetRequiredService<IDatSvc>();
+        SquadraSelezionata = d.ComponiInformazioniCompleteSquadra(SquadraSelezionata);
+        var p = AppSvc.Services.GetRequiredService<EditorSvc>().ProgettoAttivoEditor;
+        var sq = new List<Squadra>() { SquadraSelezionata };
+        var al = new List<Allenatore>() { SquadraSelezionata.Allenatori.Last() };
+        var st = new List<Stadio>() { SquadraSelezionata.Stadio };
+        d.EsportaDBEditorSuFileCSV(p, true, sq, SquadraSelezionata.Giocatori, al, st);
+    }
+
+
     public void OnEvent(ChiusuraDialogDettagliGiocatoreSelezionato eventData)
     {
         var a = AppSvc.Services.GetRequiredService<ArchivioSvc>().DatiProgettoAttivo.Giocatori;
