@@ -75,6 +75,9 @@ public class Giocatore
         return p;
     }
 
+    public int CodiceSquadra { get; set; } = 0;
+    public String Squadra { get; set; } = String.Empty;
+
 }
 
 public enum ColorePelle

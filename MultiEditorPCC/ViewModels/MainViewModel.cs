@@ -4,6 +4,8 @@ using MvvmGen;
 using MvvmGen.Events;
 using MvvmGen.ViewModels;
 using System;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static MultiEditorPCC.EventiMVVM;
@@ -30,6 +32,17 @@ public partial class MainViewModel : IEventSubscriber<ConfermatoNuovoProgettoAtt
 
 
     [Property] private bool _cSVop;
+
+
+    [Property] private ObservableCollection<String> _elencoFileCSVSquadreValidi;
+    [Property] private ObservableCollection<String> _elencoFileCSVGiocatoriValidi;
+    [Property] private ObservableCollection<String> _elencoFileCSVAllenatoriValidi;
+    [Property] private ObservableCollection<String> _elencoFileCSVStadiValidi;
+
+    [Property] private String? _nomeFileSquadreCSV;
+    [Property] private String? _nomeFileGiocatoriCSV;
+    [Property] private String? _nomeFileAllenatoriCSV;
+    [Property] private String? _nomeFileStadiCSV;
 
 
     private readonly String a = $@"MjAyNSBTaW1vbmUgcGV
@@ -92,6 +105,45 @@ public partial class MainViewModel : IEventSubscriber<ConfermatoNuovoProgettoAtt
 
         //EventAggregator.Publish<RichiestaCSV>(new(true, true));
     }
+
+    [Command]
+    private void ImportaSquadreCSV()
+    {
+
+
+        //TODO Comando Importa squadre da CSV, dati i file scelti
+
+
+    }
+
+    [Command]
+
+    private void AggiornaElenchiCSV()
+    {
+        var e = App.Services.GetRequiredService<EditorSvc>();
+
+        ElencoFileCSVSquadreValidi = new(e.CercaFileCSVDatiValidi(ArchivioSvc.TipoDatoDB.SQUADRA, 0));
+
+        if (!ElencoFileCSVSquadreValidi.Any()) NomeFileSquadreCSV = null;
+        if (ElencoFileCSVSquadreValidi.Count == 1) NomeFileSquadreCSV = ElencoFileCSVSquadreValidi[0];
+
+        ElencoFileCSVGiocatoriValidi = new(e.CercaFileCSVDatiValidi(ArchivioSvc.TipoDatoDB.GIOCATORE, 0));
+
+        if (!ElencoFileCSVGiocatoriValidi.Any()) NomeFileGiocatoriCSV = null;
+        if (ElencoFileCSVGiocatoriValidi.Count == 1) NomeFileGiocatoriCSV = ElencoFileCSVGiocatoriValidi[0];
+
+        ElencoFileCSVAllenatoriValidi = new(e.CercaFileCSVDatiValidi(ArchivioSvc.TipoDatoDB.ALLENATORE, 0));
+
+        if (!ElencoFileCSVAllenatoriValidi.Any()) NomeFileAllenatoriCSV = null;
+        if (ElencoFileCSVAllenatoriValidi.Count == 1) NomeFileAllenatoriCSV = ElencoFileCSVAllenatoriValidi[0];
+
+        ElencoFileCSVStadiValidi = new(e.CercaFileCSVDatiValidi(ArchivioSvc.TipoDatoDB.STADIO, 0));
+
+
+        if (!ElencoFileCSVStadiValidi.Any()) NomeFileStadiCSV = null;
+        if (ElencoFileCSVStadiValidi.Count == 1) NomeFileStadiCSV = ElencoFileCSVStadiValidi[0];
+    }
+
 
 
 }

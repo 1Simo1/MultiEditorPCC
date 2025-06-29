@@ -451,4 +451,13 @@
   <data name="ImportTeamFromCSV" xml:space="preserve">
     <value />
   </data>
+  <data name="Players" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Coach" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Stadium" xml:space="preserve">
+    <value />
+  </data>
 </root>

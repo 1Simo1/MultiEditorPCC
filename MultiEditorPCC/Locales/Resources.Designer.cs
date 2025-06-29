@@ -126,6 +126,15 @@ namespace MultiEditorPCC.Locales {
         /// <summary>
         ///   Cerca una stringa localizzata simile a .
         /// </summary>
+        public static string Coach {
+            get {
+                return ResourceManager.GetString("Coach", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a .
+        /// </summary>
         public static string Coaches {
             get {
                 return ResourceManager.GetString("Coaches", resourceCulture);
@@ -855,6 +864,15 @@ namespace MultiEditorPCC.Locales {
         /// <summary>
         ///   Cerca una stringa localizzata simile a .
         /// </summary>
+        public static string Players {
+            get {
+                return ResourceManager.GetString("Players", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a .
+        /// </summary>
         public static string PlayersInTeam {
             get {
                 return ResourceManager.GetString("PlayersInTeam", resourceCulture);
@@ -993,6 +1011,15 @@ namespace MultiEditorPCC.Locales {
         public static string SpeedAcronym {
             get {
                 return ResourceManager.GetString("SpeedAcronym", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a .
+        /// </summary>
+        public static string Stadium {
+            get {
+                return ResourceManager.GetString("Stadium", resourceCulture);
             }
         }
         

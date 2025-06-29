@@ -81,6 +81,58 @@
 						<CheckBox IsChecked="{Binding ScriviTatticaCompletaSquadraGiocatoreCSV}" VerticalAlignment="Top"/>
 					</StackPanel>
 
+					<Expander BorderThickness="1" BorderBrush="White" Padding="21" Margin="0">
+						<Expander.Header>
+							<TextBlock Text="{x:Static lng:Resources.ImportTeamFromCSV}" />
+						</Expander.Header>
+						<UniformGrid Columns="1">
+
+							<Button HorizontalAlignment="Center" Margin="-21"
+									Command="{Binding AggiornaElenchiCSVCommand}"
+											>
+								<ui:SymbolIcon Symbol="Refresh" />
+							</Button>
+							<StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+								<TextBlock Text="CSV" Margin="0,0,7,7" />
+								<TextBlock Text="{x:Static lng:Resources.Teams}" />
+							</StackPanel>
+							<ComboBox ItemsSource="{Binding ElencoFileCSVSquadreValidi}"
+										  SelectedValue="{Binding NomeFileSquadreCSV}"
+										  HorizontalAlignment="Stretch" Margin="7" />
+
+							<StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+								<TextBlock Text="CSV" Margin="0,0,7,7" />
+								<TextBlock Text="{x:Static lng:Resources.Players}" />
+							</StackPanel>
+							<ComboBox ItemsSource="{Binding ElencoFileCSVGiocatoriValidi}"
+										  SelectedValue="{Binding NomeFileGiocatoriCSV}"
+										  HorizontalAlignment="Stretch" Margin="7" />
+
+							<StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+								<TextBlock Text="CSV" Margin="0,0,7,7" />
+								<TextBlock Text="{x:Static lng:Resources.Coach}" />
+							</StackPanel>
+							<ComboBox ItemsSource="{Binding ElencoFileCSVAllenatoriValidi}"
+										  SelectedValue="{Binding NomeFileAllenatoriCSV}"
+										  HorizontalAlignment="Stretch" Margin="7" />
+
+							<StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+								<TextBlock Text="CSV" Margin="0,0,7,7" />
+								<TextBlock Text="{x:Static lng:Resources.Stadium}" />
+							</StackPanel>
+							<ComboBox ItemsSource="{Binding ElencoFileCSVStadiValidi}"
+										  SelectedValue="{Binding NomeFileStadiCSV}"
+										  HorizontalAlignment="Stretch" Margin="7" />
+
+
+							<Button Command="{Binding ImportaSquadreCSVCommand}" HorizontalAlignment="Stretch" Margin="7" HorizontalContentAlignment="Center">
+								<TextBlock Text="{x:Static lng:Resources.Confirm}" />
+							</Button>
+
+
+						</UniformGrid>
+					</Expander>
+
 
 				</StackPanel>
 
@@ -115,8 +167,7 @@
 						>
 						<StackPanel Orientation="Horizontal">
 							<ui:SymbolIcon Symbol="ClipboardFilled" />
-							<TextBlock Text="{x:Static lng:Resources.Teams
-										   }" />
+							<TextBlock Text="{x:Static lng:Resources.Teams}" />
 						</StackPanel>
 
 					</Button>
@@ -200,9 +251,10 @@
 			</ui:InfoBar.Content>
 		</ui:InfoBar>
 
-		<ContentControl Content="{Binding Pag}" Margin="7" Grid.Row="2" Grid.Column="1"
+		<ContentControl Content="{Binding Pag}" Margin="7 0 21 0" Grid.Row="2" Grid.Column="1"
 						Background="{DynamicResource ThemeBackgroundBrush}"
 						x:Name="Contenuto"
+						
 						/>
 
 

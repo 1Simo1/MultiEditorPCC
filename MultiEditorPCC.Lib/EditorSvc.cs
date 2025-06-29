@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MultiEditorPCC.Dat.DbContext;
 using MultiEditorPCC.Dat.DbSet;
+using MultiEditorPCC.Lib.Archivi;
 using static MultiEditorPCC.Lib.ArchivioSvc;
 
 namespace MultiEditorPCC.Lib;
@@ -279,5 +280,86 @@ public class EditorSvc
         return elencoDBE;
     }
 
+
+    public List<String> CercaFileCSVDatiValidi(TipoDatoDB tipoDato = TipoDatoDB.NESSUNO, int codiceElemento = 0)
+    {
+        List<String> elencoCSV = new();
+
+        try
+        {
+            var f = Directory.GetFiles($"{AppDomain.CurrentDomain.BaseDirectory}files{Path.DirectorySeparatorChar}{ProgettoAttivoEditor.Nome}{Path.DirectorySeparatorChar}", "*.CSV", SearchOption.AllDirectories);
+
+            if (tipoDato == TipoDatoDB.NESSUNO) return f.ToList();
+
+            foreach (var pf in f)
+            {
+
+                DatabaseCSV.contenutoCSV = pf; //Passo il percorso del file in lettura, non il contenuto
+
+                if (tipoDato == TipoDatoDB.SQUADRA)
+                {
+
+                    var squadre = DatabaseCSV.LeggiSquadre();
+
+                    if (squadre.Any() && (codiceElemento == 0 || (squadre.Count == 1 && squadre.First().Id == codiceElemento)))
+                    {
+                        var temp = pf.Substring(0, pf.LastIndexOf(Path.DirectorySeparatorChar) + 1);
+                        elencoCSV.Add(pf.Replace(temp, String.Empty));
+                    }
+
+                }
+
+                //TODO Ricontrollare cosiderazioni giocatore
+                if (tipoDato == TipoDatoDB.GIOCATORE)
+                {
+                    var giocatori = DatabaseCSV.LeggiGiocatori();
+
+                    if (giocatori.Any() && (codiceElemento == 0 || (giocatori.First().CodiceSquadra == codiceElemento)))
+                    {
+
+                        var temp = pf.Substring(0, pf.LastIndexOf(Path.DirectorySeparatorChar) + 1);
+                        elencoCSV.Add(pf.Replace(temp, String.Empty));
+                    }
+
+                }
+
+                if (tipoDato == TipoDatoDB.ALLENATORE)
+                {
+
+                    var allenatori = DatabaseCSV.LeggiAllenatori();
+
+                    if (allenatori.Any() && (codiceElemento == 0 || (allenatori.Count == 1 && allenatori.First().Id == codiceElemento)))
+                    {
+
+                        var temp = pf.Substring(0, pf.LastIndexOf(Path.DirectorySeparatorChar) + 1);
+                        elencoCSV.Add(pf.Replace(temp, String.Empty));
+                    }
+
+                }
+
+                if (tipoDato == TipoDatoDB.STADIO)
+                {
+
+                    var stadi = DatabaseCSV.LeggiStadi();
+
+                    if (stadi.Any() && (codiceElemento == 0 || (stadi.Count == 1 && stadi.First().Id == codiceElemento)))
+                    {
+
+                        var temp = pf.Substring(0, pf.LastIndexOf(Path.DirectorySeparatorChar) + 1);
+                        elencoCSV.Add(pf.Replace(temp, String.Empty));
+                    }
+
+                }
+
+
+
+            }
+        }
+        catch (Exception ex)
+        {
+            return elencoCSV;
+        }
+        return elencoCSV;
+    }
 
 }

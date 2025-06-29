@@ -40,6 +40,71 @@ public static partial class DatabaseCSV
         try
         {
 
+            using (var streamReader = new StreamReader(contenutoCSV))
+            using (var csv = new CsvReader(streamReader, Conf))
+            {
+                try
+                {
+                    csv.Context.RegisterClassMap<SquadraMap>();
+                    csv.Read();
+                    csv.ReadHeader();
+                    while (csv.Read())
+                    {
+
+                        if (csv.GetField<ArchivioSvc.TipoDatoDB>("TipoInfo") != ArchivioSvc.TipoDatoDB.SQUADRA)
+                        {
+                            return new();
+                        }
+
+                        var sq = new Squadra
+                        {
+                            Id = csv.GetField<uint>("Id"),
+                            Nome = csv.GetField("Nome").Trim(),
+                            NomeCompleto = csv.GetField("NomeCompleto"),
+                            Giocabile = csv.GetField<bool>("Giocabile"),
+                            Nazione = csv.GetField<Paese>("Nazione"),
+                            AnnoFondazione = csv.GetField<ushort>("AnnoFondazione"),
+                            Boh = csv.GetField<int>("Boh"),
+                            NumeroAbbonati = csv.GetField<int>("NumeroAbbonati"),
+                            NomePresidente = csv.GetField("NomePresidente"),
+                            CassaGioco = csv.GetField<int>("CassaGioco"),
+                            CassaReale = csv.GetField<int>("CassaReale"),
+                            NomeSponsor = csv.GetField("NomeSponsor"),
+                            NomeSponsorTecnico = csv.GetField("NomeSponsorTecnico"),
+                            SquadraRiserve = csv.GetField<int>("SquadraRiserve"),
+                            TerzaSquadra = csv.GetField<int>("TerzaSquadra"),
+                            Girone2B = csv.GetField<Girone2B>("Girone2B"),
+                            Girone3 = csv.GetField<int>("Girone3"),
+                            Tattica = new()
+                            {
+                                PercentualeToccoDiPrima = csv.GetField<int>("PercentualeToccoDiPrima"),
+                                PercentualeContropiede = csv.GetField<int>("PercentualeContropiede"),
+                                TipoAttacco = csv.GetField<TipoAttacco>("TipoAttacco"),
+                                TipoEntrata = csv.GetField<TipoEntrata>("TipoEntrata"),
+                                TipoMarcatura = csv.GetField<TipoMarcatura>("TipoMarcatura"),
+                                TipoRinvii = csv.GetField<TipoRinvii>("TipoRinvii"),
+                                PressingDa = csv.GetField<PressingDa>("PressingDa"),
+                                TatticaCompleta = new()
+                            },
+                            Allenatori = new() { new Allenatore() { Id = csv.GetField<uint>("codiceAllenatore") } }
+
+                        };
+
+                        if (csv.TryGetField<String>("TatticaCompleta", out _))
+                        {
+                            sq.Tattica.TatticaCompleta = Convert.FromBase64String(csv.GetField("TatticaCompleta")).ToList();
+                        }
+
+
+                        squadre.Add(sq);
+                    }
+                }
+                catch (Exception e)
+                {
+                    return squadre;
+                }
+            }
+            return squadre;
         }
         catch (Exception e)
         {
@@ -55,23 +120,113 @@ public static partial class DatabaseCSV
 
         try
         {
+            using (var streamReader = new StreamReader(contenutoCSV))
+            using (var csv = new CsvReader(streamReader, Conf))
+            {
+                try
+                {
+                    csv.Context.TypeConverterCache.AddConverter<List<Ruolo>>(new ElencoRuoliConverter());
+                    csv.Context.TypeConverterCache.AddConverter<List<PunteggioGiocatore>>(new PunteggiConverter());
+                    csv.Read();
+                    csv.ReadHeader();
+                    while (csv.Read())
+                    {
 
+                        if (csv.GetField<ArchivioSvc.TipoDatoDB>("TipoInfo") != ArchivioSvc.TipoDatoDB.GIOCATORE)
+                        {
+                            return new();
+                        }
+
+                        var gc = new Giocatore
+                        {
+                            Id = csv.GetField<int>("Id"),
+                            Nome = csv.GetField("Nome").Trim(),
+                            NomeCompleto = csv.GetField("NomeCompleto"),
+                            Giocabile = csv.GetField<bool>("Giocabile"),
+                            Nazione = csv.GetField<Paese>("Nazione"),
+                            Numero = csv.GetField<int>("Numero"),
+                            Slot = csv.GetField<int>("Slot"),
+                            AltriDati = csv.GetField<bool>("AltriDati"),
+                            AttivoInRosa = csv.GetField<bool>("AttivoInRosa"),
+                            codColorePelle = csv.GetField<ColorePelle>("codColorePelle"),
+                            codColoreCapelli = csv.GetField<ColoreCapelli>("codColoreCapelli"),
+                            codStileCapelli = csv.GetField<StileCapelli>("codStileCapelli"),
+                            codStileBarba = csv.GetField<StileBarba>("codStileBarba"),
+                            Nazionalizzato = csv.GetField<bool>("Nazionalizzato"),
+                            Reparto = csv.GetField<Reparto>("Reparto"),
+                            GiornoNascita = csv.GetField<int>("GiornoNascita"),
+                            MeseNascita = csv.GetField<int>("MeseNascita"),
+                            AnnoNascita = csv.GetField<int>("AnnoNascita"),
+                            Altezza = csv.GetField<int>("Altezza"),
+                            Peso = csv.GetField<int>("Peso"),
+                            PaeseNascita = csv.GetField<Paese>("PaeseNascita"),
+                            Ruoli = csv.GetField<List<Ruolo>>("Ruoli"),
+                            Punteggi = csv.GetField<List<PunteggioGiocatore>>("Punteggi"),
+
+
+                            CodiceSquadra = csv.GetField<int>("CodiceSquadra"),
+                            Squadra = csv.GetField("Squadra").Trim()
+
+
+                        };
+
+                        giocatori.Add(gc);
+                    }
+
+
+                }
+                catch (Exception e)
+                {
+                    return giocatori;
+                }
+
+            }
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
             return giocatori;
         }
 
         return giocatori;
     }
-
     public static List<Allenatore> LeggiAllenatori()
     {
         List<Allenatore> allenatori = new();
 
         try
         {
+            using (var streamReader = new StreamReader(contenutoCSV))
+            using (var csv = new CsvReader(streamReader, Conf))
+            {
+                try
+                {
+                    csv.Read();
+                    csv.ReadHeader();
+                    while (csv.Read())
+                    {
 
+                        if (csv.GetField<ArchivioSvc.TipoDatoDB>("TipoInfo") != ArchivioSvc.TipoDatoDB.ALLENATORE)
+                        {
+                            return new();
+                        }
+
+                        var al = new Allenatore
+                        {
+                            Id = csv.GetField<uint>("Id"),
+                            Nome = csv.GetField("Nome").Trim(),
+                            NomeCompleto = csv.GetField("NomeCompleto"),
+                            Giocabile = csv.GetField<bool>("Giocabile"),
+                            exGiocatore = csv.GetField<bool>("exGiocatore"),
+                        };
+
+                        allenatori.Add(al);
+                    }
+                }
+                catch (Exception e)
+                {
+
+                }
+            }
         }
         catch (Exception e)
         {
@@ -87,7 +242,44 @@ public static partial class DatabaseCSV
 
         try
         {
+            using (var streamReader = new StreamReader(contenutoCSV))
+            using (var csv = new CsvReader(streamReader, Conf))
+            {
+                try
+                {
+                    csv.Read();
+                    csv.ReadHeader();
+                    while (csv.Read())
+                    {
 
+                        if (csv.GetField<ArchivioSvc.TipoDatoDB>("TipoInfo") != ArchivioSvc.TipoDatoDB.STADIO)
+                        {
+                            return new();
+                        }
+
+                        var st = new Stadio
+                        {
+                            Id = csv.GetField<uint>("Id"),
+                            Giocabile = csv.GetField<bool>("Giocabile"),
+                            Nome = csv.GetField("Nome").Trim(),
+                            Capienza = csv.GetField<int>("Capienza"),
+                            PostiInPiedi = csv.GetField<int>("PostiInPiedi"),
+                            Larghezza = csv.GetField<short>("Larghezza"),
+                            Lunghezza = csv.GetField<short>("Lunghezza"),
+                            Nazione = csv.GetField<Paese>("Nazione"),
+                            NumeroBoh = csv.GetField<int>("NumeroBoh"),
+                            AnnoCostruzione = csv.GetField<int>("AnnoCostruzione"),
+
+                        };
+
+                        stadi.Add(st);
+                    }
+                }
+                catch (Exception e)
+                {
+
+                }
+            }
         }
         catch (Exception e)
         {
@@ -212,7 +404,7 @@ public class GiocatoreMap : ClassMap<Giocatore>
         AutoMap(CultureInfo.InvariantCulture);
         Map(g => g.Ruoli).TypeConverter<ElencoRuoliConverter>();
         Map(g => g.Punteggi).TypeConverter<PunteggiConverter>();
-        Map(g => g.Id, false).Name("CodiceSquadra").TypeConverter<GiocatoriCodiceSquadraConverter>(); ;
+        Map(g => g.Id, false).Name("CodiceSquadra").TypeConverter<GiocatoriCodiceSquadraConverter>();
         Map(g => g.Id, false).Name("Squadra").TypeConverter<GiocatoriNomeSquadraConverter>();
         Map().Name("V").Constant(1);
         Map().Name("TipoInfo").Constant((int)ArchivioSvc.TipoDatoDB.GIOCATORE);
@@ -250,22 +442,17 @@ public class SquadraMap : ClassMap<Squadra>
         Map(sq => sq.SecondiPosti).Ignore();
         Map(sq => sq.LTrofeiPalmares).Ignore();
         Map(sq => sq.Tattica.Id).Name("TipoInfo").Constant((int)ArchivioSvc.TipoDatoDB.SQUADRA);
+
         if (scriviTatticaCompleta) Map(sq => sq.Tattica.TatticaCompleta).TypeConverter<TatticaCompletaConverter>();
-        //Map(sq => sq.Giocatori).TypeConverter<ElencoGiocatoriSquadraConverter>();
+
         Map(sq => sq.Giocatori).Ignore();
         Map(sq => sq.Allenatori).Name("codiceAllenatore").TypeConverter<AllenatoreAttivoSquadraConverter>();
 
     }
 }
 
-internal class AllenatoreAttivoSquadraConverter : DefaultTypeConverter
+public class AllenatoreAttivoSquadraConverter : DefaultTypeConverter
 {
-    public override object? ConvertFromString(string? text, IReaderRow row, MemberMapData memberMapData)
-    {
-        //TODO da CSV ad Allenatore attivo inserito nella Squadra
-        throw new NotImplementedException();
-    }
-
     public override string? ConvertToString(object? value, IWriterRow row, MemberMapData memberMapData)
     {
         return ((List<Allenatore>)value).Last().Id.ToString();
@@ -273,7 +460,7 @@ internal class AllenatoreAttivoSquadraConverter : DefaultTypeConverter
 
 }
 
-internal class TatticaCompletaConverter : DefaultTypeConverter
+public class TatticaCompletaConverter : DefaultTypeConverter
 {
     public override object? ConvertFromString(string? text, IReaderRow row, MemberMapData memberMapData)
     {
@@ -287,7 +474,7 @@ internal class TatticaCompletaConverter : DefaultTypeConverter
     }
 }
 
-internal class StadioConverter : DefaultTypeConverter
+public class StadioConverter : DefaultTypeConverter
 {
 
     public override object? ConvertFromString(string? text, IReaderRow row, MemberMapData memberMapData)
@@ -303,7 +490,7 @@ internal class StadioConverter : DefaultTypeConverter
 }
 
 
-internal class GiocatoriCodiceSquadraConverter : DefaultTypeConverter
+public class GiocatoriCodiceSquadraConverter : DefaultTypeConverter
 {
     public override object? ConvertFromString(string? text, IReaderRow row, MemberMapData memberMapData)
     {
@@ -318,7 +505,7 @@ internal class GiocatoriCodiceSquadraConverter : DefaultTypeConverter
 
 }
 
-internal class GiocatoriNomeSquadraConverter : DefaultTypeConverter
+public class GiocatoriNomeSquadraConverter : DefaultTypeConverter
 {
     public override object? ConvertFromString(string? text, IReaderRow row, MemberMapData memberMapData)
     {
@@ -333,40 +520,20 @@ internal class GiocatoriNomeSquadraConverter : DefaultTypeConverter
 
 }
 
-// TODO Decommentare se lascio i codici giocatori anche nel csv squadre
-//internal class ElencoGiocatoriSquadraConverter : DefaultTypeConverter
-//{
-//    public override object? ConvertFromString(string? text, IReaderRow row, MemberMapData memberMapData)
-//    {
-//        return base.ConvertFromString(text, row, memberMapData);
-//    }
-
-//    public override string? ConvertToString(object? value, IWriterRow row, MemberMapData memberMapData)
-//    {
-//        String elencoCodiciGiocatori = String.Empty;
-
-//        List<Giocatore> GiocatoriSquadra = (List<Giocatore>)value;
-
-//        bool primo = true;
-
-//        foreach (var g in GiocatoriSquadra)
-//        {
-//            if (!primo) elencoCodiciGiocatori += "|";
-//            elencoCodiciGiocatori += g.Id.ToString();
-//            if (primo) primo = false;
-//        }
-
-//        return elencoCodiciGiocatori;
-//    }
-
-
-//}
-
-internal class ElencoRuoliConverter : DefaultTypeConverter
+public class ElencoRuoliConverter : DefaultTypeConverter
 {
     public override object? ConvertFromString(string? text, IReaderRow row, MemberMapData memberMapData)
     {
-        return base.ConvertFromString(text, row, memberMapData);
+        List<Ruolo> ruoli = new();
+        foreach (var codRuolo in text.Split("|"))
+        {
+            try
+            {
+                ruoli.Add(Enum.Parse<Ruolo>(codRuolo));
+            }
+            catch (Exception _) { }
+        }
+        return ruoli;
     }
 
     public override string? ConvertToString(object? value, IWriterRow row, MemberMapData memberMapData)
@@ -388,11 +555,67 @@ internal class ElencoRuoliConverter : DefaultTypeConverter
     }
 }
 
-internal class PunteggiConverter : DefaultTypeConverter
+public class PunteggiConverter : DefaultTypeConverter
 {
     public override object? ConvertFromString(string? text, IReaderRow row, MemberMapData memberMapData)
     {
-        return base.ConvertFromString(text, row, memberMapData);
+
+        List<PunteggioGiocatore> punteggi = new();
+        int n = 0;
+        var v = text.Split("|");
+        foreach (var punteggio in v)
+        {
+            try
+            {
+                if (n == 0)
+                {
+                    punteggi.Add(new PunteggioGiocatore() { Tipo = TipoPunteggioGiocatore.Media, Punteggio = int.Parse(punteggio) });
+                }
+                if (n == 11)
+                {
+                    switch (int.Parse(punteggio))
+                    {
+                        case 0:
+                            punteggi.Add(new PunteggioGiocatore()
+                            {
+                                Tipo = TipoPunteggioGiocatore.PiedePreferito,
+                                Punteggio = (int)PiedePreferito.Destro
+                            });
+                            break;
+                        case 1:
+                            punteggi.Add(new PunteggioGiocatore()
+                            {
+                                Tipo = TipoPunteggioGiocatore.PiedePreferito,
+                                Punteggio = (int)PiedePreferito.Sinistro
+                            });
+                            break;
+
+                        default:
+                            punteggi.Add(new PunteggioGiocatore()
+                            {
+                                Tipo = TipoPunteggioGiocatore.PiedePreferito,
+                                Punteggio = (int)PiedePreferito.Ambidestro
+                            });
+                            break;
+                    }
+
+                }
+                if (n != 0 && n != 11)
+                {
+                    punteggi.Add(new PunteggioGiocatore() { Tipo = (TipoPunteggioGiocatore)n, Punteggio = int.Parse(punteggio) });
+                }
+
+            }
+            catch (Exception _)
+            {
+
+            }
+            finally
+            {
+                n++;
+            }
+        }
+        return punteggi;
     }
 
     public override string? ConvertToString(object? value, IWriterRow row, MemberMapData memberMapData)

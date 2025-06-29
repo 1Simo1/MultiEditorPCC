@@ -43,6 +43,15 @@ public partial class SquadreViewModel : IEventSubscriber<SquadraSelezionataElenc
     [Property] private String _nomeFileSquadraDBE;
     [Property] private ObservableCollection<String> _elencoFileDBESquadraValidi;
 
+    [Property] private ObservableCollection<String> _elencoFileCSVSquadraValidi;
+    [Property] private ObservableCollection<String> _elencoFileCSVGiocatoriValidi;
+    [Property] private ObservableCollection<String> _elencoFileCSVAllenatoreValidi;
+    [Property] private ObservableCollection<String> _elencoFileCSVStadioValidi;
+
+    [Property] private String? _nomeFileSquadraCSV;
+    [Property] private String? _nomeFileGiocatoriCSV;
+    [Property] private String? _nomeFileAllenatoreCSV;
+    [Property] private String? _nomeFileStadioCSV;
 
     [Property] private Giocatore _giocatoreSelezionato;
 
@@ -119,6 +128,7 @@ public partial class SquadreViewModel : IEventSubscriber<SquadraSelezionataElenc
         if (SquadraSelezionata == null || !SquadraSelezionata.Giocatori.Any()) return;
 
         var e = App.Services.GetRequiredService<EditorSvc>();
+
         ElencoFileDBESquadraValidi = new(e.CercaDBEValidi(ArchivioSvc.TipoDatoDB.SQUADRA));
         NomeFileSquadraDBE = $"SQ{SquadraSelezionata.Id.ToString().PadLeft(5, '0')}.DBE";
 
@@ -130,6 +140,47 @@ public partial class SquadreViewModel : IEventSubscriber<SquadraSelezionataElenc
         }
 
         GiocatoriSquadraSelezionata = new(SquadraSelezionata.Giocatori.OrderBy(g => g.Slot));
+
+        AggiornaElenchiCSVSquadraValidi();
+    }
+
+    [Command]
+
+    private void AggiornaElenchiCSVSquadraValidi()
+    {
+        var e = App.Services.GetRequiredService<EditorSvc>();
+
+        ElencoFileCSVSquadraValidi = new(
+          e.CercaFileCSVDatiValidi(ArchivioSvc.TipoDatoDB.SQUADRA,
+                                   (int)SquadraSelezionata.Id)
+          );
+
+        if (!ElencoFileCSVSquadraValidi.Any()) NomeFileSquadraCSV = null;
+        if (ElencoFileCSVSquadraValidi.Count == 1) NomeFileSquadraCSV = ElencoFileCSVSquadraValidi[0];
+
+        ElencoFileCSVGiocatoriValidi = new(
+         e.CercaFileCSVDatiValidi(ArchivioSvc.TipoDatoDB.GIOCATORE,
+                                  (int)SquadraSelezionata.Id)
+        );
+
+        if (!ElencoFileCSVGiocatoriValidi.Any()) NomeFileGiocatoriCSV = null;
+        if (ElencoFileCSVGiocatoriValidi.Count == 1) NomeFileGiocatoriCSV = ElencoFileCSVGiocatoriValidi[0];
+
+        ElencoFileCSVAllenatoreValidi = new(
+         e.CercaFileCSVDatiValidi(ArchivioSvc.TipoDatoDB.ALLENATORE,
+                                  (int)SquadraSelezionata.Allenatori.Last().Id)
+        );
+
+        if (!ElencoFileCSVAllenatoreValidi.Any()) NomeFileAllenatoreCSV = null;
+        if (ElencoFileCSVAllenatoreValidi.Count == 1) NomeFileAllenatoreCSV = ElencoFileCSVAllenatoreValidi[0];
+
+        ElencoFileCSVStadioValidi = new(
+         e.CercaFileCSVDatiValidi(ArchivioSvc.TipoDatoDB.STADIO,
+                                  (int)SquadraSelezionata.Id)
+        );
+
+        if (!ElencoFileCSVStadioValidi.Any()) NomeFileStadioCSV = null;
+        if (ElencoFileCSVStadioValidi.Count == 1) NomeFileStadioCSV = ElencoFileCSVStadioValidi[0];
     }
 
     [Command]
@@ -200,6 +251,15 @@ public partial class SquadreViewModel : IEventSubscriber<SquadraSelezionataElenc
         d.EsportaDBEditorSuFileCSV(p, true, sq, SquadraSelezionata.Giocatori, al, st);
     }
 
+    [Command]
+    private void ImportaSquadraCSV()
+    {
+        if (SquadraSelezionata == null) return;
+
+        //TODO Comando Importa squadra da CSV, dati i file scelti
+
+
+    }
 
     public void OnEvent(ChiusuraDialogDettagliGiocatoreSelezionato eventData)
     {

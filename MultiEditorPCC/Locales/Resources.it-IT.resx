@@ -120,9 +120,6 @@
   <data name="GameVersion" xml:space="preserve">
     <value>Versione PCC</value>
   </data>
-  <data name="GameFolder" xml:space="preserve">
-    <value>Cartella gioco</value>
-  </data>
   <data name="ProjectName" xml:space="preserve">
     <value>Nome progetto</value>
   </data>
@@ -453,7 +450,19 @@
   <data name="ExportTeamToCSV" xml:space="preserve">
     <value>Esporta dati squadra nei file CSV</value>
   </data>
+  <data name="GameFolder" xml:space="preserve">
+    <value>Cartella gioco</value>
+  </data>
   <data name="ImportTeamFromCSV" xml:space="preserve">
-    <value>Importa squadra da CSV</value>
+    <value>Importa informazioni squadra da CSV</value>
+  </data>
+  <data name="Players" xml:space="preserve">
+    <value>Giocatori</value>
+  </data>
+  <data name="Coach" xml:space="preserve">
+    <value>Allenatore</value>
+  </data>
+  <data name="Stadium" xml:space="preserve">
+    <value>Stadio</value>
   </data>
 </root>
