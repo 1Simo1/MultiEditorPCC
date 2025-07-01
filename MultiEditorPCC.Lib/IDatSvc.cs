@@ -361,6 +361,7 @@ public class DatSvc : IDatSvc
             if (squadre == null || !squadre.Any())
             {
                 DatabaseCSV.ScriviCSVSquadre(a.DatiProgettoAttivo.Squadre);
+                squadre = a.DatiProgettoAttivo.Squadre;
             }
             else DatabaseCSV.ScriviCSVSquadre(squadre);
 
@@ -375,6 +376,7 @@ public class DatSvc : IDatSvc
             if (allenatori == null || !allenatori.Any())
             {
                 DatabaseCSV.ScriviCSVAllenatori(a.DatiProgettoAttivo.Allenatori);
+                allenatori = a.DatiProgettoAttivo.Allenatori;
             }
             else DatabaseCSV.ScriviCSVAllenatori(allenatori);
 
@@ -390,6 +392,7 @@ public class DatSvc : IDatSvc
             if (stadi == null || !stadi.Any())
             {
                 DatabaseCSV.ScriviCSVStadi(a.DatiProgettoAttivo.Stadi);
+                stadi = a.DatiProgettoAttivo.Stadi;
             }
             else DatabaseCSV.ScriviCSVStadi(stadi);
 
