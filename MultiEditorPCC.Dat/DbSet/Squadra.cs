@@ -3,9 +3,11 @@
 public class Squadra
 {
     public uint Id { get; set; } = 0;
-    public bool Giocabile { get; set; }
     public String Nome { get; set; } = String.Empty;
     public String NomeCompleto { get; set; } = String.Empty;
+
+    public bool Giocabile { get; set; }
+
     public Stadio Stadio { get; set; } = new();
 
     public Paese Nazione { get; set; } = Paese.ITALIA;
