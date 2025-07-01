@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConfrontaByteFileCartella",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsonCSVDataUtils", "Utils\JsonCSVDataUtils\JsonCSVDataUtils.csproj", "{581E2648-55DA-9BED-BFF2-EB6A691383DB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApplicaPaletteBMP", "Utils\ApplicaPaletteBMP\ApplicaPaletteBMP.csproj", "{C0FB643B-0F60-42BA-B2D2-11063468F264}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +63,10 @@ Global
 		{581E2648-55DA-9BED-BFF2-EB6A691383DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{581E2648-55DA-9BED-BFF2-EB6A691383DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{581E2648-55DA-9BED-BFF2-EB6A691383DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0FB643B-0F60-42BA-B2D2-11063468F264}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0FB643B-0F60-42BA-B2D2-11063468F264}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0FB643B-0F60-42BA-B2D2-11063468F264}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0FB643B-0F60-42BA-B2D2-11063468F264}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -73,6 +79,7 @@ Global
 		{D42ABE6B-71E0-A93A-C810-944FF22687BD} = {6C83A596-D32D-B35F-00DD-F0C99B673980}
 		{E0505961-7623-2E67-A98F-B2FA58E41150} = {946A42EE-47D7-427C-B150-4715E41A06E5}
 		{581E2648-55DA-9BED-BFF2-EB6A691383DB} = {946A42EE-47D7-427C-B150-4715E41A06E5}
+		{C0FB643B-0F60-42BA-B2D2-11063468F264} = {946A42EE-47D7-427C-B150-4715E41A06E5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8BAD797F-6E6A-4C3E-8DB2-95D6867A7AD5}
