@@ -404,6 +404,8 @@ public class GiocatoreMap : ClassMap<Giocatore>
         AutoMap(CultureInfo.InvariantCulture);
         Map(g => g.Ruoli).TypeConverter<ElencoRuoliConverter>();
         Map(g => g.Punteggi).TypeConverter<PunteggiConverter>();
+        Map(g => g.CodiceSquadra).Ignore();
+        Map(g => g.Squadra).Ignore();
         Map(g => g.Id, false).Name("CodiceSquadra").TypeConverter<GiocatoriCodiceSquadraConverter>();
         Map(g => g.Id, false).Name("Squadra").TypeConverter<GiocatoriNomeSquadraConverter>();
         Map().Name("V").Constant(1);
