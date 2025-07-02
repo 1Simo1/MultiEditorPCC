@@ -480,6 +480,72 @@ public class ArchivioSvc
             return TipoArchivio.NESSUNO;
         }
     }
+
+    public List<String> ElencoPaletteArchivio() => DatiProgettoAttivo.Archivi.Keys
+                                                   .Where(k => k.EndsWith(".PAL")).ToList();
+
+
+    public List<String> CartelleDatiArchivi(int Livello = 1, Dictionary<string, List<ElementoArchivio>>? archivi = null, String cartella = "")
+    {
+        if (archivi == null) archivi = DatiProgettoAttivo.Archivi;
+
+        if (Livello <= 0) return new();
+
+        if (Livello == 1) return archivi.Where(d => d.Key.Split(Path.DirectorySeparatorChar).Length >= Livello + 1)
+                                        .Select(d => $"{d.Key.Split(Path.DirectorySeparatorChar)[0]}")
+                                        .Distinct()
+                                        .ToList();
+
+        var e = archivi.Where(d => d.Key.Split(Path.DirectorySeparatorChar).Length >= Livello + 1)
+               .Select(d =>
+               {
+                   StringBuilder sb = new();
+                   sb.Append($"{d.Key.Split(Path.DirectorySeparatorChar)[0]}");
+                   for (int i = 1; i < Livello; i++)
+                   {
+                       sb.Append(Path.DirectorySeparatorChar);
+                       sb.Append($"{d.Key.Split(Path.DirectorySeparatorChar)[i]}");
+                   }
+
+                   return sb.ToString();
+
+               })
+               .Distinct()
+               .ToList();
+
+        if (!String.IsNullOrEmpty(cartella)) return e.Where(d => d.StartsWith(cartella)).ToList();
+
+        return e;
+
+    }
+
+    public List<String> FileDatiArchivi(int Livello = 1, Dictionary<string, List<ElementoArchivio>>? archivi = null, String cartella = "")
+    {
+        if (archivi == null) archivi = DatiProgettoAttivo.Archivi;
+
+        List<String> files = new List<String>();
+
+        if (String.IsNullOrEmpty(cartella))
+        {
+            /* Non si dovrebbe utilizzare il metodo senza specificare la cartella
+             * tuttavia in questo caso torno tutti i file di un dato Livello */
+            foreach (var c in CartelleDatiArchivi(Livello, archivi))
+            {
+                files.AddRange(FileDatiArchivi(Livello, archivi, c));
+            }
+
+            return files;
+        }
+
+        return archivi.Where(a => a.Key.StartsWith(cartella) && a.Key.Split(Path.DirectorySeparatorChar).Length == Livello + 1).Select(a => a.Key).ToList();
+
+    }
+
+
+
+
+
+
 }
 
 public enum TipoArchivio
