@@ -41,8 +41,11 @@ public class ArchivioSvc
 
         var f = Directory.GetFiles(path, "*.PAK", SearchOption.AllDirectories);
         foreach (var nf in f) if (!FileArchiviDBGioco.Contains(nf.Substring(path.Length))) FileArchiviDBGioco.Add(nf.Substring(path.Length));
-        //f = Directory.GetFiles(path, "*.FDI", SearchOption.AllDirectories);
-        //foreach (var nf in f) if (!FileArchiviDBGioco.Contains(nf.Substring(path.Length))) FileArchiviDBGioco.Add(nf.Substring(path.Length));
+        if (!FileArchiviDBGioco.Where(f => f.EndsWith(".FDI")).Any())
+        {
+            f = Directory.GetFiles(path, "*.FDI", SearchOption.AllDirectories);
+            foreach (var nf in f) if (!FileArchiviDBGioco.Contains(nf.Substring(path.Length))) FileArchiviDBGioco.Add(nf.Substring(path.Length));
+        }
         f = Directory.GetFiles(path, "*.PKF", SearchOption.AllDirectories);
         foreach (var nf in f) if (!FileArchiviDBGioco.Contains(nf.Substring(path.Length))) FileArchiviDBGioco.Add(nf.Substring(path.Length));
         f = Directory.GetFiles(path, "*.DBC", SearchOption.AllDirectories);
