@@ -138,7 +138,8 @@ public partial class IntroViewModel : IEventSubscriber<ConfermatoNuovoProgettoAt
     [Command]
     private void NuovoProgettoModAvanzata()
     {
-
+        VersionePCC = "*";
+        ConfermaNuovoProgetto();
     }
 
 

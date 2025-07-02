@@ -36,7 +36,9 @@ public interface IDatSvc
     /// <param name="versionePCC">Versione del gioco usata per il progetto attivo</param>
     /// <param name="t">Tipi di dato elaborati in questo passaggio</param>
     /// <param name="elemento">Dati memorizzati da file di gioco, per l'elemento elaborato</param>
-    void ElaboraInfoElementoDB(string versionePCC, List<ArchivioSvc.TipoDatoDB> t, ElementoArchivio elemento);
+    /// <param name="archivio">Se il tipo di dato elaborato è classificato come archivio (quindi non elementi di database di gioco), memorizzo il file archivio da cui è stato estratto in memoria</param>
+    ///
+    void ElaboraInfoElementoDB(string versionePCC, List<ArchivioSvc.TipoDatoDB> t, ElementoArchivio elemento, String? archivio = null);
 
     Squadra ComponiInformazioniCompleteSquadra(Squadra sq);
 
@@ -128,7 +130,7 @@ public class DatSvc : IDatSvc
         throw new NotImplementedException();
     }
 
-    public void ElaboraInfoElementoDB(String versionePCC, List<ArchivioSvc.TipoDatoDB> t, ElementoArchivio elemento)
+    public void ElaboraInfoElementoDB(String versionePCC, List<ArchivioSvc.TipoDatoDB> t, ElementoArchivio elemento, String? archivio = null)
     {
         var a = AppSvc.Services.GetRequiredService<ArchivioSvc>();
 
@@ -188,13 +190,40 @@ public class DatSvc : IDatSvc
 
 
         }
-        else //versionePCC 6 o precedente (esamino un archivio NON FDI)
+        else //versionePCC 6 o precedente (esamino un archivio NON FDI, oppure ho un progetto libero)
         {
-            //TODO
+            if (elemento.Nome.StartsWith("EQ") && elemento.Nome.EndsWith("DBC"))
+            {
+
+
+
+                Squadra sq = DBC.LeggiSquadra(elemento);
+                a.DatiProgettoAttivo.Squadre.Add(sq);
+                Giocatore g = DBC.LeggiGiocatore(elemento);
+                a.DatiProgettoAttivo.Giocatori.Add(g);
+                Allenatore e = DBC.LeggiAllenatore(elemento);
+                a.DatiProgettoAttivo.Allenatori.Add(e);
+                Stadio s = DBC.LeggiStadio(elemento);
+                a.DatiProgettoAttivo.Stadi.Add(s);
+            }
+
+
+
         }
 
 
-        //a.DatiProgettoAttivo.Archivi = new();
+        //TODO Carico archivi e/o progetto libero
+        if (t.Count == 1 && t.First() == ArchivioSvc.TipoDatoDB.ARCHIVIO)
+        {
+            String k = $"{archivio}{Path.DirectorySeparatorChar}{elemento.Nome}";
+            if (!a.DatiProgettoAttivo.Archivi.ContainsKey(k))
+            {
+                a.DatiProgettoAttivo.Archivi.Add(k, new());
+            }
+
+            a.DatiProgettoAttivo.Archivi[k].Add(elemento);
+        }
+
 
     }
 

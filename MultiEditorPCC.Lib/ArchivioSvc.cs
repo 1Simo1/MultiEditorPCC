@@ -26,6 +26,8 @@ public class ArchivioSvc
 
         String path = progettoEditor.Cartella + Path.DirectorySeparatorChar;
 
+
+
         if (progettoEditor.VersionePCC.Equals("*"))
         /* Progetto libero, costruisco i dati da file, non uso una versione
          * fissa del gioco. Utile per costruire un database in comune 
@@ -33,34 +35,44 @@ public class ArchivioSvc
         {
             FileArchiviDBGioco = new();
 
-            var f = Directory.GetFiles(path, "*.PAK", SearchOption.AllDirectories);
-            foreach (var nf in f) FileArchiviDBGioco.Add(nf);
-            f = Directory.GetFiles(path, "*.FDI", SearchOption.AllDirectories);
-            foreach (var nf in f) FileArchiviDBGioco.Add(nf);
-            f = Directory.GetFiles(path, "*.PKF", SearchOption.AllDirectories);
-            foreach (var nf in f) FileArchiviDBGioco.Add(nf);
-            f = Directory.GetFiles(path, "*.DBC", SearchOption.AllDirectories);
-            foreach (var nf in f) FileArchiviDBGioco.Add(nf);
         }
         else ElencoArchiviDefault(progettoEditor.VersionePCC);
 
 
+        var f = Directory.GetFiles(path, "*.PAK", SearchOption.AllDirectories);
+        foreach (var nf in f) if (!FileArchiviDBGioco.Contains(nf.Substring(path.Length))) FileArchiviDBGioco.Add(nf.Substring(path.Length));
+        //f = Directory.GetFiles(path, "*.FDI", SearchOption.AllDirectories);
+        //foreach (var nf in f) if (!FileArchiviDBGioco.Contains(nf.Substring(path.Length))) FileArchiviDBGioco.Add(nf.Substring(path.Length));
+        f = Directory.GetFiles(path, "*.PKF", SearchOption.AllDirectories);
+        foreach (var nf in f) if (!FileArchiviDBGioco.Contains(nf.Substring(path.Length))) FileArchiviDBGioco.Add(nf.Substring(path.Length));
+        f = Directory.GetFiles(path, "*.DBC", SearchOption.AllDirectories);
+        foreach (var nf in f) if (!FileArchiviDBGioco.Contains(nf.Substring(path.Length))) FileArchiviDBGioco.Add(nf.Substring(path.Length));
 
         ArchiviProgetto = new();
+
+
+
+
+
 
         foreach (var file in FileArchiviDBGioco)
         {
 
             try
             {
-
+                int lp = path.Length;
+                if (progettoEditor.VersionePCC.Equals("*"))
+                {
+                    //path = String.Empty;
+                    lp = 0;
+                }
                 String percorsoFile = $"{path}{file}";
 
-                var f = System.IO.File.ReadAllBytes($"{percorsoFile}");
+                var bf = System.IO.File.ReadAllBytes($"{percorsoFile}");
 
-                if (!BitConverter.IsLittleEndian) f.Reverse();
+                if (!BitConverter.IsLittleEndian) bf.Reverse();
 
-                List<byte> dati = new(f.ToList());
+                List<byte> dati = new(bf.ToList());
 
                 bool fdi = false;
                 bool pak = false;
@@ -106,7 +118,10 @@ public class ArchivioSvc
 
                 List<TipoDatoDB> t = CalcolaTipoDatoDB(progettoEditor.VersionePCC, a.Key);
 
-                d.ElaboraInfoElementoDB(progettoEditor.VersionePCC, t, e);
+                String? archivio = (t.Count() == 1 && t.First() == TipoDatoDB.ARCHIVIO) ? a.Key : null;
+
+
+                d.ElaboraInfoElementoDB(progettoEditor.VersionePCC, t, e, archivio);
 
             }
         }
@@ -134,7 +149,12 @@ public class ArchivioSvc
             }
         }
 
-        if (nomeFile.EndsWith("PKF")) return new() { TipoDatoDB.STADIO, TipoDatoDB.ALLENATORE, TipoDatoDB.GIOCATORE, TipoDatoDB.SQUADRA };
+        if (nomeFile.StartsWith("EQ") && nomeFile.EndsWith("PKF"))
+            return new() { TipoDatoDB.STADIO, TipoDatoDB.ALLENATORE, TipoDatoDB.GIOCATORE, TipoDatoDB.SQUADRA };
+
+        //Cerco se il file è un archivio (PKF non di squadra, PAK)
+        //PKF di squadra escluso qui (se lo è il metodo è tornato al passaggio precedente)
+        if (nomeFile.Contains("PAK") || nomeFile.Contains("PKF")) return new() { TipoDatoDB.ARCHIVIO };
 
         return new() { TipoDatoDB.NESSUNO };
     }
@@ -147,7 +167,8 @@ public class ArchivioSvc
         SQUADRA,
         GIOCATORE,
         ALLENATORE,
-        STADIO
+        STADIO,
+        ARCHIVIO
     }
 
 
