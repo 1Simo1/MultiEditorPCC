@@ -67,6 +67,7 @@ public static class ServiceCollectionExtensions
         collection.AddTransient<SquadreViewModel>();
         collection.AddTransient<DettagliGiocatoreViewModel>();
         collection.AddTransient<DettagliAllenatoreViewModel>();
+        collection.AddTransient<ArchiviViewModel>();
         collection.AddTransient<MainViewModel>();
     }
 }

@@ -491,10 +491,17 @@ public class ArchivioSvc
 
         if (Livello <= 0) return new();
 
+        if (!String.IsNullOrEmpty(cartella))
+
+            return CartelleDatiArchivi(Livello + 1, archivi.Where(d => d.Key.StartsWith(cartella)).ToDictionary());
+
         if (Livello == 1) return archivi.Where(d => d.Key.Split(Path.DirectorySeparatorChar).Length >= Livello + 1)
                                         .Select(d => $"{d.Key.Split(Path.DirectorySeparatorChar)[0]}")
                                         .Distinct()
                                         .ToList();
+
+
+
 
         var e = archivi.Where(d => d.Key.Split(Path.DirectorySeparatorChar).Length >= Livello + 1)
                .Select(d =>
@@ -513,7 +520,7 @@ public class ArchivioSvc
                .Distinct()
                .ToList();
 
-        if (!String.IsNullOrEmpty(cartella)) return e.Where(d => d.StartsWith(cartella)).ToList();
+
 
         return e;
 
@@ -537,15 +544,47 @@ public class ArchivioSvc
             return files;
         }
 
+        //return CartelleDatiArchivi(Livello + 1, archivi.Where(d => d.Key.StartsWith(cartella)).ToDictionary());
+
         return archivi.Where(a => a.Key.StartsWith(cartella) && a.Key.Split(Path.DirectorySeparatorChar).Length == Livello + 1).Select(a => a.Key).ToList();
 
     }
 
+    public List<Byte> ElaboraCaricamentoImmagine(String fileSelezionato, String palette)
+    {
+        List<Byte> img = new();
+
+        try
+        {
+            var testNome = fileSelezionato.ToUpper();
+
+            if (!testNome.EndsWith(".BMP") &&
+                !testNome.EndsWith(".GIF") &&
+                !testNome.EndsWith(".PAL")
+                )
+            {
+
+                if (DatiProgettoAttivo.Archivi[fileSelezionato].First().Dat[0] != 66 ||
+                    DatiProgettoAttivo.Archivi[fileSelezionato].First().Dat[1] != 77)
+                    return img;
+            }
+
+            if (testNome.EndsWith(".GIF"))
+                return DatiProgettoAttivo.Archivi[fileSelezionato].First().Dat;
+
+            //TODO Elaborazione caricamento immagine BMP/PAL
 
 
+        }
+        catch (Exception ex)
+        {
 
+            return img;
 
+        }
 
+        return img;
+    }
 }
 
 public enum TipoArchivio

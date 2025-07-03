@@ -1,0 +1,134 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="1800" d:DesignHeight="1300"
+             x:Class="MultiEditorPCC.Views.ArchiviView"
+			 xmlns:vm="using:MultiEditorPCC.ViewModels"
+			 x:DataType="vm:ArchiviViewModel"
+			 xmlns:ui="using:FluentAvalonia.UI.Controls"
+			 xmlns:uip="using:FluentAvalonia.UI.Controls.Primitives"
+			 xmlns:views="clr-namespace:MultiEditorPCC.Views"
+			 xmlns:lng="clr-namespace:MultiEditorPCC.Locales;assembly=MultiEditorPCC"
+			 xmlns:dc="using:MultiEditorPCC.DataConverters"
+
+
+			 >
+
+
+	<UserControl.Resources>
+		<dc:VisualizzatoreImgConverter x:Key="VisualizzatoreImgConverter" />
+
+	</UserControl.Resources>
+	
+	<Grid ColumnDefinitions="Auto,842">
+
+		<StackPanel Orientation="Vertical" Grid.Column="0">
+			<TextBlock Text="" />
+			<StackPanel Orientation="Horizontal">
+				<ComboBox     ItemsSource="{Binding ElencoCartelleArchiviPrimoLivello}"
+							  SelectedItem="{Binding CartellaArchivioPrimoLivello}"
+							  VerticalAlignment="Center"
+							  HorizontalAlignment="Stretch"
+							  Margin="0 7"
+						   >
+					<ComboBox.ItemTemplate>
+						<DataTemplate>
+							
+								<TextBlock Text="{Binding}" />
+							
+						</DataTemplate>
+					</ComboBox.ItemTemplate>
+				</ComboBox>
+
+				<Button VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0 7"
+						Command="{Binding ConfermaSceltaCartellaCommand}" CommandParameter="1" >
+					<TextBlock Text="{x:Static lng:Resources.Confirm}" HorizontalAlignment="Center" />
+				</Button>
+			</StackPanel>
+
+			<ComboBox     ItemsSource="{Binding ElencoCartelleArchivi}"
+							  SelectedItem="{Binding CartellaArchivio}"
+							  VerticalAlignment="Center"
+							  HorizontalAlignment="Stretch"
+							  Margin="0 7"
+						   >
+				<ComboBox.ItemTemplate>
+					<DataTemplate>
+
+						<TextBlock Text="{Binding}" />
+
+					</DataTemplate>
+				</ComboBox.ItemTemplate>
+			</ComboBox>
+
+			<Button VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0 7"
+						Command="{Binding ConfermaSceltaCartellaCommand}" CommandParameter="{Binding Livello}" >
+				<TextBlock Text="{x:Static lng:Resources.Confirm}" HorizontalAlignment="Center" />
+			</Button>
+
+			<StackPanel Orientation="Horizontal">
+				<TextBlock Text="{Binding NumeroFileTrovati}" />
+			</StackPanel>
+
+			<ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Hidden" MaxHeight="321">
+				<ListBox ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+						 ScrollViewer.VerticalScrollBarVisibility="Auto"
+						 ItemsSource="{Binding ElencoFilesCartellaArchivio}"
+						 SelectedItem="{Binding FileSelezionato}"
+						 Margin="0 0 0 21"
+						 >
+					<ListBox.ItemTemplate>
+						<DataTemplate>
+						
+								<TextBlock Text="{Binding}" FontSize="15"/>
+						</DataTemplate>
+					</ListBox.ItemTemplate>
+				</ListBox>
+			</ScrollViewer>
+
+			<TextBlock Text="" />
+			<ComboBox     ItemsSource="{Binding ElencoPalette}"
+										  SelectedItem="{Binding Palette}"
+										  VerticalAlignment="Center"
+										  HorizontalAlignment="Stretch"
+										  Margin="0 7"
+						   >
+				<ComboBox.ItemTemplate>
+					<DataTemplate>
+
+						<TextBlock Text="{Binding}" />
+
+					</DataTemplate>
+				</ComboBox.ItemTemplate>
+			</ComboBox>
+
+		</StackPanel>
+		
+		<StackPanel Orientation="Vertical" Grid.Column="1">			
+	
+			
+			
+			
+			
+			
+			<Border
+					Width="800"
+					Height="600"
+					Margin="21"
+					Background="DarkSlateGray"
+				>
+		<Image Source="{Binding Img, Converter={StaticResource ResourceKey=VisualizzatoreImgConverter},ConverterParameter=*}" 
+			   Width="{Binding Img, Converter={StaticResource ResourceKey=VisualizzatoreImgConverter},ConverterParameter=W}"
+			   Height="{Binding Img, Converter={StaticResource ResourceKey=VisualizzatoreImgConverter},ConverterParameter=H}"		   
+			   />
+			   
+			   
+
+					</Border>
+
+			
+
+		</StackPanel>
+	</Grid>
+</UserControl>
