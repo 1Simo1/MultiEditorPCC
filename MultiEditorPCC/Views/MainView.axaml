@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:MultiEditorPCC.ViewModels"
 			 xmlns:svg="using:Avalonia.Svg"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="1021"
+             mc:Ignorable="d" d:DesignWidth="2160" d:DesignHeight="1021"
              x:Class="MultiEditorPCC.Views.MainView"
              x:DataType="vm:MainViewModel"
 			 xmlns:ui="using:FluentAvalonia.UI.Controls"
