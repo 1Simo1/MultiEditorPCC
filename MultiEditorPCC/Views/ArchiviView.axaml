@@ -88,6 +88,7 @@
 			</ScrollViewer>
 
 			<TextBlock Text="" />
+			<StackPanel Orientation="Horizontal">
 			<ComboBox     ItemsSource="{Binding ElencoPalette}"
 										  SelectedItem="{Binding Palette}"
 										  VerticalAlignment="Center"
@@ -103,11 +104,33 @@
 				</ComboBox.ItemTemplate>
 			</ComboBox>
 
+			<Button Command="{Binding VisualizzaPaletteCommand}">
+				<ui:SymbolIcon Symbol="ViewAll" />
+			</Button>
+			</StackPanel>
 		</StackPanel>
 		
-		<StackPanel Orientation="Vertical" Grid.Column="1">			
-	
-			
+		<StackPanel Orientation="Vertical" Grid.Column="1">
+
+			<StackPanel Orientation="Horizontal" Margin="21 7">
+
+				<Button VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0 7"
+						Command="{Binding SfogliaFileElementoCommand}" CommandParameter="-" >	
+					<TextBlock Text="&lt;" HorizontalAlignment="Center" />
+				</Button>
+				
+				<TextBlock Text="{Binding Indicatore}" Margin="7 0" VerticalAlignment="Center"/>
+
+				<Button VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0 7"
+						Command="{Binding SfogliaFileElementoCommand}" CommandParameter="+" >
+
+					<TextBlock Text="&gt;" HorizontalAlignment="Center" />
+					
+				</Button>
+
+				<TextBlock Text="{Binding FileSelezionato}" VerticalAlignment="Center" />
+
+			</StackPanel>
 			
 			
 			
@@ -116,7 +139,9 @@
 					Width="800"
 					Height="600"
 					Margin="21"
-					Background="DarkSlateGray"
+					BorderBrush="DarkSlateGray"
+					BorderThickness="1"
+					Background="Transparent"
 				>
 		<Image Source="{Binding Img, Converter={StaticResource ResourceKey=VisualizzatoreImgConverter},ConverterParameter=*}" 
 			   Width="{Binding Img, Converter={StaticResource ResourceKey=VisualizzatoreImgConverter},ConverterParameter=W}"

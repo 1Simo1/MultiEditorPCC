@@ -35,6 +35,14 @@ public partial class ArchiviViewModel : IEventSubscriber<ElaboraCaricamentoImmag
     [Property]
     private String? _fileSelezionato;
 
+    //Numero di elementi compresi nell'elemento dell'archivio
+    [Property] private int _t;
+
+    [Property] private int _n;
+
+    [Property] private String? _indicatore;
+
+
 
     [Property] private int _numeroFileTrovati;
 
@@ -47,24 +55,12 @@ public partial class ArchiviViewModel : IEventSubscriber<ElaboraCaricamentoImmag
         ElencoCartelleArchiviPrimoLivello = new(a.CartelleDatiArchivi());
         ElencoPalette = new(a.ElencoPaletteArchivio());
         Livello = 1;
-
-
+        N = 1;
     }
 
     [Command]
     private void ConfermaSceltaCartella(object objLivello)
     {
-        //if (FileSelezionato != null)
-        //{
-        //    var sk = SKImage.FromEncodedData(a.DatiProgettoAttivo.Archivi[FileSelezionato].First().Dat.ToArray());
-        //    W = sk.Width;
-        //    H = sk.Height;
-        //    Img = new Avalonia.Media.Imaging.Bitmap(sk.Encode().AsStream());
-
-
-        //}
-        //
-
         if (objLivello == null || !int.TryParse(objLivello.ToString(), out _) || int.Parse(objLivello!.ToString()) < 1) return;
 
         Livello = int.Parse(objLivello!.ToString());
@@ -100,9 +96,50 @@ public partial class ArchiviViewModel : IEventSubscriber<ElaboraCaricamentoImmag
 
     public void OnEvent(ElaboraCaricamentoImmagine _)
     {
+
         if (Palette == null || FileSelezionato == null) return;
-        //TODO
-        Img = a.ElaboraCaricamentoImmagine(FileSelezionato, Palette);
+
+        var temp = Palette;
+
+        T = a.NumeroElementi(FileSelezionato);
+
+        N = Math.Max(N, 1);
+        N = Math.Min(N, T);
+
+        Indicatore = $"{N} / {T}";
+
+        Img = a.ElaboraCaricamentoImmagine(FileSelezionato, Palette, N);
+        ElencoPalette = new(a.ElencoPaletteArchivio());
+        Palette = temp;
+    }
+
+    /// <summary>
+    /// Ci sono elementi degli archivi che si ripetono con lo stesso nome
+    /// </summary>
+    /// <param name="d">Direzione: incremento o decremento di N</param>
+    [Command]
+    private void SfogliaFileElemento(object d)
+    {
+        if (d == null) return;
+
+        if (d.ToString().Equals("+") || d.ToString().ToUpper().Equals("INC"))
+        {
+            N++;
+
+        }
+        else N--;
+
+        EventAggregator.Publish<ElaboraCaricamentoImmagine>(new());
+
+
 
     }
+
+    [Command]
+    private void VisualizzaPalette()
+    {
+        if (Palette == null) return;
+        Img = a.ElaboraCaricamentoImmagine(Palette, Palette, 1);
+    }
+
 }

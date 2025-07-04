@@ -39,6 +39,12 @@ public interface IDatSvc
     /// <param name="archivio">Se il tipo di dato elaborato è classificato come archivio (quindi non elementi di database di gioco), memorizzo il file archivio da cui è stato estratto in memoria</param>
     ///
     void ElaboraInfoElementoDB(string versionePCC, List<ArchivioSvc.TipoDatoDB> t, ElementoArchivio elemento, String? archivio = null);
+    /// <summary>
+    /// Carica file inseriti nella cartella dell'editor, aggiornando
+    /// i DatiProgettoAttivo di ArchivioSvc
+    /// </summary>
+    /// <param name="nome">Nome progetto</param>
+    void ElaboraFileEditorPersonalizzati(String nomeProgetto);
 
     Squadra ComponiInformazioniCompleteSquadra(Squadra sq);
 
@@ -129,6 +135,24 @@ public class DatSvc : IDatSvc
     {
         throw new NotImplementedException();
     }
+
+    public void ElaboraFileEditorPersonalizzati(string nomeProgetto)
+    {
+        var a = AppSvc.Services.GetRequiredService<ArchivioSvc>();
+
+        var cartellaEditor = $"{AppDomain.CurrentDomain.BaseDirectory}files{Path.DirectorySeparatorChar}";
+
+        var f = Directory.GetFiles(cartellaEditor, "*.PAL", SearchOption.AllDirectories);
+
+        foreach (var p in f)
+        {
+            a.DatiProgettoAttivo.Archivi.Add(
+                $"Editor{Path.DirectorySeparatorChar}{nomeProgetto}{Path.DirectorySeparatorChar}{p.Substring(cartellaEditor.Length)}",
+                new() { new() { Dat = File.ReadAllBytes(p).ToList() } }
+                );
+        }
+    }
+
 
     public void ElaboraInfoElementoDB(String versionePCC, List<ArchivioSvc.TipoDatoDB> t, ElementoArchivio elemento, String? archivio = null)
     {
@@ -488,4 +512,6 @@ public class DatSvc : IDatSvc
         //TODO Implementare import tipo db da file CSV
         throw new NotImplementedException();
     }
+
+
 }
