@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using MultiEditorPCC.Dat.DbSet;
+using SkiaSharp;
 using System.Text;
 
 
@@ -19,9 +20,6 @@ public class ArchivioSvc
     /// <param name="progettoEditor">Progetto attivo</param>
     public void CaricaDatiDBGioco(Dat.DbSet.ProgettoEditorPCC? progettoEditor, bool nuovoProgetto = false)
     {
-
-        //var t = DateTime.Now;
-
         if (progettoEditor == null) return;
 
         String path = progettoEditor.Cartella + Path.DirectorySeparatorChar;
@@ -38,18 +36,27 @@ public class ArchivioSvc
         }
         else ElencoArchiviDefault(progettoEditor.VersionePCC);
 
-
-        var f = Directory.GetFiles(path, "*.PAK", SearchOption.AllDirectories);
-        foreach (var nf in f) if (!FileArchiviDBGioco.Contains(nf.Substring(path.Length))) FileArchiviDBGioco.Add(nf.Substring(path.Length));
-        if (!FileArchiviDBGioco.Where(f => f.EndsWith(".FDI")).Any())
+        try
         {
-            f = Directory.GetFiles(path, "*.FDI", SearchOption.AllDirectories);
+            var f = Directory.GetFiles(path, "*.PAK", SearchOption.AllDirectories);
             foreach (var nf in f) if (!FileArchiviDBGioco.Contains(nf.Substring(path.Length))) FileArchiviDBGioco.Add(nf.Substring(path.Length));
+            if (!FileArchiviDBGioco.Where(f => f.EndsWith(".FDI")).Any())
+            {
+                f = Directory.GetFiles(path, "*.FDI", SearchOption.AllDirectories);
+                foreach (var nf in f) if (!FileArchiviDBGioco.Contains(nf.Substring(path.Length))) FileArchiviDBGioco.Add(nf.Substring(path.Length));
+            }
+            f = Directory.GetFiles(path, "*.PKF", SearchOption.AllDirectories);
+            foreach (var nf in f) if (!FileArchiviDBGioco.Contains(nf.Substring(path.Length))) FileArchiviDBGioco.Add(nf.Substring(path.Length));
+            f = Directory.GetFiles(path, "*.DBC", SearchOption.AllDirectories);
+            foreach (var nf in f) if (!FileArchiviDBGioco.Contains(nf.Substring(path.Length))) FileArchiviDBGioco.Add(nf.Substring(path.Length));
+
         }
-        f = Directory.GetFiles(path, "*.PKF", SearchOption.AllDirectories);
-        foreach (var nf in f) if (!FileArchiviDBGioco.Contains(nf.Substring(path.Length))) FileArchiviDBGioco.Add(nf.Substring(path.Length));
-        f = Directory.GetFiles(path, "*.DBC", SearchOption.AllDirectories);
-        foreach (var nf in f) if (!FileArchiviDBGioco.Contains(nf.Substring(path.Length))) FileArchiviDBGioco.Add(nf.Substring(path.Length));
+        catch (Exception ex)
+        {
+
+            return;
+        }
+
 
         ArchiviProgetto = new();
 
@@ -113,6 +120,8 @@ public class ArchivioSvc
         DatiProgettoAttivo = new();
 
         var d = AppSvc.Services.GetRequiredService<IDatSvc>();
+
+        d.ElaboraFileEditorPersonalizzati(progettoEditor.Nome);
 
         foreach (var a in ArchiviProgetto)
         {
@@ -482,7 +491,7 @@ public class ArchivioSvc
     }
 
     public List<String> ElencoPaletteArchivio() => DatiProgettoAttivo.Archivi.Keys
-                                                   .Where(k => k.EndsWith(".PAL")).ToList();
+                                                   .Where(k => k.ToUpper().EndsWith(".PAL")).ToList();
 
 
     public List<String> CartelleDatiArchivi(int Livello = 1, Dictionary<string, List<ElementoArchivio>>? archivi = null, String cartella = "")
@@ -550,7 +559,14 @@ public class ArchivioSvc
 
     }
 
-    public List<Byte> ElaboraCaricamentoImmagine(String fileSelezionato, String palette)
+    public int NumeroElementi(String fileSelezionato)
+    {
+        if (!DatiProgettoAttivo.Archivi.ContainsKey(fileSelezionato)) return 0;
+
+        return DatiProgettoAttivo.Archivi[fileSelezionato].Count;
+    }
+
+    public List<Byte> ElaboraCaricamentoImmagine(String fileSelezionato, String palette, int n = 1)
     {
         List<Byte> img = new();
 
@@ -564,15 +580,188 @@ public class ArchivioSvc
                 )
             {
 
-                if (DatiProgettoAttivo.Archivi[fileSelezionato].First().Dat[0] != 66 ||
-                    DatiProgettoAttivo.Archivi[fileSelezionato].First().Dat[1] != 77)
+                if (DatiProgettoAttivo.Archivi[fileSelezionato][n - 1].Dat[0] != 66 ||
+                    DatiProgettoAttivo.Archivi[fileSelezionato][n - 1].Dat[1] != 77)
                     return img;
             }
 
             if (testNome.EndsWith(".GIF"))
-                return DatiProgettoAttivo.Archivi[fileSelezionato].First().Dat;
+            {
+                if (!DatiProgettoAttivo.Archivi.ContainsKey($"Palette_{testNome}.PAL"))
+                {
+                    DatiProgettoAttivo.Archivi.Add($"Palette_{testNome}.PAL", new List<ElementoArchivio>()
+                {
+                    new() {
+                        Dat = DatiProgettoAttivo.Archivi[fileSelezionato][n - 1].Dat.GetRange(13,768)
+                    }
+                });
+                }
+
+                return DatiProgettoAttivo.Archivi[fileSelezionato][n - 1].Dat;
+            }
+
 
             //TODO Elaborazione caricamento immagine BMP/PAL
+
+            var bm = !(DatiProgettoAttivo.Archivi[fileSelezionato][n - 1].Dat[0] != 66 ||
+                    DatiProgettoAttivo.Archivi[fileSelezionato][n - 1].Dat[1] != 77);
+
+            if (testNome.EndsWith(".BMP") || bm)
+            {
+
+                var fb = DatiProgettoAttivo.Archivi[fileSelezionato][n - 1].Dat;
+
+                int w = 0;
+                int h = 0;
+
+                int bc = 24;
+
+
+                if (fb[10] == 26)
+                {
+                    w = fb[18] + 256 * fb[19];
+                    h = fb[20] + 256 * fb[21];
+                    bc = fb[24];
+                }
+
+                if (fb[10] == 54)
+                {
+                    w = fb[18] + 256 * fb[19];
+                    h = fb[22] + 256 * fb[23];
+
+
+                    if ((DatiProgettoAttivo.Archivi[fileSelezionato][n - 1].Dat.Count) - (w * h + 54) >= 1024)
+                    {
+                        //Palette inclusa nel BMP
+                        if (!DatiProgettoAttivo.Archivi.ContainsKey($"Palette_{testNome}.PAL"))
+                        {
+                            DatiProgettoAttivo.Archivi.Add($"Palette_{testNome}.PAL", new List<ElementoArchivio>()
+                {
+                    new() {
+                        Dat = DatiProgettoAttivo.Archivi[fileSelezionato][n - 1].Dat.GetRange(54,1024)
+                    }
+                });
+
+                        }
+
+                        return DatiProgettoAttivo.Archivi[fileSelezionato][n - 1].Dat;
+                    }
+
+                    bc = fb[28];
+                }
+
+                if (fb[10] != 26 && fb[10] != 54)
+                {
+
+                    return fb;
+                }
+
+                List<Byte> Byte_Immagine = fb.GetRange(fb[10], w * h * bc / 8);
+
+                var fp = DatiProgettoAttivo.Archivi[palette].First().Dat;
+
+                var pal = fp;
+
+                if (fp.Count > 1024)
+                {
+                    pal = fp.GetRange(fp.Count - 1024, 1024);
+                }
+
+                if (fp.Count == 768)
+                {
+                    pal = new();
+
+                    for (int i = 0; i < 256; i++)
+                    {
+                        pal.Add(fp[i * 3]);
+                        pal.Add(fp[i * 3 + 1]);
+                        pal.Add(fp[i * 3 + 2]);
+                        pal.Add(0);
+                    }
+                }
+
+                List<Byte> bmp = new();
+
+                bmp.Add(66);
+                bmp.Add(77);
+
+                int dim = 54 + pal.Count + (w * h);
+
+                bmp.AddRange(BitConverter.GetBytes(dim));
+                bmp.AddRange(BitConverter.GetBytes(0));
+                bmp.AddRange(BitConverter.GetBytes(54 + pal.Count));
+                bmp.AddRange(BitConverter.GetBytes(40));
+                bmp.AddRange(BitConverter.GetBytes(w));
+                bmp.AddRange(BitConverter.GetBytes(h));
+                bmp.AddRange(BitConverter.GetBytes(524289));
+                bmp.AddRange(BitConverter.GetBytes(0));
+                bmp.AddRange(BitConverter.GetBytes(3072)); //Funzionante anche con 0 ?
+                bmp.AddRange(BitConverter.GetBytes(2834));
+                bmp.AddRange(BitConverter.GetBytes(2834));
+                bmp.AddRange(BitConverter.GetBytes(0));
+                bmp.AddRange(BitConverter.GetBytes(0));
+
+                bmp.AddRange(pal);
+                bmp.AddRange(Byte_Immagine);
+
+                return bmp;
+            }
+
+            if (testNome.EndsWith(".PAL"))
+            {
+                var pal = DatiProgettoAttivo.Archivi[fileSelezionato].First().Dat;
+
+                var info = new SKImageInfo(800, 592);
+                using var surface = SKSurface.Create(info);
+                var canvas = surface.Canvas;
+                canvas.Clear(SKColors.White);
+
+                for (int i = 0; i < 256; i++)
+                {
+                    int r = (int)Math.Truncate((decimal)(i / 16));
+                    int c = i % 16;
+                    int x = (50 * c);
+                    int y = (37 * r);
+
+                    using var paint = new SKPaint
+                    {
+                        Color = new SKColor(pal[i * 4], pal[(i * 4) + 1], pal[(i * 4) + 2]),
+                        Style = SKPaintStyle.Fill
+                    };
+
+                    canvas.DrawRect(x, y, 50, 37, paint);
+
+                    using var t = new SKPaint
+                    {
+                        Color = new SKColor((byte)(255 - (int)pal[(i * 4) + 0]), (byte)(255 - (int)pal[(i * 4) + 1]), (byte)(255 - (int)pal[(i * 4) + 2])),
+                        IsAntialias = true,
+                        Style = SKPaintStyle.Fill
+                    };
+                    using var font = new SKFont
+                    {
+                        Size = 21
+                    };
+
+
+                    canvas.DrawText(i.ToString("X").PadLeft(2, '0'), new() { X = x + 25, Y = y + 18 }, SKTextAlign.Center, font, t);
+
+                }
+
+
+                using var image = surface.Snapshot();
+                using var data = image.Encode(SKEncodedImageFormat.Png, 100);
+                using var output = File.OpenWrite($"temp.png");
+                data.SaveTo(output);
+                output.Close();
+
+                var f = File.ReadAllBytes($"temp.png").ToList();
+
+                File.Delete($"temp.png");
+
+                return f;
+
+
+            }
 
 
         }
