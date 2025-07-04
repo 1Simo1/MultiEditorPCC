@@ -115,6 +115,8 @@ public partial class ArchiviViewModel : IEventSubscriber<ElaboraCaricamentoImmag
 
         Indicatore = $"{N} / {T}";
 
+        F = 1;
+
         Img = a.ElaboraCaricamentoImmagine(FileSelezionato, Palette, N);
 
         ElencoPalette = new(a.ElencoPaletteArchivio());
