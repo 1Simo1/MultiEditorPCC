@@ -568,11 +568,70 @@ public class ArchivioSvc
 
     public List<Byte> ElaboraCaricamentoImmagine(String fileSelezionato, String palette, int n = 1)
     {
+
         List<Byte> img = new();
 
         try
         {
             var testNome = fileSelezionato.ToUpper();
+
+            if (testNome.EndsWith(".DAT"))
+            {
+                var dat = DatiProgettoAttivo.Archivi[fileSelezionato][n - 1].Dat;
+                if (dat.Count % 16 != 0) return dat;
+
+                var fp = DatiProgettoAttivo.Archivi[palette].First().Dat;
+
+                var pal = fp;
+
+                if (fp.Count > 1024)
+                {
+                    pal = fp.GetRange(fp.Count - 1024, 1024);
+                }
+
+                if (fp.Count == 768)
+                {
+                    pal = new();
+
+                    for (int i = 0; i < 256; i++)
+                    {
+                        pal.Add(fp[i * 3]);
+                        pal.Add(fp[i * 3 + 1]);
+                        pal.Add(fp[i * 3 + 2]);
+                        pal.Add(0);
+                    }
+                }
+
+                List<Byte> bmp = new();
+
+                bmp.Add(66);
+                bmp.Add(77);
+
+                int dim = 54 + pal.Count + (dat.Count);
+
+                bmp.AddRange(BitConverter.GetBytes(dim));
+                bmp.AddRange(BitConverter.GetBytes(0));
+                bmp.AddRange(BitConverter.GetBytes(54 + pal.Count));
+                bmp.AddRange(BitConverter.GetBytes(40));
+                bmp.AddRange(BitConverter.GetBytes(16));
+                bmp.AddRange(BitConverter.GetBytes(dat.Count / 16));
+                bmp.AddRange(BitConverter.GetBytes(524289));
+                bmp.AddRange(BitConverter.GetBytes(0));
+                bmp.AddRange(BitConverter.GetBytes(3072)); //Funzionante anche con 0 ?
+                bmp.AddRange(BitConverter.GetBytes(2834));
+                bmp.AddRange(BitConverter.GetBytes(2834));
+                bmp.AddRange(BitConverter.GetBytes(0));
+                bmp.AddRange(BitConverter.GetBytes(0));
+
+                bmp.AddRange(pal);
+                bmp.AddRange(dat);
+
+                return bmp;
+
+
+            }
+
+            if (testNome.EndsWith(".JPG")) return DatiProgettoAttivo.Archivi[fileSelezionato][n - 1].Dat;
 
             if (!testNome.EndsWith(".BMP") &&
                 !testNome.EndsWith(".GIF") &&
@@ -601,7 +660,7 @@ public class ArchivioSvc
             }
 
 
-            //TODO Elaborazione caricamento immagine BMP/PAL
+
 
             var bm = !(DatiProgettoAttivo.Archivi[fileSelezionato][n - 1].Dat[0] != 66 ||
                     DatiProgettoAttivo.Archivi[fileSelezionato][n - 1].Dat[1] != 77);
@@ -774,6 +833,37 @@ public class ArchivioSvc
 
         return img;
     }
+
+    public List<Byte> IngrandisciImmagine(List<Byte>? dat = null, String? fileSelezionato = null, String? palette = null, int n = 1, int fx = 1, int fy = 0)
+    {
+        if (fx == 0 && fy == 0) return new();
+
+        if (fy == 0) fy = fx;
+        if (fx == 0) fx = fy;
+
+        if (dat != null)
+        {
+            using MemoryStream ms = new MemoryStream(dat.ToArray());
+            using SKBitmap bmp = SKBitmap.Decode(ms);
+            var img = bmp.Resize(new SKImageInfo(bmp.Width * fx, bmp.Height * fy), SKSamplingOptions.Default);
+            return SKImage.FromBitmap(img).Encode().ToArray().ToList();
+
+
+        }
+        else if (fileSelezionato != null && palette != null)
+        {
+
+            using MemoryStream ms = new MemoryStream(ElaboraCaricamentoImmagine(fileSelezionato, palette, n).ToArray());
+            using SKBitmap bmp = SKBitmap.Decode(ms);
+            var img = bmp.Resize(new SKImageInfo(bmp.Width * fx, bmp.Height * fy), SKSamplingOptions.Default);
+            return SKImage.FromBitmap(img).Encode().ToArray().ToList();
+
+        }
+
+        return new();
+    }
+
+
 }
 
 public enum TipoArchivio
