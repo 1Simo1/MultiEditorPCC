@@ -48,6 +48,12 @@ public partial class ArchiviViewModel : IEventSubscriber<ElaboraCaricamentoImmag
 
     [Property] private List<Byte> _img;
 
+    //Fattore di ingrandimento immagine visualizzata
+    //(in questa pagina imnosto un comando che mantiene le proporzioni)
+    //(la parte che elabora le immagini, però, supporta sia il fattore
+    //di ingrandimento in larghezza, sia quello in altezza)
+    [Property] private int _f;
+
     private readonly ArchivioSvc a = AppSvc.Services.GetRequiredService<ArchivioSvc>();
 
     partial void OnInitialize()
@@ -56,6 +62,7 @@ public partial class ArchiviViewModel : IEventSubscriber<ElaboraCaricamentoImmag
         ElencoPalette = new(a.ElencoPaletteArchivio());
         Livello = 1;
         N = 1;
+        F = 1;
     }
 
     [Command]
@@ -109,6 +116,7 @@ public partial class ArchiviViewModel : IEventSubscriber<ElaboraCaricamentoImmag
         Indicatore = $"{N} / {T}";
 
         Img = a.ElaboraCaricamentoImmagine(FileSelezionato, Palette, N);
+
         ElencoPalette = new(a.ElencoPaletteArchivio());
         Palette = temp;
     }
@@ -140,6 +148,18 @@ public partial class ArchiviViewModel : IEventSubscriber<ElaboraCaricamentoImmag
     {
         if (Palette == null) return;
         Img = a.ElaboraCaricamentoImmagine(Palette, Palette, 1);
+    }
+
+    [Command]
+    private void IngrandisciImmagine(object op)
+    {
+        if (Palette == null || FileSelezionato == null || op == null) return;
+
+        int m = op.ToString().Equals("+") ? F + 1 : Math.Max(F - 1, 1);
+
+        F = m;
+
+        Img = a.IngrandisciImmagine(null, FileSelezionato, Palette, N, F);
     }
 
 }

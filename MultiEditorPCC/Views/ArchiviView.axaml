@@ -128,8 +128,29 @@
 					
 				</Button>
 
-				<TextBlock Text="{Binding FileSelezionato}" VerticalAlignment="Center" />
+				<TextBlock Text="{Binding FileSelezionato}" VerticalAlignment="Center" Margin="7 0"/>
 
+				<TextBlock Text="{Binding Img, Converter={StaticResource ResourceKey=VisualizzatoreImgConverter},ConverterParameter=W}" VerticalAlignment="Center" Margin="7 0"/>
+				<TextBlock Text="x" VerticalAlignment="Center" Margin="7 0"/>
+				<TextBlock Text="{Binding Img, Converter={StaticResource ResourceKey=VisualizzatoreImgConverter},ConverterParameter=H}" VerticalAlignment="Center" Margin="7 0"/>
+
+				<Button VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0 7"
+						Command="{Binding IngrandisciImmagineCommand}" CommandParameter="-" >
+					<ui:SymbolIcon Symbol="ZoomOut" />
+					
+				</Button>
+
+				
+
+				<Button VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0 7"
+						Command="{Binding IngrandisciImmagineCommand}" CommandParameter="+" >
+
+					<ui:SymbolIcon Symbol="ZoomIn" />
+
+				</Button>
+				
+				
+				
 			</StackPanel>
 			
 			
