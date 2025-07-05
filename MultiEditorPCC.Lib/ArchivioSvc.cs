@@ -496,6 +496,8 @@ public class ArchivioSvc
 
     public List<String> CartelleDatiArchivi(int Livello = 1, Dictionary<string, List<ElementoArchivio>>? archivi = null, String cartella = "")
     {
+
+        if (DatiProgettoAttivo == null) return new();
         if (archivi == null) archivi = DatiProgettoAttivo.Archivi;
 
         if (Livello <= 0) return new();
@@ -533,6 +535,14 @@ public class ArchivioSvc
 
         return e;
 
+    }
+
+
+    public List<String> CercaFileDatiArchivi(String cerca, String cartella = "")
+    {
+        var e = DatiProgettoAttivo.Archivi.Keys.Where(k => k.Contains(cerca.Trim()));
+        if (!String.IsNullOrEmpty(cartella)) e = e.Where(k => k.StartsWith(cartella));
+        return e.ToList();
     }
 
     public List<String> FileDatiArchivi(int Livello = 1, Dictionary<string, List<ElementoArchivio>>? archivi = null, String cartella = "")

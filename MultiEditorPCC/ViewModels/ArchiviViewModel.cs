@@ -29,6 +29,9 @@ public partial class ArchiviViewModel : IEventSubscriber<ElaboraCaricamentoImmag
     [Property]
     private String? _palette;
 
+    [Property]
+    private String? _ricercaFile;
+
     [Property] private ObservableCollection<String> _elencoFilesCartellaArchivio;
 
     [PropertyPublishEvent(typeof(ElaboraCaricamentoImmagine))]
@@ -162,6 +165,16 @@ public partial class ArchiviViewModel : IEventSubscriber<ElaboraCaricamentoImmag
         F = m;
 
         Img = a.IngrandisciImmagine(null, FileSelezionato, Palette, N, F);
+    }
+
+    [Command]
+    private void CercaFile()
+    {
+        if (String.IsNullOrEmpty(RicercaFile.Trim())) return;
+
+        ElencoFilesCartellaArchivio = new(a.CercaFileDatiArchivi(RicercaFile.Trim()));
+        NumeroFileTrovati = ElencoFilesCartellaArchivio.Count;
+
     }
 
 }

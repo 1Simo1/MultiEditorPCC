@@ -21,37 +21,47 @@
 
 	</UserControl.Resources>
 	
-	<Grid ColumnDefinitions="Auto,842">
+	<Grid ColumnDefinitions="*,842,*" Margin="0" RowSpacing="7">
 
-		<StackPanel Orientation="Vertical" Grid.Column="0">
-			<TextBlock Text="" />
-			<StackPanel Orientation="Horizontal">
-				<ComboBox     ItemsSource="{Binding ElencoCartelleArchiviPrimoLivello}"
+		<Grid Grid.Column="0" 
+			  RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,*"
+			  ColumnDefinitions="*,Auto" ZIndex="21">
+			<TextBlock Text="" 
+					   Grid.Row="0"
+					   Grid.Column="0"
+					   Grid.ColumnSpan="2"
+					   />
+
+			<ComboBox ItemsSource="{Binding ElencoCartelleArchiviPrimoLivello}"
 							  SelectedItem="{Binding CartellaArchivioPrimoLivello}"
 							  VerticalAlignment="Center"
 							  HorizontalAlignment="Stretch"
 							  Margin="0 7"
+						      Grid.Row="1"
+							  Grid.Column="0"
 						   >
-					<ComboBox.ItemTemplate>
-						<DataTemplate>
-							
-								<TextBlock Text="{Binding}" />
-							
-						</DataTemplate>
-					</ComboBox.ItemTemplate>
-				</ComboBox>
+				<ComboBox.ItemTemplate>
+					<DataTemplate>
 
-				<Button VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0 7"
+						<TextBlock Text="{Binding}" />
+
+					</DataTemplate>
+				</ComboBox.ItemTemplate>
+			</ComboBox>
+			<Button VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0 7"
+					Grid.Column="1" Grid.Row="1"
 						Command="{Binding ConfermaSceltaCartellaCommand}" CommandParameter="1" >
-					<TextBlock Text="{x:Static lng:Resources.Confirm}" HorizontalAlignment="Center" />
-				</Button>
-			</StackPanel>
+				<TextBlock Text="{x:Static lng:Resources.Confirm}" HorizontalAlignment="Center" />
+			</Button>
 
 			<ComboBox     ItemsSource="{Binding ElencoCartelleArchivi}"
 							  SelectedItem="{Binding CartellaArchivio}"
 							  VerticalAlignment="Center"
 							  HorizontalAlignment="Stretch"
 							  Margin="0 7"
+						  Grid.Row="2"
+						  Grid.Column="0"
+						  Grid.ColumnSpan="2"
 						   >
 				<ComboBox.ItemTemplate>
 					<DataTemplate>
@@ -63,38 +73,47 @@
 			</ComboBox>
 
 			<Button VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0 7"
-						Command="{Binding ConfermaSceltaCartellaCommand}" CommandParameter="{Binding Livello}" >
+						  Grid.Row="3"
+						  Grid.Column="0"
+						  Grid.ColumnSpan="2"
+					Command="{Binding ConfermaSceltaCartellaCommand}" CommandParameter="{Binding Livello}" >
 				<TextBlock Text="{x:Static lng:Resources.Confirm}" HorizontalAlignment="Center" />
 			</Button>
 
-			<StackPanel Orientation="Horizontal">
-				<TextBlock Text="{Binding NumeroFileTrovati}" />
-			</StackPanel>
+			<TextBlock Text="{x:Static lng:Resources.Search}"
+					      Grid.Row="4"
+						  Grid.Column="0"
+						  Grid.ColumnSpan="2"
+					   />
 
-			<ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Hidden" MaxHeight="321">
-				<ListBox ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-						 ScrollViewer.VerticalScrollBarVisibility="Auto"
-						 ItemsSource="{Binding ElencoFilesCartellaArchivio}"
-						 SelectedItem="{Binding FileSelezionato}"
-						 Margin="0 0 0 21"
-						 >
-					<ListBox.ItemTemplate>
-						<DataTemplate>
-						
-								<TextBlock Text="{Binding}" FontSize="15"/>
-						</DataTemplate>
-					</ListBox.ItemTemplate>
-				</ListBox>
-			</ScrollViewer>
+			<TextBox Text="{Binding RicercaFile}" 
+					 Grid.Column="0" 
+					 Grid.Row="5"
+					 Height="21"/>
 
-			<TextBlock Text="" />
-			<StackPanel Orientation="Horizontal">
+			<Button Grid.Column="1"
+					 Grid.Row="5"
+				Command="{Binding CercaFileCommand}">
+				<ui:SymbolIcon Symbol="Find" />
+			</Button>
+
+			<TextBlock Text="Palette"
+					   Grid.Row="6"
+						  Grid.Column="0"
+						  Grid.ColumnSpan="2"
+					   />
+
 			<ComboBox     ItemsSource="{Binding ElencoPalette}"
-										  SelectedItem="{Binding Palette}"
-										  VerticalAlignment="Center"
-										  HorizontalAlignment="Stretch"
-										  Margin="0 7"
+											  SelectedItem="{Binding Palette}"
+											  VerticalAlignment="Center"
+											  HorizontalAlignment="Stretch"
+											  Margin="0 7"
+						  Grid.Row="7"
+						  Grid.Column="0"
 						   >
+				
+				
+				
 				<ComboBox.ItemTemplate>
 					<DataTemplate>
 
@@ -104,11 +123,35 @@
 				</ComboBox.ItemTemplate>
 			</ComboBox>
 
-			<Button Command="{Binding VisualizzaPaletteCommand}">
+			<Button Grid.Row="7"
+					Grid.Column="1"
+				Command="{Binding VisualizzaPaletteCommand}">
 				<ui:SymbolIcon Symbol="ViewAll" />
 			</Button>
-			</StackPanel>
-		</StackPanel>
+
+			<TextBlock Text="" Grid.Row="8" Grid.Column="0"/>
+			<TextBlock Text="{Binding NumeroFileTrovati}" Grid.Row="8" Grid.Column="1"/>
+
+			<ScrollViewer Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="2" Margin="21"
+				VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Hidden" MaxHeight="321" HorizontalAlignment="Stretch">
+				<ListBox ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+						 ScrollViewer.VerticalScrollBarVisibility="Auto"
+						 ItemsSource="{Binding ElencoFilesCartellaArchivio}"
+						 SelectedItem="{Binding FileSelezionato}"
+						 Margin="0 0 0 21"
+						 >
+					<ListBox.ItemTemplate>
+						<DataTemplate>
+
+							<TextBlock Text="{Binding}" FontSize="15"/>
+						</DataTemplate>
+					</ListBox.ItemTemplate>
+				</ListBox>
+			</ScrollViewer>
+
+
+
+		</Grid>
 		
 		<StackPanel Orientation="Vertical" Grid.Column="1">
 
@@ -143,6 +186,7 @@
 				
 
 				<Button VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0 7"
+						
 						Command="{Binding IngrandisciImmagineCommand}" CommandParameter="+" >
 
 					<ui:SymbolIcon Symbol="ZoomIn" />
@@ -154,12 +198,11 @@
 			</StackPanel>
 			
 			
-			
-			
+
 			<Border
 					Width="800"
 					Height="600"
-					Margin="21"
+					Margin="21 0 0 21"
 					BorderBrush="DarkSlateGray"
 					BorderThickness="1"
 					Background="Transparent"

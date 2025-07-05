@@ -927,6 +927,15 @@ namespace MultiEditorPCC.Locales {
         /// <summary>
         ///   Cerca una stringa localizzata simile a .
         /// </summary>
+        public static string Search {
+            get {
+                return ResourceManager.GetString("Search", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a .
+        /// </summary>
         public static string SearchAllTeamsInCountry {
             get {
                 return ResourceManager.GetString("SearchAllTeamsInCountry", resourceCulture);

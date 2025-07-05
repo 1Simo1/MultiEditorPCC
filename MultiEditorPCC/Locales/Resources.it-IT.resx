@@ -465,4 +465,7 @@
   <data name="Stadium" xml:space="preserve">
     <value>Stadio</value>
   </data>
+  <data name="Search" xml:space="preserve">
+    <value>Cerca</value>
+  </data>
 </root>
