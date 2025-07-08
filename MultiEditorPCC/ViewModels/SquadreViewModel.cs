@@ -265,10 +265,21 @@ public partial class SquadreViewModel : IEventSubscriber<SquadraSelezionataElenc
     {
         var a = AppSvc.Services.GetRequiredService<ArchivioSvc>().DatiProgettoAttivo.Giocatori;
 
-        a[a.IndexOf(a.Find(g => g.Id == eventData.Giocatore.Id))] = eventData.Giocatore;
+        int m = (int)Math.Truncate((decimal)
+                 (eventData.Giocatore.Punteggi[1].Punteggio +
+                  eventData.Giocatore.Punteggi[2].Punteggio +
+                  eventData.Giocatore.Punteggi[3].Punteggio +
+                  eventData.Giocatore.Punteggi[4].Punteggio) / 4);
 
-        var d = AppSvc.Services.GetRequiredService<IDatSvc>();
-        SquadraSelezionata = d.ComponiInformazioniCompleteSquadra(SquadraSelezionata);
+        eventData.Giocatore.Punteggi[0].Punteggio = m;
+
+
+        if (a.Any())
+        {
+            a[a.IndexOf(a.Find(g => g.Id == eventData.Giocatore.Id))] = eventData.Giocatore;
+            var d = AppSvc.Services.GetRequiredService<IDatSvc>();
+            SquadraSelezionata = d.ComponiInformazioniCompleteSquadra(SquadraSelezionata);
+        }
         SchedaGiocatore = false;
         SchedaVisualizzata = false;
         GiocatoriSquadraSelezionata = new(SquadraSelezionata.Giocatori.OrderBy(g => g.Slot));

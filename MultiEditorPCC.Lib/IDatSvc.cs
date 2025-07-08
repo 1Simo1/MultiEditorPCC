@@ -218,17 +218,12 @@ public class DatSvc : IDatSvc
         {
             if (elemento.Nome.StartsWith("EQ") && elemento.Nome.EndsWith("DBC"))
             {
-
-
-
                 Squadra sq = DBC.LeggiSquadra(elemento);
                 a.DatiProgettoAttivo.Squadre.Add(sq);
-                Giocatore g = DBC.LeggiGiocatore(elemento);
-                a.DatiProgettoAttivo.Giocatori.Add(g);
-                Allenatore e = DBC.LeggiAllenatore(elemento);
-                a.DatiProgettoAttivo.Allenatori.Add(e);
-                Stadio s = DBC.LeggiStadio(elemento);
-                a.DatiProgettoAttivo.Stadi.Add(s);
+
+                foreach (var g in sq.Giocatori) a.DatiProgettoAttivo.Giocatori.Add(g);
+                foreach (var e in sq.Allenatori) a.DatiProgettoAttivo.Allenatori.Add(e);
+                a.DatiProgettoAttivo.Stadi.Add(sq.Stadio);
             }
 
 
