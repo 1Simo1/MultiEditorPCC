@@ -32,30 +32,31 @@ public class ArchivioSvc
          * a più progetti e a più versioni del gioco */
         {
             FileArchiviDBGioco = new();
+            try
+            {
+
+
+            }
+            catch (Exception ex)
+            {
+
+                return;
+            }
 
         }
         else ElencoArchiviDefault(progettoEditor.VersionePCC);
 
-        try
+        var f = Directory.GetFiles(path, "*.PAK", SearchOption.AllDirectories);
+        foreach (var nf in f) if (!FileArchiviDBGioco.Contains(nf.Substring(path.Length))) FileArchiviDBGioco.Add(nf.Substring(path.Length));
+        if (!FileArchiviDBGioco.Where(f => f.EndsWith(".FDI")).Any())
         {
-            var f = Directory.GetFiles(path, "*.PAK", SearchOption.AllDirectories);
+            f = Directory.GetFiles(path, "*.FDI", SearchOption.AllDirectories);
             foreach (var nf in f) if (!FileArchiviDBGioco.Contains(nf.Substring(path.Length))) FileArchiviDBGioco.Add(nf.Substring(path.Length));
-            if (!FileArchiviDBGioco.Where(f => f.EndsWith(".FDI")).Any())
-            {
-                f = Directory.GetFiles(path, "*.FDI", SearchOption.AllDirectories);
-                foreach (var nf in f) if (!FileArchiviDBGioco.Contains(nf.Substring(path.Length))) FileArchiviDBGioco.Add(nf.Substring(path.Length));
-            }
-            f = Directory.GetFiles(path, "*.PKF", SearchOption.AllDirectories);
-            foreach (var nf in f) if (!FileArchiviDBGioco.Contains(nf.Substring(path.Length))) FileArchiviDBGioco.Add(nf.Substring(path.Length));
-            f = Directory.GetFiles(path, "*.DBC", SearchOption.AllDirectories);
-            foreach (var nf in f) if (!FileArchiviDBGioco.Contains(nf.Substring(path.Length))) FileArchiviDBGioco.Add(nf.Substring(path.Length));
-
         }
-        catch (Exception ex)
-        {
-
-            return;
-        }
+        f = Directory.GetFiles(path, "*.PKF", SearchOption.AllDirectories);
+        foreach (var nf in f) if (!FileArchiviDBGioco.Contains(nf.Substring(path.Length))) FileArchiviDBGioco.Add(nf.Substring(path.Length));
+        f = Directory.GetFiles(path, "*.DBC", SearchOption.AllDirectories);
+        foreach (var nf in f) if (!FileArchiviDBGioco.Contains(nf.Substring(path.Length))) FileArchiviDBGioco.Add(nf.Substring(path.Length));
 
 
         ArchiviProgetto = new();
@@ -91,6 +92,8 @@ public class ArchivioSvc
 
                 if (a == TipoArchivio.FDI) fdi = true;
                 if (a == TipoArchivio.PAK) pak = true;
+
+
 
                 ArchiviProgetto.Add(file, LeggiArchivio(dati, fdi, pak));
 
@@ -284,60 +287,61 @@ public class ArchivioSvc
         List<ElementoArchivio> elementi = new();
         var header = HeaderArchivio(dati, fdi, pak);
 
-        try
+
+
+        if (pak)
         {
+            header.RemoveRange(0, 16);
+            int delta = 0;
 
-            if (pak)
+            while (delta < header.Count)
             {
-                header.RemoveRange(0, 16);
-                int delta = 0;
+                int offset = BitConverter.ToInt32(header.GetRange(delta + 0, 4).ToArray(), 0);
+                int len = BitConverter.ToInt32(header.GetRange(delta + 4, 4).ToArray(), 0);
+                bool ok = BitConverter.ToInt32(header.GetRange(delta + 8, 4).ToArray(), 0) == len;
 
-                while (delta < header.Count)
+                if (!ok) return elementi;
+
+                delta += 12;
+
+                bool nf = true;
+
+                StringBuilder sb = new();
+
+                while (nf)
                 {
-                    int offset = BitConverter.ToInt32(header.GetRange(delta + 0, 4).ToArray(), 0);
-                    int len = BitConverter.ToInt32(header.GetRange(delta + 4, 4).ToArray(), 0);
-                    bool ok = BitConverter.ToInt32(header.GetRange(delta + 8, 4).ToArray(), 0) == len;
-
-                    if (!ok) return elementi;
-
-                    delta += 12;
-
-                    bool nf = true;
-
-                    StringBuilder sb = new();
-
-                    while (nf)
-                    {
-                        var b = header.GetRange(delta + 0, 4);
-                        sb.Append($"{(char)b[0]}{(char)b[1]}{(char)b[2]}{(char)b[3]}");
-                        nf = !b.Contains(0);
-                        delta += 4;
-                    }
-
-                    String nomeFile = sb.ToString();
-                    nomeFile = nomeFile.Substring(0, nomeFile.IndexOf((char)0)).TrimEnd((char)0);
-
-                    elementi.Add(new()
-                    {
-                        Codice = -1,
-                        Nome = nomeFile,
-                        Offset = offset,
-                        Size = len,
-                        Dat = dati.GetRange(offset, len)
-                    });
-
+                    var b = header.GetRange(delta + 0, 4);
+                    sb.Append($"{(char)b[0]}{(char)b[1]}{(char)b[2]}{(char)b[3]}");
+                    nf = !b.Contains(0);
+                    delta += 4;
                 }
 
+                String nomeFile = sb.ToString();
+                nomeFile = nomeFile.Substring(0, nomeFile.IndexOf((char)0)).TrimEnd((char)0);
 
+                elementi.Add(new()
+                {
+                    Codice = -1,
+                    Nome = nomeFile,
+                    Offset = offset,
+                    Size = len,
+                    Dat = dati.GetRange(offset, len)
+                });
 
-                return elementi;
             }
 
-            if (!fdi)
+
+
+            return elementi;
+        }
+
+        if (!fdi)
+        {
+            header.RemoveRange(0, 237);
+            int n = header.Count / 38;
+            for (int i = 1; i <= n; i++)
             {
-                header.RemoveRange(0, 237);
-                int n = header.Count / 38;
-                for (int i = 1; i <= n; i++)
+                try
                 {
                     int delta = (i - 1) * 38;
                     int offset = BitConverter.ToInt32(header.GetRange(delta + 26, 4).ToArray(), 0);
@@ -345,7 +349,9 @@ public class ArchivioSvc
                     if (offset != 0 && offset < dati.Count)
                     {
                         String nome = DecodificaNome(header.GetRange(delta + 0, 26));
+
                         int len = BitConverter.ToInt32(header.GetRange(delta + 30, 4).ToArray(), 0);
+
 
                         elementi.Add(new()
                         {
@@ -357,36 +363,38 @@ public class ArchivioSvc
                         });
                     }
                 }
-            }
-            else
-            {
-                header.RemoveRange(0, 20);
-                int n = header.Count / 13;
-
-                for (int i = 1; i <= n; i++)
+                catch (Exception ex)
                 {
-                    int delta = (i - 1) * 13;
-                    int codice = BitConverter.ToInt32(header.GetRange(delta, 4).ToArray(), 0);
-                    int offset = BitConverter.ToInt32(header.GetRange(delta + 5, 4).ToArray(), 0);
-                    int len = BitConverter.ToInt32(header.GetRange(delta + 9, 4).ToArray(), 0);
-
-                    elementi.Add(new()
-                    {
-                        Codice = codice,
-                        Nome = String.Empty,
-                        Offset = offset,
-                        Size = len,
-                        Dat = dati.GetRange(offset, len)
-                    });
+                    continue;
                 }
-
-
             }
         }
-        catch (Exception e)
+        else
         {
-            return new();
+            header.RemoveRange(0, 20);
+            int n = header.Count / 13;
+
+            for (int i = 1; i <= n; i++)
+            {
+                int delta = (i - 1) * 13;
+                int codice = BitConverter.ToInt32(header.GetRange(delta, 4).ToArray(), 0);
+                int offset = BitConverter.ToInt32(header.GetRange(delta + 5, 4).ToArray(), 0);
+                int len = BitConverter.ToInt32(header.GetRange(delta + 9, 4).ToArray(), 0);
+
+                elementi.Add(new()
+                {
+                    Codice = codice,
+                    Nome = String.Empty,
+                    Offset = offset,
+                    Size = len,
+                    Dat = dati.GetRange(offset, len)
+                });
+            }
+
+
         }
+
+
 
         return elementi;
     }
@@ -443,7 +451,7 @@ public class ArchivioSvc
         }
         catch (Exception e)
         {
-            return new();
+
         }
 
         return header;
