@@ -68,7 +68,7 @@ public interface IDatSvc
                                         List<Allenatore> allenatori = null,
                                         List<Stadio> stadi = null
                                        );
-    T ImportaDBEditorDaFileCSV<T>(String PathCSV) where T : class;
+    List<T> ImportaDBEditorDaFileCSV<T>(String PathCSV) where T : class;
 
 }
 
@@ -216,14 +216,20 @@ public class DatSvc : IDatSvc
         }
         else //versionePCC 6 o precedente (esamino un archivio NON FDI, oppure ho un progetto libero)
         {
+            //TODO Aggiornare per supportare DBC in sostituzione di dati in PKF originale
             if (elemento.Nome.StartsWith("EQ") && elemento.Nome.EndsWith("DBC"))
             {
                 Squadra sq = DBC.LeggiSquadra(elemento);
-                a.DatiProgettoAttivo.Squadre.Add(sq);
+                if (a.DatiProgettoAttivo.Squadre.Find(x => x.Id == sq.Id) != null)
+                {
+                    a.DatiProgettoAttivo.Squadre.Remove(a.DatiProgettoAttivo.Squadre.Find(x => x.Id == sq.Id));
+                }
 
+                a.DatiProgettoAttivo.Squadre.Add(sq);
                 foreach (var g in sq.Giocatori) a.DatiProgettoAttivo.Giocatori.Add(g);
                 foreach (var e in sq.Allenatori) a.DatiProgettoAttivo.Allenatori.Add(e);
                 a.DatiProgettoAttivo.Stadi.Add(sq.Stadio);
+
             }
 
 
@@ -231,7 +237,7 @@ public class DatSvc : IDatSvc
         }
 
 
-        //TODO Carico archivi e/o progetto libero
+
         if (t.Count == 1 && t.First() == ArchivioSvc.TipoDatoDB.ARCHIVIO)
         {
             String k = $"{archivio}{Path.DirectorySeparatorChar}{elemento.Nome}";
@@ -502,10 +508,20 @@ public class DatSvc : IDatSvc
         return true;
     }
 
-    public T ImportaDBEditorDaFileCSV<T>(string PathCSV) where T : class
+    public List<T> ImportaDBEditorDaFileCSV<T>(string PathCSV) where T : class
     {
+        List<T> elenco = new();
+
+        DatabaseCSV.contenutoCSV = File.ReadAllText(PathCSV);
+
         //TODO Implementare import tipo db da file CSV
-        throw new NotImplementedException();
+        //switch (T)
+        //{
+        //    case Squadra: elenco = DatabaseCSV.LeggiSquadre() as List<Squadra>;
+        //}
+
+
+        return elenco;
     }
 
 

@@ -1,7 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using MultiEditorPCC.Dat.DbSet;
+using MultiEditorPCC.Lib.Archivi;
 using SkiaSharp;
 using System.Text;
+using static MultiEditorPCC.Lib.ArchivioSvc;
 
 
 namespace MultiEditorPCC.Lib;
@@ -46,6 +48,24 @@ public class ArchivioSvc
         }
         else ElencoArchiviDefault(progettoEditor.VersionePCC);
 
+
+        List<String> tempDir = new();
+        List<String> fileDBC = new();
+
+        foreach (var fdb in FileArchiviDBGioco)
+        {
+            if (Directory.Exists($"{progettoEditor.Cartella}{Path.DirectorySeparatorChar}{fdb}"))
+            {
+                tempDir.Add(fdb);
+                var fdbc = Directory.GetFiles($"{progettoEditor.Cartella}{Path.DirectorySeparatorChar}{fdb}", "*.DBC");
+                foreach (var nf in fdbc) fileDBC.Add(nf.Substring(path.Length));
+            }
+        }
+
+        foreach (var d in tempDir) FileArchiviDBGioco.Remove(d);
+
+        FileArchiviDBGioco.AddRange(fileDBC);
+
         var f = Directory.GetFiles(path, "*.PAK", SearchOption.AllDirectories);
         foreach (var nf in f) if (!FileArchiviDBGioco.Contains(nf.Substring(path.Length))) FileArchiviDBGioco.Add(nf.Substring(path.Length));
         if (!FileArchiviDBGioco.Where(f => f.EndsWith(".FDI")).Any())
@@ -55,8 +75,7 @@ public class ArchivioSvc
         }
         f = Directory.GetFiles(path, "*.PKF", SearchOption.AllDirectories);
         foreach (var nf in f) if (!FileArchiviDBGioco.Contains(nf.Substring(path.Length))) FileArchiviDBGioco.Add(nf.Substring(path.Length));
-        f = Directory.GetFiles(path, "*.DBC", SearchOption.AllDirectories);
-        foreach (var nf in f) if (!FileArchiviDBGioco.Contains(nf.Substring(path.Length))) FileArchiviDBGioco.Add(nf.Substring(path.Length));
+
 
 
         ArchiviProgetto = new();
@@ -88,14 +107,17 @@ public class ArchivioSvc
                 bool fdi = false;
                 bool pak = false;
 
-                var a = LeggiTipoArchivio(dati.GetRange(0, 8));
+                bool dbc = percorsoFile.EndsWith(".DBC");
 
-                if (a == TipoArchivio.FDI) fdi = true;
-                if (a == TipoArchivio.PAK) pak = true;
+                if (!dbc)
+                {
+                    var a = LeggiTipoArchivio(dati.GetRange(0, 8));
+                    if (a == TipoArchivio.FDI) fdi = true;
+                    if (a == TipoArchivio.PAK) pak = true;
+                }
 
 
-
-                ArchiviProgetto.Add(file, LeggiArchivio(dati, fdi, pak));
+                ArchiviProgetto.Add(file, LeggiArchivio(dati, fdi, pak, dbc));
 
 
 
@@ -124,6 +146,7 @@ public class ArchivioSvc
 
         var d = AppSvc.Services.GetRequiredService<IDatSvc>();
 
+        //Aggiungo palette incluse nella cartella dell'editor
         d.ElaboraFileEditorPersonalizzati(progettoEditor.Nome);
 
         foreach (var a in ArchiviProgetto)
@@ -141,7 +164,172 @@ public class ArchivioSvc
             }
         }
 
+
+
+        //Elaboro CSV dati Squadre, Giocatori, Allenatori, Stadi
+
+
+        Dictionary<String, TipoDatoDB> tabellaFileCSV = CalcolaTabellaDBFileCSV(progettoEditor.Nome);
+
+        foreach (var fc in tabellaFileCSV)
+        {
+            DatabaseCSV.contenutoCSV = fc.Key;
+            switch (fc.Value)
+            {
+                case TipoDatoDB.SQUADRA:
+                    var squadreCSV = DatabaseCSV.LeggiSquadre();
+                    foreach (var sq in squadreCSV)
+                    {
+                        if (sq.Id <= 0)
+                        {
+                            int? id = (int?)(DatiProgettoAttivo.Squadre.Where(x => x.Nome.Equals(sq.Nome.Trim())).FirstOrDefault()?.Id);
+                            if (id == null || id <= 0) id = (int?)(DatiProgettoAttivo.Squadre.Max(x => x.Id) + 1);
+                            sq.Id = (uint)id;
+                        }
+
+                        var cercaSquadra = DatiProgettoAttivo.Squadre.Find(x => x.Id == sq.Id);
+
+                        if (cercaSquadra != null)
+                        {
+                            sq.Boh = cercaSquadra.Boh;
+                            foreach (var xs in DatiProgettoAttivo.Squadre.Where(x => x.Id == cercaSquadra.Id).ToList())
+                                DatiProgettoAttivo.Squadre.Remove(xs);
+                        }
+
+                        DatiProgettoAttivo.Squadre.Add(sq);
+                    }
+                    break;
+
+                case TipoDatoDB.GIOCATORE:
+                    var giocatoriCSV = DatabaseCSV.LeggiGiocatori();
+                    foreach (var gc in giocatoriCSV)
+                    {
+
+                        if (gc.CodiceSquadra > 0) DatiProgettoAttivo.Squadre.Find(x => x.Id == gc.CodiceSquadra).Giocatori.Add(gc);
+
+                        if (gc.Id <= 0)
+                        {
+                            int? id = (int?)(DatiProgettoAttivo.Giocatori.Where(x => x.Nome.Equals(gc.Nome.Trim())).FirstOrDefault()?.Id);
+                            if (id == null || id <= 0) id = (int?)(DatiProgettoAttivo.Giocatori.Max(x => x.Id) + 1);
+                            gc.Id = (int)id;
+                        }
+
+                        var cercaGiocatore = DatiProgettoAttivo.Giocatori.Find(x => x.Id == gc.Id);
+
+                        if (cercaGiocatore != null)
+                        {
+                            foreach (var xs in DatiProgettoAttivo.Giocatori.Where(x => x.Id == cercaGiocatore.Id).ToList())
+                                DatiProgettoAttivo.Giocatori.Remove(xs);
+
+                        }
+
+                        DatiProgettoAttivo.Giocatori.Add(gc);
+                    }
+
+
+                    break;
+
+                case TipoDatoDB.ALLENATORE:
+                    var allenatoriCSV = DatabaseCSV.LeggiAllenatori();
+
+                    foreach (var al in allenatoriCSV)
+                    {
+                        if (al.Id <= 0)
+                        {
+                            int? id = (int?)(DatiProgettoAttivo.Allenatori.Where(x => x.Nome.Equals(al.Nome.Trim())).FirstOrDefault()?.Id);
+                            if (id == null || id <= 0) id = (int?)(DatiProgettoAttivo.Allenatori.Max(x => x.Id) + 1);
+                            al.Id = (uint)id;
+                        }
+
+                        var cercaSquadra = DatiProgettoAttivo.Squadre.Find(x => x.Allenatori.Any() && x.Allenatori.Last().Id == al.Id);
+
+
+                        if (cercaSquadra != null) cercaSquadra.Allenatori = new() { al };
+
+                        var cercaAllenatore = DatiProgettoAttivo.Allenatori.Find(x => x.Id == al.Id);
+
+                        if (cercaAllenatore != null)
+                        {
+                            foreach (var xs in DatiProgettoAttivo.Allenatori.Where(x => x.Id == cercaAllenatore.Id).ToList())
+                                DatiProgettoAttivo.Allenatori.Remove(xs);
+                        }
+
+                        DatiProgettoAttivo.Allenatori.Add(al);
+                    }
+
+
+                    break;
+
+                case TipoDatoDB.STADIO:
+                    var stadiCSV = DatabaseCSV.LeggiStadi();
+                    foreach (var st in stadiCSV)
+                    {
+                        if (st.Id <= 0)
+                        {
+                            int? id = (int?)(DatiProgettoAttivo.Stadi.Where(x => x.Nome.Equals(st.Nome.Trim())).FirstOrDefault()?.Id);
+                            if (id == null || id <= 0) id = (int?)(DatiProgettoAttivo.Stadi.Max(x => x.Id) + 1);
+                            st.Id = (uint)id;
+                        }
+
+                        var cercaStadio = DatiProgettoAttivo.Stadi.Find(x => x.Id == st.Id);
+
+                        if (cercaStadio != null)
+                        {
+                            st.NumeroBoh = cercaStadio.NumeroBoh;
+                            foreach (var xs in DatiProgettoAttivo.Stadi.Where(x => x.Id == cercaStadio.Id).ToList())
+                                DatiProgettoAttivo.Stadi.Remove(xs);
+                        }
+
+                        DatiProgettoAttivo.Stadi.Add(st);
+                    }
+
+
+                    break;
+            }
+        }
+
+
+
+
+
         return;
+    }
+
+    private Dictionary<string, TipoDatoDB> CalcolaTabellaDBFileCSV(string cartella)
+    {
+        Dictionary<String, TipoDatoDB> tabellaFileCSV = new();
+
+        var cartellaEditor = $"{AppDomain.CurrentDomain.BaseDirectory}files{Path.DirectorySeparatorChar}{cartella}{Path.DirectorySeparatorChar}";
+
+        var f = Directory.GetFiles(cartellaEditor, "*.CSV", SearchOption.AllDirectories);
+
+        List<DBtabellaFileCSV> d = new();
+
+        foreach (var p in f)
+        {
+            try
+            {
+                var ls = File.ReadAllLines(p);
+                if (ls[0].Contains("TipoInfo"))
+                {
+                    int t = int.Parse(ls[1].Split(';')[ls[0].Split(';').ToList().IndexOf("TipoInfo")]);
+                    if (t >= 0 && t <= 5) d.Add(new() { percorsoCSV = p, tipoDatoDB = (TipoDatoDB)t, r = ls.Length - 1 });
+                }
+            }
+            catch
+            {
+                continue;
+            }
+
+
+        }
+
+        foreach (var dl in d.OrderBy(d => d.tipoDatoDB).ThenByDescending(d => d.r).ToList())
+        {
+            tabellaFileCSV.Add(dl.percorsoCSV, dl.tipoDatoDB);
+        }
+
+        return tabellaFileCSV;
     }
 
     private List<TipoDatoDB> CalcolaTipoDatoDB(String versionePCC, String nomeFile)
@@ -163,6 +351,9 @@ public class ArchivioSvc
                 if (nomeFile.Contains("EQ")) return new() { TipoDatoDB.STADIO, TipoDatoDB.SQUADRA };
             }
         }
+
+        if (nomeFile.Contains("EQ") && nomeFile.EndsWith("DBC"))
+            return new() { TipoDatoDB.STADIO, TipoDatoDB.ALLENATORE, TipoDatoDB.GIOCATORE, TipoDatoDB.SQUADRA };
 
         if (nomeFile.StartsWith("EQ") && nomeFile.EndsWith("PKF"))
             return new() { TipoDatoDB.STADIO, TipoDatoDB.ALLENATORE, TipoDatoDB.GIOCATORE, TipoDatoDB.SQUADRA };
@@ -262,11 +453,13 @@ public class ArchivioSvc
                 break;
             case "PC Calcio 6":
                 FileArchiviDBGioco = new()
-                { $"Dbdat{Path.DirectorySeparatorChar}EQ036036.PKF"};
+                { $"Dbdat{Path.DirectorySeparatorChar}EQ036036.PKF",
+                  $"Dbdat{Path.DirectorySeparatorChar}EQ036036{Path.DirectorySeparatorChar}"};
                 break;
             case "PC Calcio 5":
                 FileArchiviDBGioco = new()
-                { $"DBDAT{Path.DirectorySeparatorChar}EQUIPOS.PKF"};
+                { $"DBDAT{Path.DirectorySeparatorChar}EQUIPOS.PKF",
+                  $"DBDAT{Path.DirectorySeparatorChar}EQUIPOS{Path.DirectorySeparatorChar}"};
                 break;
             case "PC Calcio 4":
                 FileArchiviDBGioco = new();
@@ -282,9 +475,23 @@ public class ArchivioSvc
     }
 
 
-    public List<ElementoArchivio> LeggiArchivio(List<byte> dati, bool fdi = false, bool pak = false)
+    public List<ElementoArchivio> LeggiArchivio(List<byte> dati, bool fdi = false, bool pak = false, bool dbc = false)
     {
         List<ElementoArchivio> elementi = new();
+
+        if (dbc)
+        {
+            int num = BitConverter.ToUInt16(dati.GetRange(38, 2).ToArray(), 0);
+            elementi.Add(new()
+            {
+                Nome = $"{num}.DBC",
+                Dat = dati
+            });
+
+            return elementi;
+        }
+
+
         var header = HeaderArchivio(dati, fdi, pak);
 
 
@@ -889,7 +1096,8 @@ public enum TipoArchivio
     NESSUNO = 0,
     FDI,
     PAK,
-    PKF
+    PKF,
+    DBC
 }
 
 public class ElementoArchivio
@@ -907,6 +1115,13 @@ public class ElementoArchivio
     {
         throw new NotImplementedException();
     }
+}
+
+internal class DBtabellaFileCSV
+{
+    public String percorsoCSV { get; set; }
+    public TipoDatoDB tipoDatoDB { get; set; }
+    public int r { get; set; }
 }
 
 public class DatiProgettoAttivo
