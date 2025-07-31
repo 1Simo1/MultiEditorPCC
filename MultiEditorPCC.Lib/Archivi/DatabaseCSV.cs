@@ -17,7 +17,7 @@ public static partial class DatabaseCSV
 {
     public static int Versione { get; set; }
 
-    public static String contenutoCSV { get; set; }
+    public static String contenutoCSV { get; set; } = String.Empty;
 
     public static CsvConfiguration Conf { get; set; } = new CsvConfiguration(CultureInfo.CurrentCulture)
     {
@@ -59,8 +59,8 @@ public static partial class DatabaseCSV
                         var sq = new Squadra
                         {
                             Id = csv.GetField<uint>("Id"),
-                            Nome = csv.GetField("Nome").Trim(),
-                            NomeCompleto = csv.GetField("NomeCompleto"),
+                            Nome = csv.GetField("Nome")!.Trim(),
+                            NomeCompleto = csv.GetField("NomeCompleto")!,
                             Giocabile = csv.GetField<bool>("Giocabile"),
                             Nazione = csv.GetField<Paese>("Nazione"),
                             AnnoFondazione = csv.GetField<ushort>("AnnoFondazione"),
@@ -92,26 +92,26 @@ public static partial class DatabaseCSV
 
                         if (csv.TryGetField<String>("TatticaCompleta", out _))
                         {
-                            sq.Tattica.TatticaCompleta = Convert.FromBase64String(csv.GetField("TatticaCompleta")).ToList();
+                            sq.Tattica.TatticaCompleta = Convert.FromBase64String(csv.GetField("TatticaCompleta")!).ToList();
                         }
 
 
                         squadre.Add(sq);
                     }
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     return squadre;
                 }
             }
             return squadre;
         }
-        catch (Exception e)
+        catch (Exception)
         {
             return squadre;
         }
 
-        return squadre;
+
     }
 
     public static List<Giocatore> LeggiGiocatori()
@@ -140,8 +140,8 @@ public static partial class DatabaseCSV
                         var gc = new Giocatore
                         {
                             Id = csv.GetField<int>("Id"),
-                            Nome = csv.GetField("Nome").Trim(),
-                            NomeCompleto = csv.GetField("NomeCompleto"),
+                            Nome = csv.GetField("Nome")!.Trim(),
+                            NomeCompleto = csv.GetField("NomeCompleto")!,
                             Giocabile = csv.GetField<bool>("Giocabile"),
                             Nazione = csv.GetField<Paese>("Nazione"),
                             Numero = csv.GetField<int>("Numero"),
@@ -160,12 +160,12 @@ public static partial class DatabaseCSV
                             Altezza = csv.GetField<int>("Altezza"),
                             Peso = csv.GetField<int>("Peso"),
                             PaeseNascita = csv.GetField<Paese>("PaeseNascita"),
-                            Ruoli = csv.GetField<List<Ruolo>>("Ruoli"),
-                            Punteggi = csv.GetField<List<PunteggioGiocatore>>("Punteggi"),
+                            Ruoli = csv.GetField<List<Ruolo>>("Ruoli")!,
+                            Punteggi = csv.GetField<List<PunteggioGiocatore>>("Punteggi")!,
 
 
                             CodiceSquadra = csv.GetField<int>("CodiceSquadra"),
-                            Squadra = csv.GetField("Squadra").Trim()
+                            Squadra = csv.GetField("Squadra")!.Trim()
 
 
                         };
@@ -175,14 +175,14 @@ public static partial class DatabaseCSV
 
 
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     return giocatori;
                 }
 
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return giocatori;
         }
@@ -213,8 +213,8 @@ public static partial class DatabaseCSV
                         var al = new Allenatore
                         {
                             Id = csv.GetField<uint>("Id"),
-                            Nome = csv.GetField("Nome").Trim(),
-                            NomeCompleto = csv.GetField("NomeCompleto"),
+                            Nome = csv.GetField("Nome")!.Trim(),
+                            NomeCompleto = csv.GetField("NomeCompleto")!,
                             Giocabile = csv.GetField<bool>("Giocabile"),
                             exGiocatore = csv.GetField<bool>("exGiocatore"),
                         };
@@ -222,13 +222,13 @@ public static partial class DatabaseCSV
                         allenatori.Add(al);
                     }
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
 
                 }
             }
         }
-        catch (Exception e)
+        catch (Exception)
         {
             return allenatori;
         }
@@ -261,7 +261,7 @@ public static partial class DatabaseCSV
                         {
                             Id = csv.GetField<uint>("Id"),
                             Giocabile = csv.GetField<bool>("Giocabile"),
-                            Nome = csv.GetField("Nome").Trim(),
+                            Nome = csv.GetField("Nome")!.Trim(),
                             Capienza = csv.GetField<int>("Capienza"),
                             PostiInPiedi = csv.GetField<int>("PostiInPiedi"),
                             Larghezza = csv.GetField<short>("Larghezza"),
@@ -275,13 +275,13 @@ public static partial class DatabaseCSV
                         stadi.Add(st);
                     }
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
 
                 }
             }
         }
-        catch (Exception e)
+        catch (Exception)
         {
             return stadi;
         }
@@ -302,7 +302,7 @@ public static partial class DatabaseCSV
                 streamWriter.Flush();
                 contenutoCSV = Encoding.UTF8.GetString(memoryStream.ToArray());
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return;
             }
@@ -323,7 +323,7 @@ public static partial class DatabaseCSV
                 streamWriter.Flush();
                 contenutoCSV = $"{Encoding.UTF8.GetString(memoryStream.ToArray())}";
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return;
             }
@@ -344,7 +344,7 @@ public static partial class DatabaseCSV
                 streamWriter.Flush();
                 contenutoCSV = Encoding.UTF8.GetString(memoryStream.ToArray());
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return;
             }
@@ -365,7 +365,7 @@ public static partial class DatabaseCSV
                 streamWriter.Flush();
                 contenutoCSV = Encoding.UTF8.GetString(memoryStream.ToArray());
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return;
             }
@@ -457,7 +457,7 @@ public class AllenatoreAttivoSquadraConverter : DefaultTypeConverter
 {
     public override string? ConvertToString(object? value, IWriterRow row, MemberMapData memberMapData)
     {
-        return ((List<Allenatore>)value).Last().Id.ToString();
+        return ((List<Allenatore>)value!).Last().Id.ToString();
     }
 
 }
@@ -466,7 +466,7 @@ public class TatticaCompletaConverter : DefaultTypeConverter
 {
     public override object? ConvertFromString(string? text, IReaderRow row, MemberMapData memberMapData)
     {
-        return Convert.FromBase64String(text).ToList();
+        return Convert.FromBase64String(text!).ToList();
     }
 
     public override string? ConvertToString(object? value, IWriterRow row, MemberMapData memberMapData)
@@ -486,7 +486,7 @@ public class StadioConverter : DefaultTypeConverter
 
     public override string? ConvertToString(object? value, IWriterRow row, MemberMapData memberMapData)
     {
-        return value.ToString();
+        return value!.ToString();
     }
 
 }
@@ -502,7 +502,7 @@ public class GiocatoriCodiceSquadraConverter : DefaultTypeConverter
     public override string? ConvertToString(object? value, IWriterRow row, MemberMapData memberMapData)
     {
         if (value == null) return "0";
-        return DatabaseCSV.dettagliSquadreGiocatore[int.Parse(value.ToString())].Item1.ToString();
+        return DatabaseCSV.dettagliSquadreGiocatore[int.Parse(value.ToString()!)].Item1.ToString();
     }
 
 }
@@ -517,7 +517,7 @@ public class GiocatoriNomeSquadraConverter : DefaultTypeConverter
     public override string? ConvertToString(object? value, IWriterRow row, MemberMapData memberMapData)
     {
         if (value == null) return String.Empty;
-        return DatabaseCSV.dettagliSquadreGiocatore[int.Parse(value.ToString())].Item2;
+        return DatabaseCSV.dettagliSquadreGiocatore[int.Parse(value.ToString()!)].Item2;
     }
 
 }
@@ -527,13 +527,13 @@ public class ElencoRuoliConverter : DefaultTypeConverter
     public override object? ConvertFromString(string? text, IReaderRow row, MemberMapData memberMapData)
     {
         List<Ruolo> ruoli = new();
-        foreach (var codRuolo in text.Split("|"))
+        foreach (var codRuolo in text!.Split("|"))
         {
             try
             {
                 ruoli.Add(Enum.Parse<Ruolo>(codRuolo));
             }
-            catch (Exception _) { }
+            catch (Exception) { }
         }
         return ruoli;
     }
@@ -542,7 +542,7 @@ public class ElencoRuoliConverter : DefaultTypeConverter
     {
         String elencoRuoliGiocatore = String.Empty;
 
-        List<Ruolo> RuoliGiocatore = (List<Ruolo>)value;
+        List<Ruolo> RuoliGiocatore = (List<Ruolo>)value!;
 
         bool primo = true;
 
@@ -564,7 +564,7 @@ public class PunteggiConverter : DefaultTypeConverter
 
         List<PunteggioGiocatore> punteggi = new();
         int n = 0;
-        var v = text.Split("|");
+        var v = text!.Split("|");
         foreach (var punteggio in v)
         {
             try
@@ -608,7 +608,7 @@ public class PunteggiConverter : DefaultTypeConverter
                 }
 
             }
-            catch (Exception _)
+            catch (Exception)
             {
 
             }
@@ -624,7 +624,7 @@ public class PunteggiConverter : DefaultTypeConverter
     {
         String elencoPunteggiGiocatore = String.Empty;
 
-        List<PunteggioGiocatore> PunteggiGiocatore = (List<PunteggioGiocatore>)value;
+        List<PunteggioGiocatore> PunteggiGiocatore = (List<PunteggioGiocatore>)value!;
 
         bool primo = true;
 

@@ -17,7 +17,7 @@ public partial class DettagliGiocatore : UserControl
 
         if (Design.IsDesignMode)
         {
-            dataContext.SchedaGiocatore = true;
+            dataContext!.SchedaGiocatore = true;
             Design.SetDataContext(this, dataContext);
             //this.Height = 3021;
             SchedaGiocatoreScrollViewer.Height = 3621;
@@ -40,7 +40,7 @@ public partial class DettagliGiocatore : UserControl
     {
         SchedaGiocatoreScrollViewer.MaxHeight = 621;
         SchedaGiocatoreScrollViewer.Height = this.Bounds.Height - 21;
-        ((Control)sender).Height = this.Bounds.Height + 21;
+        ((Control)sender!).Height = this.Bounds.Height + 21;
     }
 
     private void BirthDate_ValueChanged(FluentAvalonia.UI.Controls.NumberBox sender, FluentAvalonia.UI.Controls.NumberBoxValueChangedEventArgs args)
@@ -53,7 +53,7 @@ public partial class DettagliGiocatore : UserControl
         {
             var d = new DateOnly(anno, mese, giorno);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             var g = DateTime.DaysInMonth(anno, mese);
             gg.Value = g;

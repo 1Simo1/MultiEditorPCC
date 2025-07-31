@@ -7,7 +7,7 @@ public static partial class FDI
 {
     public static int Versione { get; set; }
 
-    public static List<Byte> dati { get; set; }
+    public static List<Byte> dati { get; set; } = new();
 
     public static Squadra LeggiSquadra(ElementoArchivio elemento)
     {
@@ -203,7 +203,7 @@ public static partial class FDI
             }
 
         }
-        catch (Exception e)
+        catch (Exception)
         {
             return sq;
         }
@@ -348,11 +348,11 @@ public static partial class FDI
 
         a.NomeCompleto = Utils.decodificaTesto(dati.GetRange(11 + lnc, lnl));
 
-#if DEBUG
-        return a;
-#endif
+        //#if DEBUG
+        //        return a;
+        //#endif
 
-
+        //TODO Ricontrollare lettura testi allenatore, oppure valutare se ignorarli in lettura
         int lunghezzaTesti = 0;
         for (int txt = 1; txt <= 6; txt++)
         {

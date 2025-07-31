@@ -81,7 +81,7 @@ public class DatSvc : IDatSvc
         {
             //TODO
         }
-        catch (Exception e)
+        catch (Exception)
         {
             return false;
         }

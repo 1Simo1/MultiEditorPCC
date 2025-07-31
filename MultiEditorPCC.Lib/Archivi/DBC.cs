@@ -7,7 +7,7 @@ public static partial class DBC
 {
     public static int Versione { get; set; }
 
-    public static List<Byte> dati { get; set; }
+    public static List<Byte> dati { get; set; } = new();
 
     public static String nomeSquadra { get; set; } = String.Empty;
 
@@ -149,7 +149,7 @@ public static partial class DBC
 
 
         }
-        catch (Exception e)
+        catch (Exception)
         {
             return sq;
         }
@@ -231,7 +231,7 @@ public static partial class DBC
             g.Testi.Add(offset.ToString());
 
         }
-        catch (Exception e)
+        catch (Exception)
         {
             return g;
         }
@@ -282,7 +282,7 @@ public static partial class DBC
 
             a.Testi.Add(offset.ToString());
         }
-        catch (Exception e)
+        catch (Exception)
         {
             return a;
         }
@@ -328,7 +328,7 @@ public static partial class DBC
             }
 
         }
-        catch (Exception e)
+        catch (Exception)
         {
             return st;
         }

@@ -9,13 +9,13 @@ namespace MultiEditorPCC.Lib;
 public class EditorSvc
 {
 
-    public DbContextOptionsBuilder<MultiEditorPCCDbContext> optionsBuilder { get; set; }
+    public DbContextOptionsBuilder<MultiEditorPCCDbContext> optionsBuilder { get; set; } = new();
     public MultiEditorPCCDbContext db { get; set; }
     public MultiEditorPCCDbContext? dbProgetto { get; set; }
     public ProgettoEditorPCC? ProgettoAttivoEditor { get; set; }
 
     public List<ProgettoEditorPCC> ProgettiEditor { get; set; }
-    public List<VersionePCCSupportataEditor> versioniPCC_Editor { get; set; }
+    public List<VersionePCCSupportataEditor> versioniPCC_Editor { get; set; } = new();
 
     public EditorSvc()
     {
@@ -85,7 +85,7 @@ public class EditorSvc
             ProgettoAttivoEditor = progetto;
             db.SaveChanges();
         }
-        catch (Exception ex)
+        catch (Exception)
         {
 
             return false;
@@ -193,7 +193,7 @@ public class EditorSvc
 
 
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return null;
         }
@@ -201,7 +201,8 @@ public class EditorSvc
         return null;
     }
 
-    public async Task<List<CartellaGioco>> CercaCartelleValide()
+    //public async Task<List<CartellaGioco>> CercaCartelleValide()
+    public List<CartellaGioco> CercaCartelleValide()
     {
         foreach (DriveInfo path in DriveInfo.GetDrives().Reverse().ToList())
         {
@@ -243,7 +244,7 @@ public class EditorSvc
 
 
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     continue;
                 }
@@ -259,7 +260,7 @@ public class EditorSvc
 
         try
         {
-            var f = Directory.GetFiles($"{AppDomain.CurrentDomain.BaseDirectory}files{Path.DirectorySeparatorChar}{ProgettoAttivoEditor.Nome}{Path.DirectorySeparatorChar}", "*.DBE", SearchOption.AllDirectories);
+            var f = Directory.GetFiles($"{AppDomain.CurrentDomain.BaseDirectory}files{Path.DirectorySeparatorChar}{ProgettoAttivoEditor!.Nome}{Path.DirectorySeparatorChar}", "*.DBE", SearchOption.AllDirectories);
 
             if (tipoDato == TipoDatoDB.NESSUNO) return f.ToList();
 
@@ -273,7 +274,7 @@ public class EditorSvc
                 }
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return elencoDBE;
         }
@@ -287,7 +288,7 @@ public class EditorSvc
 
         try
         {
-            var f = Directory.GetFiles($"{AppDomain.CurrentDomain.BaseDirectory}files{Path.DirectorySeparatorChar}{ProgettoAttivoEditor.Nome}{Path.DirectorySeparatorChar}", "*.CSV", SearchOption.AllDirectories);
+            var f = Directory.GetFiles($"{AppDomain.CurrentDomain.BaseDirectory}files{Path.DirectorySeparatorChar}{ProgettoAttivoEditor!.Nome}{Path.DirectorySeparatorChar}", "*.CSV", SearchOption.AllDirectories);
 
             if (tipoDato == TipoDatoDB.NESSUNO) return f.ToList();
 
@@ -355,7 +356,7 @@ public class EditorSvc
 
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return elencoCSV;
         }

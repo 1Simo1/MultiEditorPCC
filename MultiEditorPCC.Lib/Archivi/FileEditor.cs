@@ -8,7 +8,7 @@ public static partial class FileEditor
 {
     public static int Versione { get; set; }
 
-    public static List<Byte> Dati { get; set; }
+    public static List<Byte> Dati { get; set; } = new();
 
     public static Squadra LeggiSquadra()
     {
@@ -156,7 +156,7 @@ public static partial class FileEditor
                 Dati = temp;
             }
         }
-        catch (Exception e)
+        catch (Exception)
         {
             return sq;
         }
@@ -276,7 +276,7 @@ public static partial class FileEditor
 
         }
 
-        catch (Exception e)
+        catch (Exception)
         {
             return g;
         }
@@ -322,7 +322,7 @@ public static partial class FileEditor
             }
 
         }
-        catch (Exception e)
+        catch (Exception)
         {
             return a;
         }
@@ -356,7 +356,7 @@ public static partial class FileEditor
             st.NumeroBoh = Dati[offset + 3];
             st.AnnoCostruzione = BitConverter.ToInt16(Dati.GetRange(offset + 4, 2).ToArray(), 0);
         }
-        catch (Exception e)
+        catch (Exception)
         {
             return st;
         }
@@ -400,33 +400,36 @@ public static partial class FileEditor
 
         Dati.Add((byte)squadra.Boh);
 
-        Dati.AddRange(BitConverter.GetBytes((int)squadra.NumeroAbbonati));
+        int n = (int)squadra.NumeroAbbonati!;
 
-        Dati.Add((byte)squadra.NomePresidente.Length);
+        Dati.AddRange(BitConverter.GetBytes(n));
+
+        Dati.Add((byte)squadra.NomePresidente!.Length);
         if (squadra.NomePresidente.Length > 0)
         {
             Dati.AddRange(Encoding.UTF8.GetBytes(squadra.NomePresidente));
         }
 
-        Dati.AddRange(BitConverter.GetBytes((int)squadra.CassaGioco));
+        Dati.AddRange(BitConverter.GetBytes((int)squadra.CassaGioco!));
 
-        Dati.AddRange(BitConverter.GetBytes((int)squadra.CassaReale));
+        Dati.AddRange(BitConverter.GetBytes((int)squadra.CassaReale!));
 
-        Dati.Add((byte)squadra.NomeSponsor.Length);
+        Dati.Add((byte)squadra.NomeSponsor!.Length);
         if (squadra.NomeSponsor.Length > 0)
         {
             Dati.AddRange(Encoding.UTF8.GetBytes(squadra.NomeSponsor));
         }
 
-        Dati.Add((byte)squadra.NomeSponsorTecnico.Length);
+        Dati.Add((byte)squadra.NomeSponsorTecnico!.Length);
         if (squadra.NomeSponsorTecnico.Length > 0)
         {
             Dati.AddRange(Encoding.UTF8.GetBytes(squadra.NomeSponsorTecnico));
         }
 
-        Dati.Add((byte)(squadra.SquadraRiserve % 256));
+
+        Dati.Add((byte)((int)squadra.SquadraRiserve! % 256));
         Dati.Add((byte)((squadra.SquadraRiserve - (squadra.SquadraRiserve % 256)) / 256));
-        Dati.Add((byte)(squadra.TerzaSquadra % 256));
+        Dati.Add((byte)((int)squadra.TerzaSquadra! % 256));
         Dati.Add((byte)((squadra.TerzaSquadra - (squadra.TerzaSquadra % 256)) / 256));
         Dati.Add((byte)squadra.Girone2B);
         Dati.Add((byte)squadra.Girone3);

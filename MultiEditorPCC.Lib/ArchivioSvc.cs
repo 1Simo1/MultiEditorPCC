@@ -10,11 +10,11 @@ namespace MultiEditorPCC.Lib;
 
 public class ArchivioSvc
 {
-    public Dictionary<String, List<ElementoArchivio>> ArchiviProgetto { get; set; }
+    public Dictionary<String, List<ElementoArchivio>> ArchiviProgetto { get; set; } = new();
 
-    private List<String> FileArchiviDBGioco { get; set; }
+    private List<String> FileArchiviDBGioco { get; set; } = new();
 
-    public DatiProgettoAttivo DatiProgettoAttivo { get; set; }
+    public DatiProgettoAttivo DatiProgettoAttivo { get; set; } = new();
 
     /// <summary>
     /// Legge i dati da file di gioco e li memorizza in ArchiviProgetto
@@ -39,7 +39,7 @@ public class ArchivioSvc
 
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
                 return;
@@ -122,7 +122,7 @@ public class ArchivioSvc
 
 
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 continue;
             }
@@ -133,7 +133,7 @@ public class ArchivioSvc
         {
             SetupDatiProgettoAttivo(progettoEditor, ArchiviProgetto);
         }
-        catch (Exception e)
+        catch (Exception)
         {
 
         }
@@ -205,7 +205,7 @@ public class ArchivioSvc
                     foreach (var gc in giocatoriCSV)
                     {
 
-                        if (gc.CodiceSquadra > 0) DatiProgettoAttivo.Squadre.Find(x => x.Id == gc.CodiceSquadra).Giocatori.Add(gc);
+                        if (gc.CodiceSquadra > 0) DatiProgettoAttivo!.Squadre!.Find(x => x.Id == gc.CodiceSquadra)!.Giocatori.Add(gc);
 
                         if (gc.Id <= 0)
                         {
@@ -570,7 +570,7 @@ public class ArchivioSvc
                         });
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     continue;
                 }
@@ -656,7 +656,7 @@ public class ArchivioSvc
             }
 
         }
-        catch (Exception e)
+        catch (Exception)
         {
 
         }
@@ -1049,7 +1049,7 @@ public class ArchivioSvc
 
 
         }
-        catch (Exception ex)
+        catch (Exception)
         {
 
             return img;
@@ -1119,7 +1119,7 @@ public class ElementoArchivio
 
 internal class DBtabellaFileCSV
 {
-    public String percorsoCSV { get; set; }
+    public String percorsoCSV { get; set; } = String.Empty;
     public TipoDatoDB tipoDatoDB { get; set; }
     public int r { get; set; }
 }
