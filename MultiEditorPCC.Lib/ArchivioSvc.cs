@@ -173,6 +173,7 @@ public class ArchivioSvc
 
         foreach (var fc in tabellaFileCSV)
         {
+            DatabaseCSV.Versione = 1;
             DatabaseCSV.contenutoCSV = fc.Key;
             switch (fc.Value)
             {

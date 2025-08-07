@@ -409,7 +409,7 @@ public class DatSvc : IDatSvc
 
             String nf = "";
 
-
+            DatabaseCSV.Versione = 1;
             DatabaseCSV.scriviTatticaCompleta = aggiungiTatticaCompletaSquadra;
 
             if (squadre == null || !squadre.Any())
@@ -512,6 +512,7 @@ public class DatSvc : IDatSvc
     {
         List<T> elenco = new();
 
+        //DatabaseCSV.Versione = 1;
         DatabaseCSV.contenutoCSV = File.ReadAllText(PathCSV);
 
         //TODO Implementare import tipo db da file CSV

@@ -294,7 +294,7 @@ public class EditorSvc
 
             foreach (var pf in f)
             {
-
+                DatabaseCSV.Versione = 1;
                 DatabaseCSV.contenutoCSV = pf; //Passo il percorso del file in lettura, non il contenuto
 
                 if (tipoDato == TipoDatoDB.SQUADRA)

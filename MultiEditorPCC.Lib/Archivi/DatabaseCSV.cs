@@ -15,7 +15,7 @@ namespace MultiEditorPCC.Lib.Archivi;
 /// </summary>
 public static partial class DatabaseCSV
 {
-    public static int Versione { get; set; }
+    public static int Versione { get; set; } = 1;
 
     public static String contenutoCSV { get; set; } = String.Empty;
 
@@ -380,7 +380,7 @@ public class StadioMap : ClassMap<Stadio>
     public StadioMap()
     {
         AutoMap(CultureInfo.InvariantCulture);
-        Map().Name("V").Constant(1);
+        Map().Name("V").Constant(DatabaseCSV.Versione);
         Map().Name("TipoInfo").Constant((int)ArchivioSvc.TipoDatoDB.STADIO);
     }
 }
@@ -391,7 +391,7 @@ public class AllenatoreMap : ClassMap<Allenatore>
     public AllenatoreMap()
     {
         AutoMap(CultureInfo.InvariantCulture);
-        Map().Name("V").Constant(1);
+        Map().Name("V").Constant(DatabaseCSV.Versione);
         Map().Name("TipoInfo").Constant((int)ArchivioSvc.TipoDatoDB.ALLENATORE);
     }
 }
@@ -408,7 +408,7 @@ public class GiocatoreMap : ClassMap<Giocatore>
         Map(g => g.Squadra).Ignore();
         Map(g => g.Id, false).Name("CodiceSquadra").TypeConverter<GiocatoriCodiceSquadraConverter>();
         Map(g => g.Id, false).Name("Squadra").TypeConverter<GiocatoriNomeSquadraConverter>();
-        Map().Name("V").Constant(1);
+        Map().Name("V").Constant(DatabaseCSV.Versione);
         Map().Name("TipoInfo").Constant((int)ArchivioSvc.TipoDatoDB.GIOCATORE);
     }
 }
@@ -423,7 +423,7 @@ public class SquadraMap : ClassMap<Squadra>
         scriviTatticaCompleta = DatabaseCSV.scriviTatticaCompleta;
         AutoMap(CultureInfo.InvariantCulture);
         Map(sq => sq.Stadio).Ignore();
-        Map(sq => sq.Stadio.Id).Name("V").Constant(1);
+        Map(sq => sq.Stadio.Id).Name("V").Constant(DatabaseCSV.Versione);
         Map(sq => sq.Stadio.Nome).Ignore();
         Map(sq => sq.Stadio.Nazione).Ignore();
         Map(sq => sq.Stadio.Larghezza).Ignore();
