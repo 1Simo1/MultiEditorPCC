@@ -7,6 +7,7 @@ using MultiEditorPCC.Lib;
 using MultiEditorPCC.ViewModels;
 using MultiEditorPCC.Views;
 using MvvmGen.Events;
+using System.Threading.Tasks;
 
 namespace MultiEditorPCC;
 
@@ -20,7 +21,7 @@ public partial class App : Application
         AvaloniaXamlLoader.Load(this);
     }
 
-    public override void OnFrameworkInitializationCompleted()
+    public override async void OnFrameworkInitializationCompleted()
     {
         Locales.Resources.Culture = System.Globalization.CultureInfo.CurrentCulture;
 
@@ -33,25 +34,34 @@ public partial class App : Application
 
         AppSvc.Services = Services;
 
-
-        var vm = Services.GetRequiredService<MainViewModel>();
-
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
+            var schermataCaricamento = new SchermataCaricamento();
+
+            desktop.MainWindow = schermataCaricamento;
+            schermataCaricamento.Show();
+
             desktop.MainWindow = new MainWindow
             {
-                DataContext = vm
+                DataContext = await Task.Run(() => Services.GetRequiredService<MainViewModel>())
             };
+
+            desktop.MainWindow.Show();
+
+
+
+            schermataCaricamento.Close();
         }
         else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
         {
             singleViewPlatform.MainView = new MainView
             {
-                DataContext = vm
+                DataContext = Services.GetRequiredService<MainViewModel>()
             };
+            base.OnFrameworkInitializationCompleted();
         }
 
-        base.OnFrameworkInitializationCompleted();
+
     }
 }
 
