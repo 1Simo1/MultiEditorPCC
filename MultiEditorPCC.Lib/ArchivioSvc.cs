@@ -41,7 +41,7 @@ public class ArchivioSvc
             }
             catch (Exception)
             {
-
+                
                 return;
             }
 
@@ -65,8 +65,34 @@ public class ArchivioSvc
         foreach (var d in tempDir) FileArchiviDBGioco.Remove(d);
 
         FileArchiviDBGioco.AddRange(fileDBC);
+        string[] f = null;
 
-        var f = Directory.GetFiles(path, "*.PAK", SearchOption.AllDirectories);
+        try
+        {
+
+            f = Directory.GetFiles(path, "*.PAK", SearchOption.AllDirectories);
+
+        }
+        catch (Exception)
+        {
+            /* Caricato progetto non valido (solitamente per cartella non trovata)
+                * Resetto i dati ad archivi vuoti e ritorno */
+
+                ArchiviProgetto = new();
+
+                FileArchiviDBGioco = new();
+
+                DatiProgettoAttivo = new();
+
+            var e = AppSvc.Services.GetRequiredService<EditorSvc>();
+
+            e.ProgettoAttivoEditor = null;
+            
+
+            return;
+        }
+
+        
         foreach (var nf in f) if (!FileArchiviDBGioco.Contains(nf.Substring(path.Length))) FileArchiviDBGioco.Add(nf.Substring(path.Length));
         if (!FileArchiviDBGioco.Where(f => f.EndsWith(".FDI")).Any())
         {
