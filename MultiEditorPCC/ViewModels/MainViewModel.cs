@@ -82,6 +82,9 @@ public partial class MainViewModel : IEventSubscriber<ConfermatoNuovoProgettoAtt
 
     public void OnEvent(ConfermatoNuovoProgettoAttivo e)
     {
+
+        if (e.Progetto == null) return; //In caso di tentativo di caricamento di progetto non valido
+
         Nome = e.Progetto.Nome;
         Cartella = e.Progetto.Cartella;
         VersionePCC = e.Progetto.VersionePCC;
