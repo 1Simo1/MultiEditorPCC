@@ -18,8 +18,6 @@ public partial class SalvaDatiViewModel
     {
         EditorSvc = AppSvc.Services.GetRequiredService<EditorSvc>();
         ArchivioSvc = AppSvc.Services.GetRequiredService<ArchivioSvc>();
-
-        RicaricaDatabaseDaCSV();
     }
 
     [Command]
