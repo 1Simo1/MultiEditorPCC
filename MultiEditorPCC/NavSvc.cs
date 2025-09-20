@@ -31,6 +31,8 @@ public class NavSvc
             case "Intro": v = new IntroViewModel(AppSvc.Services.GetRequiredService<IEventAggregator>()); break;
             case "Squadre": v = new SquadreViewModel(AppSvc.Services.GetRequiredService<IEventAggregator>()); break;
             case "Archivi": v = new ArchiviViewModel(AppSvc.Services.GetRequiredService<IEventAggregator>()); break;
+
+            case "Salva": v = new SalvaDatiViewModel(AppSvc.Services.GetRequiredService<IEventAggregator>()); break;
             default: v = new IntroViewModel(AppSvc.Services.GetRequiredService<IEventAggregator>()); break;
         }
 
