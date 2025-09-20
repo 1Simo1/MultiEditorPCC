@@ -99,7 +99,7 @@ public static partial class DatabaseCSV
                         squadre.Add(sq);
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
                     return squadre;
                 }
@@ -423,7 +423,7 @@ public class SquadraMap : ClassMap<Squadra>
         scriviTatticaCompleta = DatabaseCSV.scriviTatticaCompleta;
         AutoMap(CultureInfo.InvariantCulture);
         Map(sq => sq.Stadio).Ignore();
-        Map(sq => sq.Stadio.Id).Name("V").Constant(DatabaseCSV.Versione);
+        Map(sq => sq.Stadio.Id).Name("V").Constant((uint)DatabaseCSV.Versione);
         Map(sq => sq.Stadio.Nome).Ignore();
         Map(sq => sq.Stadio.Nazione).Ignore();
         Map(sq => sq.Stadio.Larghezza).Ignore();

@@ -153,6 +153,7 @@ public partial class SquadreViewModel : IEventSubscriber<SquadraSelezionataElenc
         ElencoFileCSVSquadraValidi = new(
           e.CercaFileCSVDatiValidi(ArchivioSvc.TipoDatoDB.SQUADRA,
                                    (int)SquadraSelezionata.Id)
+                                    .Select(x => x.Percorso)
           );
 
         if (!ElencoFileCSVSquadraValidi.Any()) NomeFileSquadraCSV = null;
@@ -161,6 +162,7 @@ public partial class SquadreViewModel : IEventSubscriber<SquadraSelezionataElenc
         ElencoFileCSVGiocatoriValidi = new(
          e.CercaFileCSVDatiValidi(ArchivioSvc.TipoDatoDB.GIOCATORE,
                                   (int)SquadraSelezionata.Id)
+                                    .Select(x => x.Percorso)
         );
 
         if (!ElencoFileCSVGiocatoriValidi.Any()) NomeFileGiocatoriCSV = null;
@@ -169,6 +171,7 @@ public partial class SquadreViewModel : IEventSubscriber<SquadraSelezionataElenc
         ElencoFileCSVAllenatoreValidi = new(
          e.CercaFileCSVDatiValidi(ArchivioSvc.TipoDatoDB.ALLENATORE,
                                   (int)SquadraSelezionata.Allenatori.Last().Id)
+         .Select(x => x.Percorso)
         );
 
         if (!ElencoFileCSVAllenatoreValidi.Any()) NomeFileAllenatoreCSV = null;
@@ -177,6 +180,7 @@ public partial class SquadreViewModel : IEventSubscriber<SquadraSelezionataElenc
         ElencoFileCSVStadioValidi = new(
          e.CercaFileCSVDatiValidi(ArchivioSvc.TipoDatoDB.STADIO,
                                   (int)SquadraSelezionata.Id)
+         .Select(x => x.Percorso)
         );
 
         if (!ElencoFileCSVStadioValidi.Any()) NomeFileStadioCSV = null;

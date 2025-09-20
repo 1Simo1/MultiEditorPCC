@@ -282,16 +282,28 @@ public class EditorSvc
     }
 
 
-    public List<String> CercaFileCSVDatiValidi(TipoDatoDB tipoDato = TipoDatoDB.NESSUNO, int codiceElemento = 0)
+    public List<InfoFileDatiCSV> CercaFileCSVDatiValidi(TipoDatoDB tipoDato = TipoDatoDB.NESSUNO, int codiceElemento = 0)
     {
-        List<String> elencoCSV = new();
+        List<InfoFileDatiCSV> elencoCSV = new();
+        List<String> percorsi = new();
 
         try
         {
             var f = Directory.GetFiles($"{AppDomain.CurrentDomain.BaseDirectory}files{Path.DirectorySeparatorChar}{ProgettoAttivoEditor!.Nome}{Path.DirectorySeparatorChar}", "*.CSV", SearchOption.AllDirectories);
 
-            if (tipoDato == TipoDatoDB.NESSUNO) return f.ToList();
+            if (tipoDato == TipoDatoDB.NESSUNO)
+            {
+                foreach (var e in Enum.GetValues(typeof(TipoDatoDB)))
+                {
+                    if ((TipoDatoDB)e != TipoDatoDB.NESSUNO)
+                        elencoCSV.AddRange(CercaFileCSVDatiValidi((TipoDatoDB)e));
+                }
 
+                return elencoCSV
+                        .OrderBy(e => e.TipoDatoDB)
+                        .ThenByDescending(e => e.NumeroElementiFile)
+                        .ToList();
+            }
             foreach (var pf in f)
             {
                 DatabaseCSV.Versione = 1;
@@ -305,7 +317,13 @@ public class EditorSvc
                     if (squadre.Any() && (codiceElemento == 0 || (squadre.Count == 1 && squadre.First().Id == codiceElemento)))
                     {
                         var temp = pf.Substring(0, pf.LastIndexOf(Path.DirectorySeparatorChar) + 1);
-                        elencoCSV.Add(pf.Replace(temp, String.Empty));
+
+                        elencoCSV.Add(new()
+                        {
+                            Percorso = pf.Replace(temp, String.Empty),
+                            TipoDatoDB = TipoDatoDB.SQUADRA,
+                            NumeroElementiFile = squadre.Count
+                        });
                     }
 
                 }
@@ -319,7 +337,12 @@ public class EditorSvc
                     {
 
                         var temp = pf.Substring(0, pf.LastIndexOf(Path.DirectorySeparatorChar) + 1);
-                        elencoCSV.Add(pf.Replace(temp, String.Empty));
+                        elencoCSV.Add(new()
+                        {
+                            Percorso = pf.Replace(temp, String.Empty),
+                            TipoDatoDB = TipoDatoDB.GIOCATORE,
+                            NumeroElementiFile = giocatori.Count
+                        });
                     }
 
                 }
@@ -333,7 +356,12 @@ public class EditorSvc
                     {
 
                         var temp = pf.Substring(0, pf.LastIndexOf(Path.DirectorySeparatorChar) + 1);
-                        elencoCSV.Add(pf.Replace(temp, String.Empty));
+                        elencoCSV.Add(new()
+                        {
+                            Percorso = pf.Replace(temp, String.Empty),
+                            TipoDatoDB = TipoDatoDB.ALLENATORE,
+                            NumeroElementiFile = allenatori.Count
+                        });
                     }
 
                 }
@@ -347,7 +375,12 @@ public class EditorSvc
                     {
 
                         var temp = pf.Substring(0, pf.LastIndexOf(Path.DirectorySeparatorChar) + 1);
-                        elencoCSV.Add(pf.Replace(temp, String.Empty));
+                        elencoCSV.Add(new()
+                        {
+                            Percorso = pf.Replace(temp, String.Empty),
+                            TipoDatoDB = TipoDatoDB.STADIO,
+                            NumeroElementiFile = stadi.Count
+                        });
                     }
 
                 }
@@ -358,9 +391,25 @@ public class EditorSvc
         }
         catch (Exception)
         {
-            return elencoCSV;
+            return elencoCSV
+                        .OrderBy(e => e.TipoDatoDB)
+                        .ThenByDescending(e => e.NumeroElementiFile)
+                        .ToList();
         }
-        return elencoCSV;
+
+        return elencoCSV
+                        .OrderBy(e => e.TipoDatoDB)
+                        .ThenByDescending(e => e.NumeroElementiFile)
+                        .ToList();
     }
 
+}
+
+public class InfoFileDatiCSV
+{
+    public String Percorso { get; set; }
+
+    public TipoDatoDB TipoDatoDB { get; set; }
+
+    public int NumeroElementiFile { get; set; }
 }
