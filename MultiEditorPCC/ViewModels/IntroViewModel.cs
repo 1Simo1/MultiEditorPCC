@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using MultiEditorPCC.Dat.DbSet;
 using MultiEditorPCC.Lib;
+using MultiEditorPCC.Views;
 using MvvmGen;
 using MvvmGen.Events;
 using System;
@@ -84,8 +85,10 @@ public partial class IntroViewModel : IEventSubscriber<ConfermatoNuovoProgettoAt
 
         if (ok)
         {
+            var schermataCaricamento = new SchermataCaricamento();
+            schermataCaricamento.Show();
             ArchivioSvc.CaricaDatiDBGioco(EditorSvc.ProgettoAttivoEditor, true);
-
+            schermataCaricamento.Hide();
             ProgettiEditor.Add(p);
 
             App.Services.GetRequiredService<IEventAggregator>()
@@ -122,9 +125,11 @@ public partial class IntroViewModel : IEventSubscriber<ConfermatoNuovoProgettoAt
 
         EditorSvc.db.SaveChanges();
 
-
+            var schermataCaricamento = new SchermataCaricamento();
+            schermataCaricamento.Show();
         ArchivioSvc.CaricaDatiDBGioco(EditorSvc.ProgettoAttivoEditor);
-
+        schermataCaricamento.Hide();
+        
         App.Services.GetRequiredService<IEventAggregator>()
               .Publish(new ConfermatoNuovoProgettoAttivo(EditorSvc.ProgettoAttivoEditor));
 

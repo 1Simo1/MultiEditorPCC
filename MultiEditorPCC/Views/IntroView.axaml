@@ -102,8 +102,27 @@
 			<ui:InfoBar.Content>
 				<DataGrid ItemsSource="{Binding ProgettiEditor,Mode=TwoWay}" AutoGenerateColumns="False">
 					<DataGrid.Columns>
-						<DataGridTextColumn Header="Nome" Binding="{Binding Nome}" Width="Auto" />
-						<DataGridTextColumn Header="Cartella" Binding="{Binding Cartella}" Width="Auto" />
+							<DataGridTemplateColumn Header="*" Width="*">
+							<DataTemplate>
+								<Button Command="{Binding #Intro.DataContext.ApriProgettoCommand}"
+									CommandParameter="{Binding id}"
+									Margin="21"
+										VerticalAlignment="Stretch"
+										HorizontalAlignment="Stretch"
+										HorizontalContentAlignment="Center"
+								>
+									<TextBlock Text="{x:Static lng:Resources.OpenProject}" />
+								</Button>
+							</DataTemplate>
+						</DataGridTemplateColumn>
+						<DataGridTemplateColumn Header="Nome/Cartella" Width="Auto">
+							<DataTemplate>
+								<StackPanel Orientation="Vertical">
+								<TextBlock Text="{Binding Nome}" Margin="0 7"/>
+								<TextBox Text="{Binding Cartella}" />
+								</StackPanel> 
+								</DataTemplate>
+								</DataGridTemplateColumn>
 						<DataGridTextColumn Header="V" Binding="{Binding VersionePCC}" Width="Auto" />
 						<DataGridTemplateColumn Header="Info" Width="Auto">
 							<DataTemplate>
