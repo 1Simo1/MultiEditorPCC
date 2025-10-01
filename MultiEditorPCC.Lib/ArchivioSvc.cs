@@ -16,6 +16,8 @@ public class ArchivioSvc
 
     public DatiProgettoAttivo DatiProgettoAttivo { get; set; } = new();
 
+    public Dictionary<String, TipoDatoDB> tabellaFileCSV { get; set; }
+
     /// <summary>
     /// Legge i dati da file di gioco e li memorizza in ArchiviProgetto
     /// </summary>
@@ -41,7 +43,7 @@ public class ArchivioSvc
             }
             catch (Exception)
             {
-                
+
                 return;
             }
 
@@ -78,21 +80,21 @@ public class ArchivioSvc
             /* Caricato progetto non valido (solitamente per cartella non trovata)
                 * Resetto i dati ad archivi vuoti e ritorno */
 
-                ArchiviProgetto = new();
+            ArchiviProgetto = new();
 
-                FileArchiviDBGioco = new();
+            FileArchiviDBGioco = new();
 
-                DatiProgettoAttivo = new();
+            DatiProgettoAttivo = new();
 
             var e = AppSvc.Services.GetRequiredService<EditorSvc>();
 
             e.ProgettoAttivoEditor = null;
-            
+
 
             return;
         }
 
-        
+
         foreach (var nf in f) if (!FileArchiviDBGioco.Contains(nf.Substring(path.Length))) FileArchiviDBGioco.Add(nf.Substring(path.Length));
         if (!FileArchiviDBGioco.Where(f => f.EndsWith(".FDI")).Any())
         {
@@ -195,7 +197,16 @@ public class ArchivioSvc
         //Elaboro CSV dati Squadre, Giocatori, Allenatori, Stadi
 
 
-        Dictionary<String, TipoDatoDB> tabellaFileCSV = CalcolaTabellaDBFileCSV(progettoEditor.Nome);
+        CalcolaTabellaDBFileCSV(progettoEditor.Nome);
+
+        ElaboraCSV();
+
+        return;
+    }
+
+    public void ElaboraCSV(bool resetDatiProgettoAttivo = false)
+    {
+        if (resetDatiProgettoAttivo) DatiProgettoAttivo = new();
 
         foreach (var fc in tabellaFileCSV)
         {
@@ -314,17 +325,21 @@ public class ArchivioSvc
                     break;
             }
         }
-
-
-
-
-
-        return;
     }
 
-    private Dictionary<string, TipoDatoDB> CalcolaTabellaDBFileCSV(string cartella)
+    public void CalcolaTabellaDBFileCSV(List<InfoFileDatiCSV> infoFileDatiCSV)
     {
-        Dictionary<String, TipoDatoDB> tabellaFileCSV = new();
+        tabellaFileCSV = new();
+        foreach (var info in infoFileDatiCSV)
+        {
+            tabellaFileCSV.Add(info.Percorso, info.TipoDatoDB);
+        }
+    }
+
+
+    private void CalcolaTabellaDBFileCSV(string cartella)
+    {
+        tabellaFileCSV = new();
 
         var cartellaEditor = $"{AppDomain.CurrentDomain.BaseDirectory}files{Path.DirectorySeparatorChar}{cartella}{Path.DirectorySeparatorChar}";
 
@@ -355,8 +370,6 @@ public class ArchivioSvc
         {
             tabellaFileCSV.Add(dl.percorsoCSV, dl.tipoDatoDB);
         }
-
-        return tabellaFileCSV;
     }
 
     private List<TipoDatoDB> CalcolaTipoDatoDB(String versionePCC, String nomeFile)

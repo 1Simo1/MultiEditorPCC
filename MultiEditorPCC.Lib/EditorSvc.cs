@@ -282,10 +282,10 @@ public class EditorSvc
     }
 
 
-    public List<InfoFileDatiCSV> CercaFileCSVDatiValidi(TipoDatoDB tipoDato = TipoDatoDB.NESSUNO, int codiceElemento = 0)
+    public List<InfoFileDatiCSV> CercaFileCSVDatiValidi(TipoDatoDB tipoDato = TipoDatoDB.NESSUNO, int codiceElemento = 0, bool richiediPercorsoCompleto = false)
     {
         List<InfoFileDatiCSV> elencoCSV = new();
-        List<String> percorsi = new();
+
 
         try
         {
@@ -296,7 +296,7 @@ public class EditorSvc
                 foreach (var e in Enum.GetValues(typeof(TipoDatoDB)))
                 {
                     if ((TipoDatoDB)e != TipoDatoDB.NESSUNO)
-                        elencoCSV.AddRange(CercaFileCSVDatiValidi((TipoDatoDB)e));
+                        elencoCSV.AddRange(CercaFileCSVDatiValidi((TipoDatoDB)e, codiceElemento, richiediPercorsoCompleto));
                 }
 
                 return elencoCSV
@@ -317,10 +317,11 @@ public class EditorSvc
                     if (squadre.Any() && (codiceElemento == 0 || (squadre.Count == 1 && squadre.First().Id == codiceElemento)))
                     {
                         var temp = pf.Substring(0, pf.LastIndexOf(Path.DirectorySeparatorChar) + 1);
+                        if (richiediPercorsoCompleto) temp = pf;
 
                         elencoCSV.Add(new()
                         {
-                            Percorso = pf.Replace(temp, String.Empty),
+                            Percorso = richiediPercorsoCompleto ? pf : pf.Replace(temp, String.Empty),
                             TipoDatoDB = TipoDatoDB.SQUADRA,
                             NumeroElementiFile = squadre.Count
                         });
@@ -337,9 +338,11 @@ public class EditorSvc
                     {
 
                         var temp = pf.Substring(0, pf.LastIndexOf(Path.DirectorySeparatorChar) + 1);
+                        if (richiediPercorsoCompleto) temp = pf;
+
                         elencoCSV.Add(new()
                         {
-                            Percorso = pf.Replace(temp, String.Empty),
+                            Percorso = richiediPercorsoCompleto ? pf : pf.Replace(temp, String.Empty),
                             TipoDatoDB = TipoDatoDB.GIOCATORE,
                             NumeroElementiFile = giocatori.Count
                         });
@@ -356,9 +359,10 @@ public class EditorSvc
                     {
 
                         var temp = pf.Substring(0, pf.LastIndexOf(Path.DirectorySeparatorChar) + 1);
+                        if (richiediPercorsoCompleto) temp = pf;
                         elencoCSV.Add(new()
                         {
-                            Percorso = pf.Replace(temp, String.Empty),
+                            Percorso = richiediPercorsoCompleto ? pf : pf.Replace(temp, String.Empty),
                             TipoDatoDB = TipoDatoDB.ALLENATORE,
                             NumeroElementiFile = allenatori.Count
                         });
@@ -375,9 +379,10 @@ public class EditorSvc
                     {
 
                         var temp = pf.Substring(0, pf.LastIndexOf(Path.DirectorySeparatorChar) + 1);
+                        if (richiediPercorsoCompleto) temp = pf;
                         elencoCSV.Add(new()
                         {
-                            Percorso = pf.Replace(temp, String.Empty),
+                            Percorso = richiediPercorsoCompleto ? pf : pf.Replace(temp, String.Empty),
                             TipoDatoDB = TipoDatoDB.STADIO,
                             NumeroElementiFile = stadi.Count
                         });

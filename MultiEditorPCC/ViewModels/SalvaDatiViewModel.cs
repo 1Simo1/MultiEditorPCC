@@ -18,6 +18,7 @@ public partial class SalvaDatiViewModel
     {
         EditorSvc = AppSvc.Services.GetRequiredService<EditorSvc>();
         ArchivioSvc = AppSvc.Services.GetRequiredService<ArchivioSvc>();
+        RicaricaDatabaseDaCSV(); //TODO Temp, rimuovere appena verificato il comando RicaricaDatabaseDaCSV()
     }
 
     [Command]
@@ -25,6 +26,7 @@ public partial class SalvaDatiViewModel
     {
         var progettoAttivo = EditorSvc.ProgettoAttivoEditor;
         if (progettoAttivo == null) return;
-        var test = EditorSvc.CercaFileCSVDatiValidi();
+        ArchivioSvc.CalcolaTabellaDBFileCSV(EditorSvc.CercaFileCSVDatiValidi(richiediPercorsoCompleto: true));
+        ArchivioSvc.ElaboraCSV(false); //TODO Verificare se far specificare true/false da GUI
     }
 }
