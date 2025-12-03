@@ -2,6 +2,7 @@
 using MultiEditorPCC.Dat.DbSet;
 using MultiEditorPCC.Lib.Archivi;
 using SkiaSharp;
+using System.IO;
 using System.Text;
 using static MultiEditorPCC.Lib.ArchivioSvc;
 
@@ -12,7 +13,7 @@ public class ArchivioSvc
 {
     public Dictionary<String, List<ElementoArchivio>> ArchiviProgetto { get; set; } = new();
 
-    private List<String> FileArchiviDBGioco { get; set; } = new();
+    public List<String> FileArchiviDBGioco { get; set; } = new();
 
     public DatiProgettoAttivo DatiProgettoAttivo { get; set; } = new();
 
@@ -106,12 +107,29 @@ public class ArchivioSvc
 
 
 
-        ArchiviProgetto = new();
+        ArchiviProgettoDaFileArchiviDBGioco(progettoEditor);
 
 
 
 
 
+
+        
+        try
+        {
+            SetupDatiProgettoAttivo(progettoEditor, ArchiviProgetto);
+        }
+        catch (Exception)
+        {
+
+        }
+
+    }
+
+    public void ArchiviProgettoDaFileArchiviDBGioco(Dat.DbSet.ProgettoEditorPCC? progettoEditor=null)
+    {
+
+        String path = progettoEditor.Cartella + Path.DirectorySeparatorChar;
 
         foreach (var file in FileArchiviDBGioco)
         {
@@ -121,7 +139,7 @@ public class ArchivioSvc
                 int lp = path.Length;
                 if (progettoEditor.VersionePCC.Equals("*"))
                 {
-                    //path = String.Empty;
+                    path = String.Empty;
                     lp = 0;
                 }
                 String percorsoFile = $"{path}{file}";
@@ -157,15 +175,6 @@ public class ArchivioSvc
 
 
         }
-        try
-        {
-            SetupDatiProgettoAttivo(progettoEditor, ArchiviProgetto);
-        }
-        catch (Exception)
-        {
-
-        }
-
     }
 
     public void SetupDatiProgettoAttivo(ProgettoEditorPCC progettoEditor, Dictionary<string, List<ElementoArchivio>> archiviProgetto)
@@ -381,33 +390,33 @@ public class ArchivioSvc
 
     private List<TipoDatoDB> CalcolaTipoDatoDB(String versionePCC, String nomeFile)
     {
-        if (nomeFile.EndsWith("FDI"))
+        if (nomeFile.ToUpper().EndsWith("FDI"))
         {
             //2001 E 7+
-            if (nomeFile.Contains("JUG")) return new() { TipoDatoDB.GIOCATORE };
-            if (nomeFile.Contains("ENT")) return new() { TipoDatoDB.ALLENATORE };
+            if (nomeFile.ToUpper().Contains("JUG")) return new() { TipoDatoDB.GIOCATORE };
+            if (nomeFile.ToUpper().Contains("ENT")) return new() { TipoDatoDB.ALLENATORE };
 
 
-            if (!nomeFile.Contains("990")) //2001
+            if (!nomeFile.ToUpper().Contains("990")) //2001
             {
-                if (nomeFile.Contains("EQ")) return new() { TipoDatoDB.SQUADRA };
-                if (nomeFile.Contains("EST")) return new() { TipoDatoDB.STADIO };
+                if (nomeFile.ToUpper().Contains("EQ")) return new() { TipoDatoDB.SQUADRA };
+                if (nomeFile.ToUpper().Contains("EST")) return new() { TipoDatoDB.STADIO };
             }
             else //7+
             {
-                if (nomeFile.Contains("EQ")) return new() { TipoDatoDB.STADIO, TipoDatoDB.SQUADRA };
+                if (nomeFile.ToUpper().Contains("EQ")) return new() { TipoDatoDB.STADIO, TipoDatoDB.SQUADRA };
             }
         }
 
-        if (nomeFile.Contains("EQ") && nomeFile.EndsWith("DBC"))
+        if (nomeFile.ToUpper().Contains("EQ") && nomeFile.ToUpper().EndsWith("DBC"))
             return new() { TipoDatoDB.STADIO, TipoDatoDB.ALLENATORE, TipoDatoDB.GIOCATORE, TipoDatoDB.SQUADRA };
 
-        if (nomeFile.StartsWith("EQ") && nomeFile.EndsWith("PKF"))
+        if (nomeFile.ToUpper().StartsWith("EQ") && nomeFile.ToUpper().EndsWith("PKF"))
             return new() { TipoDatoDB.STADIO, TipoDatoDB.ALLENATORE, TipoDatoDB.GIOCATORE, TipoDatoDB.SQUADRA };
 
         //Cerco se il file è un archivio (PKF non di squadra, PAK)
         //PKF di squadra escluso qui (se lo è il metodo è tornato al passaggio precedente)
-        if (nomeFile.Contains("PAK") || nomeFile.Contains("PKF")) return new() { TipoDatoDB.ARCHIVIO };
+        if (nomeFile.ToUpper().Contains("PAK") || nomeFile.ToUpper().Contains("PKF")) return new() { TipoDatoDB.ARCHIVIO };
 
         return new() { TipoDatoDB.NESSUNO };
     }

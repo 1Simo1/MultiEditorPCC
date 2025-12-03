@@ -17,9 +17,10 @@ public class EditorSvc
     public List<ProgettoEditorPCC> ProgettiEditor { get; set; }
     public List<VersionePCCSupportataEditor> versioniPCC_Editor { get; set; } = new();
 
-    public EditorSvc()
+    public EditorSvc(bool modMiniEditorDB=false)
     {
         if (versioniPCC_Editor == null || !versioniPCC_Editor.Any()) SetupVersioniPCCDisponibiliEditor();
+        if (modMiniEditorDB) return;
         if (ProgettoAttivoEditor == null) CaricaProgetto();
         ProgettiEditor = !db!.Progetti.Any() ? new() : db.Progetti.ToList();
 
@@ -281,6 +282,48 @@ public class EditorSvc
         return elencoDBE;
     }
 
+    public InfoFileDatiCSV? TestFileCorrettoCSV(TipoDatoDB tipoDato = TipoDatoDB.NESSUNO, String? path="")
+    {
+        InfoFileDatiCSV info = null;
+       
+        if (String.IsNullOrEmpty(path))
+        {
+            path = Directory.GetFiles($"{AppDomain.CurrentDomain.BaseDirectory}files{Path.DirectorySeparatorChar}{ProgettoAttivoEditor!.Nome}{Path.DirectorySeparatorChar}", "*.CSV", SearchOption.AllDirectories).FirstOrDefault();
+            if (path==null) return null;
+        }
+
+        if (tipoDato == TipoDatoDB.NESSUNO)
+        {
+            foreach (var e in Enum.GetValues(typeof(TipoDatoDB)))
+            {
+                if ((TipoDatoDB)e != TipoDatoDB.NESSUNO)
+                    info = TestFileCorrettoCSV((TipoDatoDB)e, path);
+            }
+        }
+
+        //DatabaseCSV.Versione = 1;
+        DatabaseCSV.contenutoCSV = path;
+
+        List<object> x = new();
+
+        if (tipoDato == TipoDatoDB.SQUADRA) x.AddRange(DatabaseCSV.LeggiSquadre());
+        if (tipoDato == TipoDatoDB.ALLENATORE) x.AddRange(DatabaseCSV.LeggiAllenatori());
+        if (tipoDato == TipoDatoDB.STADIO) x.AddRange(DatabaseCSV.LeggiStadi());
+        if (tipoDato == TipoDatoDB.GIOCATORE) x.AddRange(DatabaseCSV.LeggiGiocatori());
+
+
+        if (x.Any())
+        {
+            info = new()
+            {
+                Percorso = path,
+                TipoDatoDB = tipoDato,
+                NumeroElementiFile = x.Count()
+            };
+        }
+
+        return info;
+    }
 
     public List<InfoFileDatiCSV> CercaFileCSVDatiValidi(TipoDatoDB tipoDato = TipoDatoDB.NESSUNO, int codiceElemento = 0, bool richiediPercorsoCompleto = false)
     {

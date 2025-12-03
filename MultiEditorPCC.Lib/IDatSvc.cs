@@ -513,13 +513,17 @@ public class DatSvc : IDatSvc
         List<T> elenco = new();
 
         //DatabaseCSV.Versione = 1;
-        DatabaseCSV.contenutoCSV = File.ReadAllText(PathCSV);
+        DatabaseCSV.contenutoCSV = PathCSV;
 
         //TODO Implementare import tipo db da file CSV
-        //switch (T)
-        //{
-        //    case Squadra: elenco = DatabaseCSV.LeggiSquadre() as List<Squadra>;
-        //}
+        switch (typeof(T).Name)
+        {
+            case "Squadra": return DatabaseCSV.LeggiSquadre() as List<T>;
+            case "Giocatore": return DatabaseCSV.LeggiGiocatori() as List<T>;
+            case "Allenatore": return DatabaseCSV.LeggiAllenatori() as List<T>;
+            case "Stadio": return DatabaseCSV.LeggiStadi() as List<T>;
+            default: break;
+        }
 
 
         return elenco;
