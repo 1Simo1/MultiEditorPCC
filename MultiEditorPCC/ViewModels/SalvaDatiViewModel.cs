@@ -27,6 +27,6 @@ public partial class SalvaDatiViewModel
         var progettoAttivo = EditorSvc.ProgettoAttivoEditor;
         if (progettoAttivo == null) return;
         ArchivioSvc.CalcolaTabellaDBFileCSV(EditorSvc.CercaFileCSVDatiValidi(richiediPercorsoCompleto: true));
-        ArchivioSvc.ElaboraCSV(false); //TODO Verificare se far specificare true/false da GUI
+        ArchivioSvc.ElaboraCSV(true); //TODO Verificare se far specificare true/false da GUI
     }
 }
