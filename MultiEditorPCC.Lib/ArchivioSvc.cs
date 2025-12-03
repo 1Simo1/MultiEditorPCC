@@ -243,7 +243,10 @@ public class ArchivioSvc
                     foreach (var gc in giocatoriCSV)
                     {
 
-                        if (gc.CodiceSquadra > 0) DatiProgettoAttivo!.Squadre!.Find(x => x.Id == gc.CodiceSquadra)!.Giocatori.Add(gc);
+                        var cercaGiocatore = DatiProgettoAttivo.Giocatori.Find(x => x.Id == gc.Id);
+
+                        if (gc.CodiceSquadra > 0 && cercaGiocatore == null)
+                            DatiProgettoAttivo!.Squadre!.Find(x => x.Id == gc.CodiceSquadra)!.Giocatori.Add(gc);
 
                         if (gc.Id <= 0)
                         {
@@ -252,16 +255,20 @@ public class ArchivioSvc
                             gc.Id = (int)id;
                         }
 
-                        var cercaGiocatore = DatiProgettoAttivo.Giocatori.Find(x => x.Id == gc.Id);
+
 
                         if (cercaGiocatore != null)
                         {
                             foreach (var xs in DatiProgettoAttivo.Giocatori.Where(x => x.Id == cercaGiocatore.Id).ToList())
+                            {
                                 DatiProgettoAttivo.Giocatori.Remove(xs);
-
+                                if (gc.CodiceSquadra > 0) DatiProgettoAttivo!.Squadre!.Find(x => x.Id == gc.CodiceSquadra)!.Giocatori.Remove(xs);
+                            }
                         }
 
                         DatiProgettoAttivo.Giocatori.Add(gc);
+                        if (gc.CodiceSquadra > 0)
+                            DatiProgettoAttivo!.Squadre!.Find(x => x.Id == gc.CodiceSquadra)!.Giocatori.Add(gc);
                     }
 
 
