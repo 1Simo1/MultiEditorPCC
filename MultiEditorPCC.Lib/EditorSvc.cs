@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using MultiEditorPCC.Dat.DbContext;
 using MultiEditorPCC.Dat.DbSet;
 using MultiEditorPCC.Lib.Archivi;
@@ -17,14 +18,20 @@ public class EditorSvc
     public List<ProgettoEditorPCC> ProgettiEditor { get; set; }
     public List<VersionePCCSupportataEditor> versioniPCC_Editor { get; set; } = new();
 
-    public EditorSvc(bool modMiniEditorDB=false)
+
+
+
+    public EditorSvc(bool MiniEditorDB=false)
     {
         if (versioniPCC_Editor == null || !versioniPCC_Editor.Any()) SetupVersioniPCCDisponibiliEditor();
-        if (modMiniEditorDB) return;
+        if (MiniEditorDB) return;
         if (ProgettoAttivoEditor == null) CaricaProgetto();
         ProgettiEditor = !db!.Progetti.Any() ? new() : db.Progetti.ToList();
 
     }
+
+
+  
 
     private void CaricaProgetto()
     {
@@ -97,8 +104,6 @@ public class EditorSvc
 
     private void SetupVersioniPCCDisponibiliEditor()
     {
-        versioniPCC_Editor = new();
-
         versioniPCC_Editor.Add(new()
         {
             Id = "2001",
@@ -297,7 +302,11 @@ public class EditorSvc
             foreach (var e in Enum.GetValues(typeof(TipoDatoDB)))
             {
                 if ((TipoDatoDB)e != TipoDatoDB.NESSUNO)
+                {
                     info = TestFileCorrettoCSV((TipoDatoDB)e, path);
+                    if (info != null) return info;
+                }
+                    
             }
         }
 
