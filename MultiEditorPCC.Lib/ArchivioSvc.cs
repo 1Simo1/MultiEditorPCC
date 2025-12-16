@@ -1166,11 +1166,6 @@ public class ElementoArchivio
     public int Size { get; set; }
 
     public List<Byte> Dat { get; set; } = new();
-
-    public static implicit operator ElementoArchivio(List<byte> v)
-    {
-        throw new NotImplementedException();
-    }
 }
 
 internal class DBtabellaFileCSV
