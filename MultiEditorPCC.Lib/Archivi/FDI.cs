@@ -1,4 +1,5 @@
 ﻿using MultiEditorPCC.Dat.DbSet;
+using System.Collections.Generic;
 
 
 namespace MultiEditorPCC.Lib.Archivi;
@@ -8,6 +9,8 @@ public static partial class FDI
     public static int Versione { get; set; }
 
     public static List<Byte> dati { get; set; } = new();
+
+    public static List<ElementoArchivio> elementi { get; set; } = new();
 
     public static Squadra LeggiSquadra(ElementoArchivio elemento)
     {
@@ -445,23 +448,67 @@ public static partial class FDI
 
     public static List<Byte> ScriviSquadra(Squadra squadra)
     {
-        throw new NotImplementedException();
+        ElementoArchivio e = new();
+        //TODO
+
+
+        elementi.Add(e);
+        return e.Dat;
     }
 
     public static List<Byte> ScriviGiocatore(Giocatore giocatore)
     {
-        throw new NotImplementedException();
+        ElementoArchivio e = new();
+        //TODO
+
+
+        elementi.Add(e);
+        return e.Dat;
     }
 
 
     public static List<Byte> ScriviAllenatore(Allenatore allenatore)
     {
-        throw new NotImplementedException();
+        ElementoArchivio e = new();
+        //TODO
+
+
+        elementi.Add(e);
+        return e.Dat;
     }
 
     public static List<Byte> ScriviStadio(Stadio stadio)
     {
-        throw new NotImplementedException();
+        ElementoArchivio e = new();
+        //TODO
+
+
+        elementi.Add(e);
+        return e.Dat;
+    }
+
+    public static List<Byte> Scrivi()
+    {
+        dati.Clear();
+
+        dati.AddRange(BitConverter.GetBytes(1229344068));
+        dati.AddRange(BitConverter.GetBytes(808333686));
+        dati.AddRange(BitConverter.GetBytes((UInt64)0));
+        dati.AddRange(BitConverter.GetBytes(elementi.Count));
+
+        int baseOffset = 13 * elementi.Count + 20;
+
+        foreach (var e in elementi)
+        {
+            dati.AddRange(BitConverter.GetBytes(e.Codice));
+            dati.Add(0);
+            dati.AddRange(BitConverter.GetBytes(e.Offset + baseOffset));
+            dati.AddRange(BitConverter.GetBytes(e.Size));
+        }
+
+        foreach (var e in elementi) dati.AddRange(e.Dat);
+
+        return dati;
     }
 
 }
