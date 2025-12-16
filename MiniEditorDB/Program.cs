@@ -223,7 +223,9 @@ void LeggiCSV()
 
 void ScriviFiles()
 {
-   
-    //a.DatiProgettoAttivo
+
+    var a = AppSvc.Services.GetRequiredService<ArchivioSvc>();
     //TODO
+    //FDI.ScriviSquadra();
+    //DBC.ScriviSquadra();
 }
