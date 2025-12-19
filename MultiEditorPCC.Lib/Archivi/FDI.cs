@@ -1,5 +1,4 @@
 ﻿using MultiEditorPCC.Dat.DbSet;
-using System.Collections.Generic;
 
 
 namespace MultiEditorPCC.Lib.Archivi;
@@ -448,10 +447,22 @@ public static partial class FDI
 
     public static List<Byte> ScriviSquadra(Squadra squadra)
     {
-        ElementoArchivio e = new();
+        ElementoArchivio e = new()
+        {
+            Codice = (int)squadra.Id,
+            Offset = -1,
+            Size = 0,
+
+        };
+
+
+        e.Codice = (int)squadra.Id;
+        e.Offset = elementi.Any() ? elementi.Last().Offset + elementi.Last().Size : 0;
+
         //TODO
 
 
+        e.Size = e.Dat.Count;
         elementi.Add(e);
         return e.Dat;
     }
@@ -498,16 +509,28 @@ public static partial class FDI
 
         int baseOffset = 13 * elementi.Count + 20;
 
+        dati.AddRange(Enumerable.Repeat<Byte>(0, 13 * elementi.Count));
+
+        int n = 0;
+
         foreach (var e in elementi)
         {
-            dati.AddRange(BitConverter.GetBytes(e.Codice));
-            dati.Add(0);
-            dati.AddRange(BitConverter.GetBytes(e.Offset + baseOffset));
-            dati.AddRange(BitConverter.GetBytes(e.Size));
+            var a = BitConverter.GetBytes(e.Codice);
+            var b = BitConverter.GetBytes(e.Offset + baseOffset);
+            var c = BitConverter.GetBytes(e.Size);
+            for (int i = 0; i <= 3; i++)
+            {
+                dati[13 * n + 20 + i] = a[i];
+                dati[13 * n + 25 + i] = b[i];
+                dati[13 * n + 29 + i] = c[i];
+            }
+            dati[13 * n + 24] = 0;
+
+            dati.AddRange(e.Dat);
+            n++;
         }
 
-        foreach (var e in elementi) dati.AddRange(e.Dat);
-
+        elementi.Clear();
         return dati;
     }
 
