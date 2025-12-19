@@ -2,8 +2,6 @@
 using MultiEditorPCC.Dat.DbSet;
 using MultiEditorPCC.Lib;
 using MultiEditorPCC.Lib.Archivi;
-using System.IO;
-
 
 Config();
 
@@ -24,7 +22,7 @@ void Config()
 {
     var collection = new ServiceCollection();
     collection.AddSingleton<ArchivioSvc>();
-    collection.AddSingleton<EditorSvc>(e => ActivatorUtilities.CreateInstance<EditorSvc>(e,true));
+    collection.AddSingleton<EditorSvc>(e => ActivatorUtilities.CreateInstance<EditorSvc>(e, true));
     collection.AddSingleton<IDatSvc, DatSvc>();
     AppSvc.Services = collection.BuildServiceProvider();
     DatabaseCSV.Versione = 1;
@@ -38,7 +36,7 @@ void Config()
 
     foreach (var c in v) Directory.CreateDirectory($"{AppContext.BaseDirectory}/DBDAT/{c}");
 
-   
+
 }
 
 int testFiles()
@@ -96,7 +94,7 @@ void ScriviCSV()
 {
     if (testFiles() == 0) return;
 
-   
+
     DatabaseCSV.ScriviCSVSquadre(a.DatiProgettoAttivo.Squadre);
     File.WriteAllText($"{AppContext.BaseDirectory}/CSV/Squadre.CSV", DatabaseCSV.contenutoCSV);
     DatabaseCSV.ScriviCSVAllenatori(a.DatiProgettoAttivo.Allenatori);
@@ -126,20 +124,22 @@ void LeggiCSV()
 {
     List<InfoFileDatiCSV> elencoInfoFileCSV = elencoFileValidiCSV();
     if (!elencoInfoFileCSV.Any()) return;
-    
+
     a.DatiProgettoAttivo = new();
     foreach (InfoFileDatiCSV info in elencoInfoFileCSV)
     {
         DatabaseCSV.contenutoCSV = info.Percorso;
 
-        if (info.TipoDatoDB==ArchivioSvc.TipoDatoDB.SQUADRA)
+        if (info.TipoDatoDB == ArchivioSvc.TipoDatoDB.SQUADRA)
         {
             List<uint> id = a.DatiProgettoAttivo.Squadre.Select(s => s.Id).ToList();
             List<Squadra> e = DatabaseCSV.LeggiSquadre();
-            
-            if (!a.DatiProgettoAttivo.Squadre.Any()) { 
+
+            if (!a.DatiProgettoAttivo.Squadre.Any())
+            {
                 a.DatiProgettoAttivo.Squadre.AddRange(e);
-            } else
+            }
+            else
             {
                 foreach (var x in e)
                 {
@@ -225,7 +225,91 @@ void ScriviFiles()
 {
 
     var a = AppSvc.Services.GetRequiredService<ArchivioSvc>();
-    //TODO
-    //FDI.ScriviSquadra();
-    //DBC.ScriviSquadra();
+    var e = AppSvc.Services.GetRequiredService<EditorSvc>();
+
+    int[] lv = new int[2] { 800, 700 };
+    foreach (var v in lv)
+    {
+        FDI.Versione = v;
+
+        foreach (var sq in a.DatiProgettoAttivo.Squadre)
+        {
+            if (!sq.Giocatori.Any()) sq.Giocatori = a.DatiProgettoAttivo.Giocatori.Where(g => g.CodiceSquadra == sq.Id).ToList();
+            if (sq.Stadio.Id == 0) sq.Stadio = a.DatiProgettoAttivo.Stadi.SingleOrDefault(s => s.Id == sq.Id);
+            sq.Allenatori = new() { a.DatiProgettoAttivo.Allenatori.FirstOrDefault(a => a.Id == sq.Allenatori.Last().Id) };
+
+
+            FDI.ScriviSquadra(sq);
+        }
+
+        foreach (var vp in e.versioniPCC_Editor.Where(a => a.VersioneArchiviDB == v))
+        {
+            SalvaFile("EQ", vp, "FDI", FDI.Scrivi());
+        }
+
+        foreach (var al in a.DatiProgettoAttivo.Allenatori)
+        {
+            FDI.ScriviAllenatore(al);
+        }
+
+        foreach (var vp in e.versioniPCC_Editor.Where(a => a.VersioneArchiviDB == v))
+        {
+            SalvaFile("ENT", vp, "FDI", FDI.Scrivi());
+        }
+
+        foreach (var gc in a.DatiProgettoAttivo.Giocatori)
+        {
+            FDI.ScriviGiocatore(gc);
+        }
+
+        foreach (var vp in e.versioniPCC_Editor.Where(a => a.VersioneArchiviDB == v))
+        {
+            SalvaFile("JUG", vp, "FDI", FDI.Scrivi());
+        }
+
+        if (v == 800)
+        {
+            foreach (var sq in a.DatiProgettoAttivo.Stadi)
+            {
+
+            }
+
+            foreach (var vp in e.versioniPCC_Editor.Where(a => a.VersioneArchiviDB == 800))
+            {
+                SalvaFile("EST", vp, "FDI", FDI.Scrivi());
+            }
+
+        }
+
+
+
+    }
+
+    foreach (var sq in a.DatiProgettoAttivo.Squadre)
+    {
+        if (!sq.Giocatori.Any()) sq.Giocatori = a.DatiProgettoAttivo.Giocatori.Where(g => g.CodiceSquadra == sq.Id).ToList();
+        if (sq.Stadio.Id == 0) sq.Stadio = a.DatiProgettoAttivo.Stadi.SingleOrDefault(s => s.Id == sq.Id);
+        sq.Allenatori = new() { a.DatiProgettoAttivo.Allenatori.FirstOrDefault(a => a.Id == sq.Allenatori.Last().Id) };
+
+        foreach (var vp in e.versioniPCC_Editor.Where(a => a.VersioneArchiviDB < 600))
+        {
+            SalvaFile($"EQ{91 + int.Parse(vp.Id)}{(sq.Id % 10000).ToString().PadLeft(4, '0')}",
+                        vp, "DBC", DBC.ScriviSquadra(sq));
+        }
+
+
+
+    }
+
+
+}
+
+void SalvaFile(String pref, VersionePCCSupportataEditor v, String tipoArchivio, List<byte> dat)
+{
+    var nomeFile = tipoArchivio.Equals("DBC") ?
+        $"{AppContext.BaseDirectory}/DBDAT/{v.Id}/{pref}.DBC" :
+        $"{AppContext.BaseDirectory}/DBDAT/{v.Id}/{v.CercaFilePattern.First().Replace("*", pref)}";
+#if !DEBUG
+    File.WriteAllBytes(nomeFile, dat.ToArray());
+#endif
 }
