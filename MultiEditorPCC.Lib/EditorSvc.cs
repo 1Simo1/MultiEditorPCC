@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using MultiEditorPCC.Dat.DbContext;
 using MultiEditorPCC.Dat.DbSet;
 using MultiEditorPCC.Lib.Archivi;
@@ -21,7 +20,7 @@ public class EditorSvc
 
 
 
-    public EditorSvc(bool MiniEditorDB=false)
+    public EditorSvc(bool MiniEditorDB = false)
     {
         if (versioniPCC_Editor == null || !versioniPCC_Editor.Any()) SetupVersioniPCCDisponibiliEditor();
         if (MiniEditorDB) return;
@@ -31,7 +30,7 @@ public class EditorSvc
     }
 
 
-  
+
 
     private void CaricaProgetto()
     {
@@ -109,7 +108,8 @@ public class EditorSvc
             Id = "2001",
             NomeGioco = "PC Calcio 2001",
             CercaFilePattern = new() { "*00036.FDI" },
-            CartelleSuperiori = new() { "DBDAT", "Dbdat" }
+            CartelleSuperiori = new() { "DBDAT", "Dbdat" },
+            VersioneArchiviDB = 800
         });
 
         versioniPCC_Editor.Add(new()
@@ -117,7 +117,8 @@ public class EditorSvc
             Id = "2001F",
             NomeGioco = "PC Futbol 2001",
             CercaFilePattern = new() { "*00022.FDI" },
-            CartelleSuperiori = new() { "DBDAT", "Dbdat" }
+            CartelleSuperiori = new() { "DBDAT", "Dbdat" },
+            VersioneArchiviDB = 800
         });
 
         versioniPCC_Editor.Add(new()
@@ -125,7 +126,8 @@ public class EditorSvc
             Id = "7+",
             NomeGioco = "PC Calcio 7+",
             CercaFilePattern = new() { "*99036.FDI" },
-            CartelleSuperiori = new() { "DBDAT" }
+            CartelleSuperiori = new() { "DBDAT" },
+            VersioneArchiviDB = 700
         });
 
         versioniPCC_Editor.Add(new()
@@ -133,7 +135,8 @@ public class EditorSvc
             Id = "7+F",
             NomeGioco = "PC Futbol 7+",
             CercaFilePattern = new() { "*99022.FDI" },
-            CartelleSuperiori = new() { "DBDAT" }
+            CartelleSuperiori = new() { "DBDAT" },
+            VersioneArchiviDB = 800
         });
 
         versioniPCC_Editor.Add(new()
@@ -141,7 +144,8 @@ public class EditorSvc
             Id = "6",
             NomeGioco = "PC Calcio 6",
             CercaFilePattern = new() { "EQ036036.PKF" },
-            CartelleSuperiori = new() { "Dbdat", "EQ036036" }
+            CartelleSuperiori = new() { "Dbdat", "EQ036036" },
+            VersioneArchiviDB = 510
         });
 
         versioniPCC_Editor.Add(new()
@@ -149,7 +153,8 @@ public class EditorSvc
             Id = "5",
             NomeGioco = "PC Calcio 5",
             CercaFilePattern = new() { "EQUIPOS.PKF" },
-            CartelleSuperiori = new() { "DBDAT", "EQUIPOS" }
+            CartelleSuperiori = new() { "DBDAT", "EQUIPOS" },
+            VersioneArchiviDB = 510
         });
 
         versioniPCC_Editor.Add(new()
@@ -157,7 +162,8 @@ public class EditorSvc
             Id = "4",
             NomeGioco = "PC Calcio 4",
             CercaFilePattern = new() { "EQ95*.DBC" },
-            CartelleSuperiori = new() { "DBDAT" }
+            CartelleSuperiori = new() { "DBDAT" },
+            VersioneArchiviDB = 400
         });
 
         versioniPCC_Editor.Add(new()
@@ -165,7 +171,8 @@ public class EditorSvc
             Id = "3",
             NomeGioco = "PC Calcio 3",
             CercaFilePattern = new() { "*.DGF" },
-            CartelleSuperiori = new() { "EQUIP" }
+            CartelleSuperiori = new() { "EQUIP" },
+            VersioneArchiviDB = 300
         });
 
     }
@@ -287,14 +294,14 @@ public class EditorSvc
         return elencoDBE;
     }
 
-    public InfoFileDatiCSV? TestFileCorrettoCSV(TipoDatoDB tipoDato = TipoDatoDB.NESSUNO, String? path="")
+    public InfoFileDatiCSV? TestFileCorrettoCSV(TipoDatoDB tipoDato = TipoDatoDB.NESSUNO, String? path = "")
     {
         InfoFileDatiCSV info = null;
-       
+
         if (String.IsNullOrEmpty(path))
         {
             path = Directory.GetFiles($"{AppDomain.CurrentDomain.BaseDirectory}files{Path.DirectorySeparatorChar}{ProgettoAttivoEditor!.Nome}{Path.DirectorySeparatorChar}", "*.CSV", SearchOption.AllDirectories).FirstOrDefault();
-            if (path==null) return null;
+            if (path == null) return null;
         }
 
         if (tipoDato == TipoDatoDB.NESSUNO)
@@ -306,7 +313,7 @@ public class EditorSvc
                     info = TestFileCorrettoCSV((TipoDatoDB)e, path);
                     if (info != null) return info;
                 }
-                    
+
             }
         }
 
