@@ -2,7 +2,6 @@
 using MultiEditorPCC.Dat.DbSet;
 using MultiEditorPCC.Lib.Archivi;
 using SkiaSharp;
-using System.IO;
 using System.Text;
 using static MultiEditorPCC.Lib.ArchivioSvc;
 
@@ -114,7 +113,7 @@ public class ArchivioSvc
 
 
 
-        
+
         try
         {
             SetupDatiProgettoAttivo(progettoEditor, ArchiviProgetto);
@@ -126,7 +125,7 @@ public class ArchivioSvc
 
     }
 
-    public void ArchiviProgettoDaFileArchiviDBGioco(Dat.DbSet.ProgettoEditorPCC? progettoEditor=null)
+    public void ArchiviProgettoDaFileArchiviDBGioco(Dat.DbSet.ProgettoEditorPCC? progettoEditor = null)
     {
 
         String path = progettoEditor.Cartella + Path.DirectorySeparatorChar;
