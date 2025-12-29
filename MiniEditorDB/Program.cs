@@ -94,7 +94,7 @@ void ScriviCSV()
 {
     if (testFiles() == 0) return;
 
-
+    DatabaseCSV.scriviTatticaCompleta = true;
     DatabaseCSV.ScriviCSVSquadre(a.DatiProgettoAttivo.Squadre);
     File.WriteAllText($"{AppContext.BaseDirectory}/CSV/Squadre.CSV", DatabaseCSV.contenutoCSV);
     DatabaseCSV.ScriviCSVAllenatori(a.DatiProgettoAttivo.Allenatori);
@@ -269,9 +269,9 @@ void ScriviFiles()
 
         if (v == 800)
         {
-            foreach (var sq in a.DatiProgettoAttivo.Stadi)
+            foreach (var st in a.DatiProgettoAttivo.Stadi)
             {
-
+                FDI.ScriviStadio(st);
             }
 
             foreach (var vp in e.versioniPCC_Editor.Where(a => a.VersioneArchiviDB == 800))
