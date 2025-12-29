@@ -459,8 +459,212 @@ public static partial class FDI
         e.Codice = (int)squadra.Id;
         e.Offset = elementi.Any() ? elementi.Last().Offset + elementi.Last().Size : 0;
 
-        //TODO
 
+        e.Dat.AddRange(BitConverter.GetBytes(2037411651));
+        e.Dat.AddRange(BitConverter.GetBytes(1751607666));
+        e.Dat.AddRange(BitConverter.GetBytes(1663574132));
+        e.Dat.Add(41);
+        if (Versione == 800) e.Dat.AddRange(BitConverter.GetBytes(808464434));
+        if (Versione == 700) e.Dat.AddRange(BitConverter.GetBytes(943274289));
+        e.Dat.Add(32);
+        e.Dat.Add(68);
+        e.Dat.Add(105);
+        e.Dat.AddRange(BitConverter.GetBytes(1952999273));
+        e.Dat.AddRange(BitConverter.GetBytes(1967988835));
+        e.Dat.AddRange(BitConverter.GetBytes(1835627628));
+        e.Dat.AddRange(BitConverter.GetBytes(1634296933));
+
+        int lt = 0;
+
+
+        if (Versione == 800 && squadra.Giocabile)
+        {
+            lt = $"{squadra.Nome}{squadra.NomeCompleto}{squadra.NomePresidente}{squadra.NomeSponsor}{squadra.NomeSponsorTecnico}".Length + 5;
+        }
+
+        if (Versione == 800 && !squadra.Giocabile)
+        {
+            lt = $"{squadra.Nome}{squadra.NomeCompleto}".Length + 2;
+        }
+
+        if (Versione == 700 && squadra.Giocabile)
+        {
+            lt = $"{squadra.Nome}{squadra.NomeCompleto}{squadra.Stadio.Nome}{squadra.NomePresidente}{squadra.NomeSponsor}{squadra.NomeSponsorTecnico}".Length + 6;
+        }
+
+        if (Versione == 700 && !squadra.Giocabile)
+        {
+            lt = $"{squadra.Nome}{squadra.NomeCompleto}{squadra.Stadio.Nome}".Length + 3;
+        }
+
+        e.Dat.Add((byte)(lt % 256));
+        e.Dat.Add((byte)(lt >> 8));
+
+        e.Dat.Add((byte)(Versione % 256));
+        e.Dat.Add((byte)(Versione >> 8));
+
+        e.Dat.Add(0); //Lingua
+
+        int g = squadra.Giocabile ? 0 : 1;
+
+        e.Dat.Add((byte)g);
+
+        e.Dat.Add((byte)(squadra.Nome.Length % 256));
+        e.Dat.Add((byte)(squadra.Nome.Length >> 8));
+
+        e.Dat.AddRange(Utils.codificaTesto(squadra.Nome));
+
+        if (Versione == 800)
+        {
+
+            e.Dat.Add((byte)(squadra.Stadio.Id % 256));
+            e.Dat.Add((byte)(squadra.Stadio.Id >> 8));
+            e.Dat.Add((byte)squadra.Nazione);
+            e.Dat.Add((byte)(squadra.NomeCompleto.Length % 256));
+            e.Dat.Add((byte)(squadra.NomeCompleto.Length >> 8));
+            e.Dat.AddRange(Utils.codificaTesto(squadra.NomeCompleto));
+            e.Dat.Add((byte)(squadra.AnnoFondazione % 256));
+            e.Dat.Add((byte)(squadra.AnnoFondazione >> 8));
+            e.Dat.Add((byte)squadra.Boh);
+
+            if (squadra.Giocabile)
+            {
+                e.Dat.AddRange(BitConverter.GetBytes((int)squadra.NumeroAbbonati));
+                e.Dat.Add((byte)(squadra.NomePresidente.Length % 256));
+                e.Dat.Add((byte)(squadra.NomePresidente.Length >> 8));
+                e.Dat.AddRange(Utils.codificaTesto(squadra.NomePresidente));
+                e.Dat.AddRange(BitConverter.GetBytes((int)squadra.CassaGioco));
+                e.Dat.AddRange(BitConverter.GetBytes((int)squadra.CassaReale));
+                e.Dat.Add((byte)(squadra.NomeSponsor.Length % 256));
+                e.Dat.Add((byte)(squadra.NomeSponsor.Length >> 8));
+                e.Dat.AddRange(Utils.codificaTesto(squadra.NomeSponsor));
+                e.Dat.Add((byte)(squadra.NomeSponsorTecnico.Length % 256));
+                e.Dat.Add((byte)(squadra.NomeSponsorTecnico.Length >> 8));
+                e.Dat.AddRange(Utils.codificaTesto(squadra.NomeSponsorTecnico));
+                e.Dat.Add((byte)(squadra.SquadraRiserve % 256));
+                e.Dat.Add((byte)(squadra.SquadraRiserve >> 8));
+                e.Dat.Add((byte)(squadra.Girone2B));
+                e.Dat.Add((byte)(squadra.Girone3));
+                if (squadra.StagioniPrecedenti == null || squadra.StagioniPrecedenti.Count != 20)
+                {
+                    for (int st = 1; st <= 20; st++) e.Dat.Add(0); //Stagioni precedenti
+                }
+                else for (int st = 1; st <= 20; st++) e.Dat.Add((byte)squadra.StagioniPrecedenti[st - 1]);
+
+                e.Dat.Add((byte)squadra.StagioniA);
+                e.Dat.Add((byte)(squadra.Giocate % 256));
+                e.Dat.Add((byte)(squadra.Giocate >> 8));
+                e.Dat.Add((byte)(squadra.Vinte % 256));
+                e.Dat.Add((byte)(squadra.Vinte >> 8));
+                e.Dat.Add((byte)(squadra.Pareggiate % 256));
+                e.Dat.Add((byte)(squadra.Pareggiate >> 8));
+                e.Dat.Add((byte)(squadra.GolSegnati % 256));
+                e.Dat.Add((byte)(squadra.GolSegnati >> 8));
+                e.Dat.Add((byte)(squadra.GolSubiti % 256));
+                e.Dat.Add((byte)(squadra.GolSubiti >> 8));
+                e.Dat.Add((byte)(squadra.PuntiTotali % 256));
+                e.Dat.Add((byte)(squadra.PuntiTotali >> 8));
+                e.Dat.Add((byte)squadra.Scudetti);
+                e.Dat.Add((byte)squadra.SecondiPosti);
+                foreach (var p in squadra.PosizioniCampionato) e.Dat.Add((byte)p);
+                e.Dat.Add((byte)squadra.LTrofeiPalmares);
+                e.Dat.AddRange(squadra.Palmares);
+
+            }
+        }
+        else
+        {
+
+            e.Dat.Add((byte)(squadra.Stadio.Nome.Length % 256));
+            e.Dat.Add((byte)(squadra.Stadio.Nome.Length >> 8));
+            e.Dat.AddRange(Utils.codificaTesto(squadra.Stadio.Nome));
+            e.Dat.Add((byte)squadra.Nazione);
+            e.Dat.Add((byte)squadra.Boh);
+            e.Dat.Add((byte)(squadra.NomeCompleto.Length % 256));
+            e.Dat.Add((byte)(squadra.NomeCompleto.Length >> 8));
+            e.Dat.AddRange(Utils.codificaTesto(squadra.NomeCompleto));
+            e.Dat.AddRange(BitConverter.GetBytes((int)squadra.Stadio.Capienza));
+            e.Dat.AddRange(BitConverter.GetBytes((int)squadra.Stadio.PostiInPiedi));
+            e.Dat.AddRange(BitConverter.GetBytes((int)squadra.Stadio.Larghezza));
+            e.Dat.AddRange(BitConverter.GetBytes((int)squadra.Stadio.Lunghezza));
+            e.Dat.Add((byte)(squadra.AnnoFondazione % 256));
+            e.Dat.Add((byte)(squadra.AnnoFondazione >> 8));
+
+            if (squadra.Giocabile)
+            {
+
+                e.Dat.Add((byte)(squadra.Stadio.AnnoCostruzione % 256));
+                e.Dat.Add((byte)(squadra.Stadio.AnnoCostruzione >> 8));
+                e.Dat.AddRange(BitConverter.GetBytes((int)squadra.NumeroAbbonati));
+                e.Dat.Add((byte)(squadra.NomePresidente.Length % 256));
+                e.Dat.Add((byte)(squadra.NomePresidente.Length >> 8));
+                e.Dat.AddRange(Utils.codificaTesto(squadra.NomePresidente));
+                e.Dat.AddRange(BitConverter.GetBytes((int)squadra.CassaGioco));
+                e.Dat.AddRange(BitConverter.GetBytes((int)squadra.CassaReale));
+                e.Dat.Add((byte)(squadra.NomeSponsor.Length % 256));
+                e.Dat.Add((byte)(squadra.NomeSponsor.Length >> 8));
+                e.Dat.AddRange(Utils.codificaTesto(squadra.NomeSponsor));
+                e.Dat.Add((byte)(squadra.NomeSponsorTecnico.Length % 256));
+                e.Dat.Add((byte)(squadra.NomeSponsorTecnico.Length >> 8));
+                e.Dat.AddRange(Utils.codificaTesto(squadra.NomeSponsorTecnico));
+                e.Dat.Add((byte)(squadra.SquadraRiserve % 256));
+                e.Dat.Add((byte)(squadra.SquadraRiserve >> 8));
+                e.Dat.Add((byte)(squadra.Girone2B));
+                if (squadra.StagioniPrecedenti == null || squadra.StagioniPrecedenti.Count != 20)
+                {
+                    for (int st = 1; st <= 20; st++) e.Dat.Add(0); //Stagioni precedenti
+                }
+                else for (int st = 1; st <= 20; st++) e.Dat.Add((byte)squadra.StagioniPrecedenti[st - 1]);
+
+                e.Dat.Add((byte)squadra.StagioniA);
+                e.Dat.Add((byte)(squadra.Giocate % 256));
+                e.Dat.Add((byte)(squadra.Giocate >> 8));
+                e.Dat.Add((byte)(squadra.Vinte % 256));
+                e.Dat.Add((byte)(squadra.Vinte >> 8));
+                e.Dat.Add((byte)(squadra.Pareggiate % 256));
+                e.Dat.Add((byte)(squadra.Pareggiate >> 8));
+                e.Dat.Add((byte)(squadra.GolSegnati % 256));
+                e.Dat.Add((byte)(squadra.GolSegnati >> 8));
+                e.Dat.Add((byte)(squadra.GolSubiti % 256));
+                e.Dat.Add((byte)(squadra.GolSubiti >> 8));
+                e.Dat.Add((byte)(squadra.PuntiTotali % 256));
+                e.Dat.Add((byte)(squadra.PuntiTotali >> 8));
+                e.Dat.Add((byte)squadra.Scudetti);
+                e.Dat.Add((byte)squadra.SecondiPosti);
+                foreach (var p in squadra.PosizioniCampionato) e.Dat.Add((byte)p);
+                e.Dat.Add((byte)squadra.LTrofeiPalmares);
+                e.Dat.AddRange(squadra.Palmares);
+
+
+            }
+
+        }
+
+        e.Dat.AddRange(squadra.Tattica.TatticaCompleta);
+        e.Dat.Add((byte)squadra.Tattica.PercentualeToccoDiPrima);
+        e.Dat.Add((byte)squadra.Tattica.PercentualeContropiede);
+        e.Dat.Add((byte)squadra.Tattica.TipoAttacco);
+        e.Dat.Add((byte)squadra.Tattica.TipoEntrata);
+        e.Dat.Add((byte)squadra.Tattica.TipoMarcatura);
+        e.Dat.Add((byte)squadra.Tattica.TipoRinvii);
+        e.Dat.Add((byte)squadra.Tattica.PressingDa);
+
+        e.Dat.Add(1); //Numero Allenatori squadra
+        e.Dat.AddRange(BitConverter.GetBytes((int)squadra.Allenatori.Last().Id));
+
+        if (Versione == 800)
+        {
+            e.Dat.Add((byte)(squadra.Giocatori.Count % 256));
+            e.Dat.Add((byte)(squadra.Giocatori.Count >> 8));
+        }
+        else e.Dat.Add((byte)squadra.Giocatori.Count);
+
+        foreach (var gc in squadra.Giocatori)
+        {
+            int a = gc.AttivoInRosa ? 0 : 1;
+            e.Dat.Add((byte)a);
+            e.Dat.AddRange(BitConverter.GetBytes((int)gc.Id));
+        }
 
         e.Size = e.Dat.Count;
         elementi.Add(e);
@@ -470,9 +674,72 @@ public static partial class FDI
     public static List<Byte> ScriviGiocatore(Giocatore giocatore)
     {
         ElementoArchivio e = new();
-        //TODO
 
+        int lt = giocatore.Giocabile ?
+            $"{giocatore.Nome}{giocatore.NomeCompleto}".Length + 8 :
+            $"{giocatore.Nome}{giocatore.NomeCompleto}".Length + 2;
 
+        e.Dat.Add((byte)(lt % 256));
+        e.Dat.Add((byte)(lt >> 8));
+
+        e.Dat.Add((byte)(Versione % 256));
+        e.Dat.Add((byte)(Versione >> 8));
+
+        int g = giocatore.Giocabile ? 0 : 1;
+        e.Dat.Add((byte)g);
+
+        e.Dat.Add((byte)(giocatore.Id % 256));
+        e.Dat.Add((byte)(giocatore.Id >> 8));
+
+        e.Dat.Add((byte)giocatore.Numero);
+
+        e.Dat.Add((byte)(giocatore.Nome.Length % 256));
+        e.Dat.Add((byte)(giocatore.Nome.Length >> 8));
+        e.Dat.AddRange(Utils.codificaTesto(giocatore.Nome));
+
+        e.Dat.Add((byte)(giocatore.NomeCompleto.Length % 256));
+        e.Dat.Add((byte)(giocatore.NomeCompleto.Length >> 8));
+        e.Dat.AddRange(Utils.codificaTesto(giocatore.NomeCompleto));
+
+        e.Dat.Add((byte)giocatore.Slot);
+        int d = giocatore.AltriDati ? 0 : 1;
+        e.Dat.Add((byte)d);
+
+        foreach (var r in giocatore.Ruoli) e.Dat.Add((byte)r);
+        e.Dat.Add((byte)giocatore.Nazione);
+        e.Dat.Add((byte)giocatore.codColorePelle);
+        e.Dat.Add((byte)giocatore.codColoreCapelli);
+        e.Dat.Add((byte)giocatore.Reparto);
+
+        if (Versione == 800)
+        {
+            e.Dat.Add((byte)giocatore.codStileCapelli);
+            e.Dat.Add((byte)giocatore.codStileBarba);
+            int n = giocatore.Nazionalizzato ? 1 : 0;
+            e.Dat.Add((byte)n);
+        }
+
+        e.Dat.Add((byte)giocatore.GiornoNascita);
+        e.Dat.Add((byte)giocatore.MeseNascita);
+        e.Dat.Add((byte)(giocatore.AnnoNascita % 256));
+        e.Dat.Add((byte)(giocatore.AnnoNascita >> 8));
+        e.Dat.Add((byte)giocatore.Altezza);
+        e.Dat.Add((byte)giocatore.Peso);
+
+        if (giocatore.Giocabile)
+        {
+            e.Dat.Add((byte)giocatore.PaeseNascita);
+            for (int i = 1; i <= 10; i++)
+            {
+                e.Dat.Add(1);
+                e.Dat.Add(0);
+                e.Dat.AddRange(Utils.codificaTesto("-"));
+            }
+        }
+
+        foreach (var p in giocatore.Punteggi) if (p.Tipo != TipoPunteggioGiocatore.Media) e.Dat.Add((byte)p.Punteggio);
+
+        e.Size = e.Dat.Count;
         elementi.Add(e);
         return e.Dat;
     }
@@ -481,9 +748,49 @@ public static partial class FDI
     public static List<Byte> ScriviAllenatore(Allenatore allenatore)
     {
         ElementoArchivio e = new();
-        //TODO
+
+        int lt = allenatore.Giocabile ?
+            $"{allenatore.Nome}{allenatore.NomeCompleto}".Length + 2 :
+            allenatore.Nome.Length + 1;
+
+        e.Dat.Add((byte)(lt % 256));
+        e.Dat.Add((byte)(lt >> 8));
+
+        e.Dat.Add((byte)(Versione % 256));
+        e.Dat.Add((byte)(Versione >> 8));
+
+        int g = allenatore.Giocabile ? 0 : 1;
+
+        e.Dat.Add((byte)g);
+
+        e.Dat.Add((byte)(allenatore.Id % 256));
+        e.Dat.Add((byte)(allenatore.Id >> 8));
+
+        e.Dat.Add((byte)(allenatore.Nome.Length % 256));
+        e.Dat.Add((byte)(allenatore.Nome.Length >> 8));
+        e.Dat.AddRange(Utils.codificaTesto(allenatore.Nome));
 
 
+        if (allenatore.Giocabile)
+        {
+            e.Dat.Add((byte)(allenatore.NomeCompleto.Length % 256));
+            e.Dat.Add((byte)(allenatore.NomeCompleto.Length >> 8));
+            e.Dat.AddRange(Utils.codificaTesto(allenatore.NomeCompleto));
+
+            for (int t = 1; t <= 6; t++)
+            {
+                e.Dat.Add(1);
+                e.Dat.Add(0);
+                e.Dat.AddRange(Utils.codificaTesto("-"));
+            }
+
+            e.Dat.Add(0);
+            e.Dat.Add(1);
+            e.Dat.Add(0);
+            e.Dat.AddRange(Utils.codificaTesto("-"));
+        }
+
+        e.Size = e.Dat.Count;
         elementi.Add(e);
         return e.Dat;
     }
@@ -491,9 +798,20 @@ public static partial class FDI
     public static List<Byte> ScriviStadio(Stadio stadio)
     {
         ElementoArchivio e = new();
-        //TODO
 
+        e.Dat.Add((byte)(stadio.Nome.Length % 256));
+        e.Dat.Add((byte)(stadio.Nome.Length >> 8));
+        e.Dat.AddRange(Utils.codificaTesto(stadio.Nome));
+        e.Dat.Add((byte)stadio.Larghezza);
+        e.Dat.Add((byte)stadio.Lunghezza);
+        e.Dat.Add((byte)stadio.NumeroBoh);
+        e.Dat.Add((byte)stadio.Nazione);
+        e.Dat.Add((byte)(stadio.AnnoCostruzione % 256));
+        e.Dat.Add((byte)(stadio.AnnoCostruzione >> 8));
+        e.Dat.AddRange(BitConverter.GetBytes((int)stadio.Capienza));
+        e.Dat.AddRange(BitConverter.GetBytes((int)stadio.PostiInPiedi));
 
+        e.Size = e.Dat.Count;
         elementi.Add(e);
         return e.Dat;
     }
