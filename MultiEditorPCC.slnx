@@ -2,6 +2,16 @@
   <Folder Name="/Dat/">
     <Project Path="MultiEditorPCC.Dat/MultiEditorPCC.Dat.csproj" />
   </Folder>
+  <Folder Name="/Dev/" />
+  <Folder Name="/Dev/API/">
+    <Project Path="../MultiEditorPCC.Dev/MultiEditorPCC.API/MultiEditorPCC.API.csproj" />
+  </Folder>
+  <Folder Name="/Dev/GUI/">
+    <Project Path="../MultiEditorPCC.Dev/MultiEditorPCC/MultiEditorPCC.csproj" />
+  </Folder>
+  <Folder Name="/Dev/Shared/">
+    <Project Path="../MultiEditorPCC.Dev/MultiEditorPCC.Shared/MultiEditorPCC.Shared.csproj" />
+  </Folder>
   <Folder Name="/GUI/">
     <Project Path="MultiEditorPCC.Desktop/MultiEditorPCC.Desktop.csproj" />
     <Project Path="MultiEditorPCC/MultiEditorPCC.csproj" />
