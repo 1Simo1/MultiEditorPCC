@@ -1,0 +1,20 @@
+<Solution>
+  <Folder Name="/Dat/">
+    <Project Path="MultiEditorPCC.Dat/MultiEditorPCC.Dat.csproj" />
+  </Folder>
+  <Folder Name="/GUI/">
+    <Project Path="MultiEditorPCC.Desktop/MultiEditorPCC.Desktop.csproj" />
+    <Project Path="MultiEditorPCC/MultiEditorPCC.csproj" />
+  </Folder>
+  <Folder Name="/Lib/">
+    <Project Path="MultiEditorPCC.Lib/MultiEditorPCC.Lib.csproj" />
+  </Folder>
+  <Folder Name="/Test/" />
+  <Folder Name="/Utils/">
+    <Project Path="Utils/ApplicaPaletteBMP/ApplicaPaletteBMP.csproj" />
+    <Project Path="Utils/ConfrontaByteFileCartella/ConfrontaByteFileCartella.csproj" />
+    <Project Path="Utils/EstraiPKF/EstraiPKF.csproj" />
+    <Project Path="Utils/JsonCSVDataUtils/JsonCSVDataUtils.csproj" />
+  </Folder>
+  <Project Path="MiniEditorDB/MiniEditorDB.csproj" />
+</Solution>
