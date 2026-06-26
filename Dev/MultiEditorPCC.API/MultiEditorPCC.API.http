@@ -1,6 +1,6 @@
-@MultiEditorPCC.API_HostAddress = http://localhost:5205
+@MultiEditorPCC.API_HostAddress = https://localhost:21021
 
-GET {{MultiEditorPCC.API_HostAddress}}/weatherforecast/
+GET {{MultiEditorPCC.API_HostAddress}}
 Accept: application/json
 
 ###
