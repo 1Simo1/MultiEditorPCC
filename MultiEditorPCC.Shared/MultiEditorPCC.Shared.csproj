@@ -6,8 +6,4 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\MultiEditorPCC.Shared\MultiEditorPCC.Shared.csproj" />
-  </ItemGroup>
-
 </Project>

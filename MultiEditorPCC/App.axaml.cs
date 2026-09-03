@@ -1,38 +1,59 @@
-﻿using Avalonia;
+using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using MultiEditorPCC.Lib;
+using MultiEditorPCC.Pagine;
 using MultiEditorPCC.ViewModels;
-using MultiEditorPCC.Views;
 using MvvmGen.Events;
-using System.Threading.Tasks;
+
+//using System.Linq;
+//using System.Reflection;
 
 namespace MultiEditorPCC;
 
 public partial class App : Application
 {
 
-    public static ServiceProvider Services { get; set; }
+    public static ServiceProvider? Services { get; set; }
+
+    //public static Client Client { get; set; }
+
+    //public static AppSettings Config { get; set; }
 
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
     }
 
-    public override async void OnFrameworkInitializationCompleted()
+
+    public async override void OnFrameworkInitializationCompleted()
     {
-        Locales.Resources.Culture = System.Globalization.CultureInfo.CurrentCulture;
+        var svc = new ServiceCollection();
 
-        BindingPlugins.DataValidators.RemoveAt(0);
+        IConfigurationBuilder config = new ConfigurationBuilder();
 
-        var collection = new ServiceCollection();
-        collection.AddCommonServices();
+        //svc.AddSingleton<AppSettings>();
+        //svc.AddSingleton<Client>();
+        svc.AddSingleton<IEventAggregator, EventAggregator>();
 
-        Services = collection.BuildServiceProvider();
+        svc.AddScoped<MainViewModel>();
 
-        AppSvc.Services = Services;
+        //var ViewModels = Assembly.GetExecutingAssembly().GetTypes()
+        //                .Where(t => t.Namespace != null &&
+        //                            t.Namespace.Equals("MultiEditorPCC.ViewModels"))
+        //                .ToList();
+
+        //foreach (var t in ViewModels) svc.TryAddScoped(t);
+
+
+
+        //svc.AddSingleton<InitSvc>();
+
+
+        Services = svc.BuildServiceProvider();
+
+
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
@@ -41,9 +62,16 @@ public partial class App : Application
             desktop.MainWindow = schermataCaricamento;
             schermataCaricamento.Show();
 
+            //await Task.Delay(2100000);
+
+            //Client = App.Services.GetRequiredService<Client>();
+            //await Client.Init();
+
+            //await Services.GetRequiredService<InitSvc>().Load();
+
             desktop.MainWindow = new MainWindow
             {
-                DataContext = await Task.Run(() => Services.GetRequiredService<MainViewModel>())
+                DataContext = Services.GetRequiredService<MainViewModel>()
             };
 
             desktop.MainWindow.Show();
@@ -52,32 +80,7 @@ public partial class App : Application
 
             schermataCaricamento.Close();
         }
-        else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
-        {
-            singleViewPlatform.MainView = new MainView
-            {
-                DataContext = Services.GetRequiredService<MainViewModel>()
-            };
-            base.OnFrameworkInitializationCompleted();
-        }
 
-
-    }
-}
-
-public static class ServiceCollectionExtensions
-{
-    public static void AddCommonServices(this IServiceCollection collection)
-    {
-        collection.AddSingleton<IEventAggregator, EventAggregator>();
-        collection.AddSingleton<ArchivioSvc>();
-        collection.AddSingleton<EditorSvc>();
-        collection.AddSingleton<IDatSvc, DatSvc>();
-        collection.AddSingleton<NavSvc>();
-        collection.AddTransient<SquadreViewModel>();
-        collection.AddTransient<DettagliGiocatoreViewModel>();
-        collection.AddTransient<DettagliAllenatoreViewModel>();
-        collection.AddTransient<ArchiviViewModel>();
-        collection.AddTransient<MainViewModel>();
+        base.OnFrameworkInitializationCompleted();
     }
 }

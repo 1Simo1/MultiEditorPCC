@@ -454,3 +454,5 @@ $RECYCLE.BIN/
 !.vscode/extensions.json
 /Utils
 /.vscode
+/MultiEditorPCC.API/Progetti/*
+/MultiEditorPCC.API_0_1

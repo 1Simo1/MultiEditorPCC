@@ -1,0 +1,73 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <AvaloniaResource Include="Assets\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AvaloniaResource Remove="Assets\Fonts\**" />
+    <AvaloniaResource Remove="Assets\svgs\**" />
+    <AvaloniaResource Remove="Assets\svg\**" />
+    <AvaloniaXaml Remove="Assets\Fonts\**" />
+    <AvaloniaXaml Remove="Assets\svgs\**" />
+    <AvaloniaXaml Remove="Assets\svg\**" />
+    <Compile Remove="Assets\Fonts\**" />
+    <Compile Remove="Assets\svgs\**" />
+    <Compile Remove="Assets\svg\**" />
+    <EmbeddedResource Remove="Assets\Fonts\**" />
+    <EmbeddedResource Remove="Assets\svgs\**" />
+    <EmbeddedResource Remove="Assets\svg\**" />
+    <None Remove="Assets\Fonts\**" />
+    <None Remove="Assets\svgs\**" />
+    <None Remove="Assets\svg\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="12.0.5" />
+    <PackageReference Include="Avalonia.Skia" Version="11.3.3" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.3" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="12.0.5" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="11.3.3" />
+    <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
+    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.3.3" />
+    <PackageReference Include="FluentAvaloniaUI" Version="2.3.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.9" />
+    <PackageReference Include="MvvmGen" Version="1.4.0" />
+    <PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="3.119.0" />
+    <PackageReference Include="Svg.Controls.Avalonia" Version="11.3.0.1" />
+    <PackageReference Include="Svg.Skia" Version="3.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MultiEditorPCC.Dat\MultiEditorPCC.Dat.csproj" />
+    <ProjectReference Include="..\MultiEditorPCC.Lib\MultiEditorPCC.Lib.csproj" />
+  </ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Update="Locales\Resources.resx">
+			<Generator>PublicResXFileCodeGenerator</Generator>
+			<LastGenOutput>Resources.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Update="Locales\Resources.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Resources.resx</DependentUpon>
+		</Compile>
+		<Compile Update="Views\DettagliAllenatore.axaml.cs">
+		  <DependentUpon>DettagliAllenatore.axaml</DependentUpon>
+		</Compile>
+		<Compile Update="Views\SquadreView.axaml.cs">
+		  <DependentUpon>SquadreView.axaml</DependentUpon>
+		</Compile>
+	</ItemGroup>
+	
+</Project>

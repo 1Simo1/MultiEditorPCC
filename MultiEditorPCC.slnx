@@ -1,30 +1,16 @@
 <Solution>
-  <Folder Name="/Dat/">
-    <Project Path="MultiEditorPCC.Dat/MultiEditorPCC.Dat.csproj" />
+  <Folder Name="/API/">
+    <Project Path="MultiEditorPCC.API/MultiEditorPCC.API.csproj" Id="8ef989e0-4d24-4bc2-9ced-be8ccaeea38b" />
   </Folder>
-  <Folder Name="/Dev/" />
-  <Folder Name="/Dev/API/">
-    <Project Path="Dev/MultiEditorPCC.API/MultiEditorPCC.API.csproj" />
-  </Folder>
-  <Folder Name="/Dev/GUI/">
-    <Project Path="Dev/MultiEditorPCC/MultiEditorPCC.csproj" />
-  </Folder>
-  <Folder Name="/Dev/Shared/">
-    <Project Path="Dev/MultiEditorPCC.Shared/MultiEditorPCC.Shared.csproj" />
-  </Folder>
+  <Folder Name="/Dat/" />
   <Folder Name="/GUI/">
-    <Project Path="MultiEditorPCC.Desktop/MultiEditorPCC.Desktop.csproj" />
     <Project Path="MultiEditorPCC/MultiEditorPCC.csproj" />
   </Folder>
-  <Folder Name="/Lib/">
-    <Project Path="MultiEditorPCC.Lib/MultiEditorPCC.Lib.csproj" />
+  <Folder Name="/Shared/">
+    <Project Path="MultiEditorPCC.Shared/MultiEditorPCC.Shared.csproj" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
   </Folder>
   <Folder Name="/Test/" />
-  <Folder Name="/Utils/">
-    <Project Path="Utils/ApplicaPaletteBMP/ApplicaPaletteBMP.csproj" />
-    <Project Path="Utils/ConfrontaByteFileCartella/ConfrontaByteFileCartella.csproj" />
-    <Project Path="Utils/EstraiPKF/EstraiPKF.csproj" />
-    <Project Path="Utils/JsonCSVDataUtils/JsonCSVDataUtils.csproj" />
-  </Folder>
-  <Project Path="MiniEditorDB/MiniEditorDB.csproj" />
 </Solution>

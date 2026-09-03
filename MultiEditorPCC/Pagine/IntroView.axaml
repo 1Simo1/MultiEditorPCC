@@ -1,0 +1,29 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="1920" d:DesignHeight="1080"
+             xmlns:vm="using:MultiEditorPCC.ViewModels"
+             xmlns:views="using:MultiEditorPCC.Views"
+		     x:DataType="vm:MainViewModel"
+			 xmlns:ui="using:FluentAvalonia.UI.Controls"
+			 xmlns:lng="clr-namespace:MultiEditorPCC.Locales;assembly=MultiEditorPCC"
+			 x:Name="Intro"
+			 xmlns:sukiUi="clr-namespace:SukiUI;assembly=SukiUI"
+			 x:Class="MultiEditorPCC.Pagine.IntroView">
+
+
+	<Grid ColumnDefinitions="Auto,*">
+		<Grid.Styles>
+			<Style Selector="TextBlock">
+				<Setter Property="FontSize" Value="16" />
+			</Style>
+		</Grid.Styles>
+
+		<TextBlock Text="Test inclusione Pagina" />
+
+		
+	
+	</Grid>
+
+</UserControl>

@@ -1,0 +1,211 @@
+<sukiUi:Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="1450"
+        x:Class="MultiEditorPCC.MainWindow"
+		xmlns:sukiUi="clr-namespace:SukiUI.Controls;assembly=SukiUI"
+        xmlns:icons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+		xmlns:pagine="using:MultiEditorPCC.Pagine"
+	    xmlns:dc="using:MultiEditorPCC.DataConverters"
+	    xmlns:vm="using:MultiEditorPCC.ViewModels"
+		x:DataType="vm:MainViewModel"
+		Icon="/Assets/MultiEditorPCC.png"
+	    WindowState="Maximized"
+		IsMenuVisible="False"
+		Title="MultiEditorPCC">
+
+
+	<sukiUi:SukiWindow.RightWindowTitleBarControls>
+		<Button BorderThickness="0"/>
+		<Button Click="BlueTheme" Margin="3,0">
+			<icons:MaterialIcon Kind="Circle" Foreground="Blue"/>
+		</Button>
+		<Button Click="OrangeTheme" Margin="3,0">
+			<icons:MaterialIcon Kind="Circle" Foreground="Orange"/>
+		</Button>
+		<Button Click="RedTheme" Margin="3,0">
+			<icons:MaterialIcon Kind="Circle" Foreground="Red"/>
+		</Button>
+		<Button Click="GreenTheme" Margin="3,0">
+			<icons:MaterialIcon Kind="Circle" Foreground="Green"/>
+		</Button>
+
+		<Button Click="LightDark" Margin="3,0">
+			<icons:MaterialIcon Kind="ThemeLightDark"/>
+		</Button>
+	</sukiUi:SukiWindow.RightWindowTitleBarControls>
+
+	<Grid RowDefinitions="Auto,*,Auto" RowSpacing="0">
+
+		<TextBox Grid.Row="0" IsReadOnly="True" Text="Test Header fisso" HorizontalContentAlignment="Center"/>
+		
+
+		<sukiUi:SukiSideMenu IsSearchEnabled="False" IsMenuExpanded="True" Grid.Row="1">
+
+			<sukiUi:SukiSideMenu.HeaderContent>
+				
+
+					<Image Source="/Assets/MultiEditorPCC.png" Margin="0,21" Height="63" Width="64"/>
+				
+			</sukiUi:SukiSideMenu.HeaderContent>
+
+
+			<sukiUi:SukiSideMenu.Items>
+				<sukiUi:SukiSideMenuItem
+					Header="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='Pagina iniziale'}">
+
+					<sukiUi:SukiSideMenuItem.Icon>
+						<icons:MaterialIcon Kind="Home" />
+					</sukiUi:SukiSideMenuItem.Icon>
+
+					<sukiUi:SukiSideMenuItem.PageContent>
+						<Grid Margin="21">
+
+							<pagine:IntroView />
+
+						</Grid>
+					</sukiUi:SukiSideMenuItem.PageContent>
+
+				</sukiUi:SukiSideMenuItem>
+
+				<sukiUi:SukiSideMenuItem
+					Header="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='Squadre'}">
+
+					<sukiUi:SukiSideMenuItem.Icon>
+						<icons:MaterialIcon Kind="ClipboardOutline" />
+					</sukiUi:SukiSideMenuItem.Icon>
+
+					<sukiUi:SukiSideMenuItem.PageContent>
+						<Grid Margin="21">
+							<TextBlock Text="Seconda pagina test" />
+							<!--<pagine:IntroView />-->
+						</Grid>
+					</sukiUi:SukiSideMenuItem.PageContent>
+
+				</sukiUi:SukiSideMenuItem>
+
+
+				<sukiUi:SukiSideMenuItem
+									Header="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='Giocatori'}">
+
+					<sukiUi:SukiSideMenuItem.Icon>
+						<icons:MaterialIcon Kind="AccountGroup" />
+					</sukiUi:SukiSideMenuItem.Icon>
+
+					<sukiUi:SukiSideMenuItem.PageContent>
+						<Grid Margin="21">
+							<TextBlock Text="Terza pagina test" />
+							<!--<pagine:IntroView />-->
+						</Grid>
+					</sukiUi:SukiSideMenuItem.PageContent>
+
+				</sukiUi:SukiSideMenuItem>
+
+
+				<!--<sukiUi:SukiSideMenuItem
+								Header="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='Allenatori'}">
+
+					<sukiUi:SukiSideMenuItem.Icon>
+						<icons:MaterialIcon Kind="AccountTie" />
+					</sukiUi:SukiSideMenuItem.Icon>
+
+					<sukiUi:SukiSideMenuItem.PageContent>
+						<Grid Margin="21">
+							<TextBlock Text="Quarta pagina test" />
+							--><!--<pagine:IntroView />--><!--
+						</Grid>
+					</sukiUi:SukiSideMenuItem.PageContent>
+
+				</sukiUi:SukiSideMenuItem>-->
+
+
+				<sukiUi:SukiSideMenuItem
+								Header="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='Gestione Archivi'}">
+
+					<sukiUi:SukiSideMenuItem.Icon>
+						<icons:MaterialIcon Kind="FolderMultiple" />
+					</sukiUi:SukiSideMenuItem.Icon>
+
+					<sukiUi:SukiSideMenuItem.PageContent>
+						<Grid Margin="21">
+							<TextBlock Text="Quinta pagina test" />
+							<!--<pagine:IntroView />-->
+						</Grid>
+					</sukiUi:SukiSideMenuItem.PageContent>
+
+				</sukiUi:SukiSideMenuItem>
+
+				<sukiUi:SukiSideMenuItem
+								Header="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='Modalità Casuale'}">
+
+					<sukiUi:SukiSideMenuItem.Icon>
+						<icons:MaterialIcon Kind="Dice1" />
+					</sukiUi:SukiSideMenuItem.Icon>
+
+					<sukiUi:SukiSideMenuItem.PageContent>
+						<Grid Margin="21">
+							<TextBlock Text="Sesta pagina test" />
+							<!--<pagine:IntroView />-->
+						</Grid>
+					</sukiUi:SukiSideMenuItem.PageContent>
+
+				</sukiUi:SukiSideMenuItem>
+
+				<sukiUi:SukiSideMenuItem
+							Header="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='Scarica dati esterni'}">
+
+					<sukiUi:SukiSideMenuItem.Icon>
+						<icons:MaterialIcon Kind="Download" />
+					</sukiUi:SukiSideMenuItem.Icon>
+
+					<sukiUi:SukiSideMenuItem.PageContent>
+						<Grid Margin="21">
+							<TextBlock Text="Settima pagina test" />
+							<!--<pagine:IntroView />-->
+						</Grid>
+					</sukiUi:SukiSideMenuItem.PageContent>
+				</sukiUi:SukiSideMenuItem>
+
+					<sukiUi:SukiSideMenuItem
+							Header="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='Salva'}">
+
+						<sukiUi:SukiSideMenuItem.Icon>
+							<icons:MaterialIcon Kind="ContentSaveAll" />
+						</sukiUi:SukiSideMenuItem.Icon>
+
+						<sukiUi:SukiSideMenuItem.PageContent>
+							<Grid Margin="21">
+								<TextBlock Text="Ottava pagina test" />
+								<!--<pagine:IntroView />-->
+							</Grid>
+						</sukiUi:SukiSideMenuItem.PageContent>
+
+				</sukiUi:SukiSideMenuItem>
+				
+				
+				
+				
+				
+			</sukiUi:SukiSideMenu.Items>
+
+			<sukiUi:SukiSideMenu.FooterContent>
+
+			</sukiUi:SukiSideMenu.FooterContent>
+
+
+
+		</sukiUi:SukiSideMenu>
+
+
+
+		<Border BorderThickness="1" Grid.Row="2">
+			<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+				<TextBlock Text="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='Year'}" />
+			    <TextBlock Text="{Binding Footer}" />
+			</StackPanel>
+		</Border>
+
+	</Grid>
+
+</sukiUi:Window>
