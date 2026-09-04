@@ -2,7 +2,6 @@
   <Folder Name="/API/">
     <Project Path="MultiEditorPCC.API/MultiEditorPCC.API.csproj" Id="8ef989e0-4d24-4bc2-9ced-be8ccaeea38b" />
   </Folder>
-  <Folder Name="/Dat/" />
   <Folder Name="/GUI/">
     <Project Path="MultiEditorPCC/MultiEditorPCC.csproj" />
   </Folder>
