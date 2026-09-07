@@ -9,21 +9,137 @@
 			 xmlns:ui="using:FluentAvalonia.UI.Controls"
 			 xmlns:lng="clr-namespace:MultiEditorPCC.Locales;assembly=MultiEditorPCC"
 			 x:Name="Intro"
-			 xmlns:sukiUi="clr-namespace:SukiUI;assembly=SukiUI"
+			 xmlns:sukiUi="clr-namespace:SukiUI.Controls;assembly=SukiUI"
+			
 			 x:Class="MultiEditorPCC.Pagine.IntroView">
 
 
-	<Grid ColumnDefinitions="Auto,*">
+	<Grid RowDefinitions="Auto,*" Margin="21" RowSpacing="21">
 		<Grid.Styles>
 			<Style Selector="TextBlock">
-				<Setter Property="FontSize" Value="16" />
+				<Setter Property="FontSize" Value="15" />
 			</Style>
+
 		</Grid.Styles>
 
-		<TextBlock Text="Test inclusione Pagina" />
+		<Grid Grid.Row="0" ColumnDefinitions="Auto,*" ColumnSpacing="21">
+			<sukiUi:GlassCard Grid.Column="0">
 
-		
-	
+				<Grid RowDefinitions="Auto, Auto, Auto, Auto, Auto" ColumnDefinitions="Auto,Auto" RowSpacing="21" ColumnSpacing="21">
+					<TextBlock Grid.Row="0" Grid.ColumnSpan="2"
+						FontWeight="DemiBold"
+						Text="{Binding Testo,Converter={StaticResource LngConverter},
+					ConverterParameter='Nuovo Progetto'}" />
+
+					<TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"
+					Text="{Binding Testo,Converter={StaticResource LngConverter},
+					ConverterParameter='Nome Progetto'}" />
+
+					<TextBox Grid.Row="1" Grid.Column="1"
+					 Text="{Binding ProgettiViewModel.NuovoProgetto,Mode=TwoWay}" />
+
+					<TextBlock Grid.Row="2" Grid.Column="0" VerticalAlignment="Center"
+					Text="{Binding Testo,Converter={StaticResource LngConverter},
+					ConverterParameter='Cartella Gioco'}" />
+
+					<Button Grid.Row="2" Grid.Column="1"
+							Click="Folder_Click"
+						>
+						<TextBlock Text="{Binding Testo,Converter={StaticResource LngConverter},
+					ConverterParameter='Scegli...'}" />
+
+					</Button>
+
+					<TextBlock Grid.Row="3" Grid.ColumnSpan="2"
+						FontWeight="DemiBold"
+						Text="{Binding ProgettiViewModel.Cartella}" />
+
+					<Button Grid.Row="4" Grid.ColumnSpan="2"
+						Click="Nuovo_Progetto"
+						FontWeight="DemiBold"
+						Command="{Binding ProgettiViewModel.ConfermaNuovoProgettoCommand}">
+						<TextBlock Text="{Binding Testo,Converter={StaticResource LngConverter},
+					ConverterParameter='Conferma'}" />
+
+					</Button>
+				</Grid>
+			</sukiUi:GlassCard>
+
+			<sukiUi:GlassCard Grid.Column="1">
+
+				<StackPanel Orientation="Vertical">
+					<TextBlock
+						FontWeight="DemiBold"
+						Text="{Binding Testo,Converter={StaticResource LngConverter},
+					ConverterParameter='Elenco Progetti'}" />
+
+					<DataGrid ItemsSource="{Binding ProgettiViewModel.ElencoProgetti,Mode=TwoWay}"
+							  IsReadOnly="True"
+							  x:Name="ElencoProgetti"
+						  >
+						<DataGrid.Styles>
+							<Style Selector="DataGridColumnHeader">
+								<Setter Property="HorizontalContentAlignment" Value="Center" />
+							</Style>
+							<Style Selector="TextBlock">
+								<Setter Property="HorizontalAlignment" Value="Center" />
+							</Style>
+						</DataGrid.Styles>
+						<DataGrid.Columns>
+							<DataGridTextColumn Header="{Binding Testo,Converter={StaticResource LngConverter},
+											ConverterParameter='Nome'}"
+												Binding="{Binding Nome}"
+												/>
+							<DataGridTextColumn Header="{Binding Testo,Converter={StaticResource LngConverter},
+											ConverterParameter='Cartella'}"
+												Binding="{Binding Cartella}" />
+							<DataGridTextColumn Header="{Binding Testo,Converter={StaticResource LngConverter},
+											ConverterParameter='Versione PCC'}"
+												Binding="{Binding VersionePCC}" />
+							<DataGridTextColumn Header="{Binding Testo,Converter={StaticResource LngConverter},
+											ConverterParameter='Registrazione'}"
+												Binding="{Binding DataRegistrazione}" />
+							<DataGridTextColumn Header="{Binding Testo,Converter={StaticResource LngConverter},
+											ConverterParameter='Modifica'}"
+												Binding="{Binding Modifica}" />
+							<DataGridTemplateColumn Header="{Binding Testo,Converter={StaticResource LngConverter},
+											    ConverterParameter='Apri'}">
+								<DataTemplate>
+									<Button
+										Command="{Binding DataContext.ProgettiViewModel.ApriProgettoCommand,ElementName=ElencoProgetti}"
+										CommandParameter="{Binding}"
+										>
+										<TextBlock Text="{Binding DataContext.Testo,ElementName=ElencoProgetti,Converter={StaticResource LngConverter},
+											    ConverterParameter='Apri'}" />
+									</Button>
+								</DataTemplate>
+							</DataGridTemplateColumn>
+						</DataGrid.Columns>
+					</DataGrid>
+
+
+				</StackPanel>
+
+			</sukiUi:GlassCard>
+
+		</Grid>
+
+		<ScrollViewer Grid.Row="1">
+		<StackPanel Orientation="Vertical" ScrollViewer.VerticalScrollBarVisibility="Visible">
+			<TextBlock
+						FontWeight="DemiBold"
+						Text="{Binding Testo,Converter={StaticResource LngConverter},
+					ConverterParameter='Dettagli Progetto'}" />
+			<DataGrid ItemsSource="{Binding ProgettiViewModel.Progetto.DatabaseFiles}"
+					  AutoGenerateColumns="True" />
+
+			<DataGrid ItemsSource="{Binding ProgettiViewModel.Progetto.Archivi}"
+					  AutoGenerateColumns="True" />
+		</StackPanel>
+		</ScrollViewer>
+
+
+
 	</Grid>
 
 </UserControl>

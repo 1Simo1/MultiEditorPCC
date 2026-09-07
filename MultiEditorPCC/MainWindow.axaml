@@ -1,4 +1,4 @@
-<sukiUi:Window xmlns="https://github.com/avaloniaui"
+<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -36,18 +36,75 @@
 		</Button>
 	</sukiUi:SukiWindow.RightWindowTitleBarControls>
 
-	<Grid RowDefinitions="Auto,*,Auto" RowSpacing="0">
+	<Grid RowDefinitions="Auto,*,Auto">
 
-		<TextBox Grid.Row="0" IsReadOnly="True" Text="Test Header fisso" HorizontalContentAlignment="Center"/>
-		
+		<StackPanel Orientation="Horizontal"
+					Grid.Row="0"
+					Margin="21"
+					Spacing="21"
+					HorizontalAlignment="Left"
+					VerticalAlignment="Center">
 
+			<sukiUi:GlassCard
+                IsVisible="{Binding ProgettiViewModel.Progetto, 
+                            Converter={x:Static ObjectConverters.IsNull}}">
+				<TextBlock Text="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='Nessun progetto attivo'}" />
+			</sukiUi:GlassCard>
+
+
+
+
+			<sukiUi:GlassCard
+                IsVisible="{Binding ProgettiViewModel.Progetto, 
+                            Converter={x:Static ObjectConverters.IsNotNull}}">
+
+				<StackPanel Orientation="Vertical">
+					<TextBlock FontWeight="DemiBold"
+						Text="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='Progetto attivo'}" />
+					<Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="21">
+						<TextBlock Grid.Column="0" Grid.Row="0"
+						Text="{Binding Testo,Converter={StaticResource LngConverter},
+						ConverterParameter='Nome'}" />
+						<TextBlock Grid.Column="1" Grid.Row="0"
+						Text="{Binding ProgettiViewModel.Progetto.Nome}" />
+						<TextBlock Grid.Column="0" Grid.Row="1"
+						Text="{Binding Testo,Converter={StaticResource LngConverter},
+						ConverterParameter='Cartella'}" />
+						<TextBlock Grid.Column="1" Grid.Row="1"
+						Text="{Binding ProgettiViewModel.Progetto.Cartella}" />
+						<TextBlock Grid.Column="0" Grid.Row="2"
+						Text="{Binding Testo,Converter={StaticResource LngConverter},
+						ConverterParameter='Versione PCC'}" />
+						<TextBlock Grid.Column="1" Grid.Row="2"
+						Text="{Binding ProgettiViewModel.Progetto.VersionePCC}" />
+					</Grid>
+				</StackPanel>
+			</sukiUi:GlassCard>
+
+
+			<sukiUi:InfoBar IsVisible="{Binding Msg, 
+                            Converter={x:Static ObjectConverters.IsNotNull}}"
+				VerticalAlignment="Center"
+				VerticalContentAlignment="Center"
+				IsClosable="False"
+				Severity="{Binding Msg.StatusString,Mode=TwoWay}"
+				Title="{Binding Msg.Title,Mode=TwoWay}"
+				Message="{Binding Msg.Content,Mode=TwoWay}"
+			   MaxWidth="1021"
+				/>
+
+		</StackPanel>
+
+
+
+		<!--<ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto">-->
 		<sukiUi:SukiSideMenu IsSearchEnabled="False" IsMenuExpanded="True" Grid.Row="1">
 
 			<sukiUi:SukiSideMenu.HeaderContent>
-				
 
-					<Image Source="/Assets/MultiEditorPCC.png" Margin="0,21" Height="63" Width="64"/>
-				
+
+				<Image Source="/Assets/MultiEditorPCC.png" Margin="0,21" Height="63" Width="64"/>
+
 			</sukiUi:SukiSideMenu.HeaderContent>
 
 
@@ -60,11 +117,14 @@
 					</sukiUi:SukiSideMenuItem.Icon>
 
 					<sukiUi:SukiSideMenuItem.PageContent>
-						<Grid Margin="21">
+						<ScrollViewer AllowAutoHide="True">
+					
 
 							<pagine:IntroView />
 
-						</Grid>
+
+						
+						</ScrollViewer>
 					</sukiUi:SukiSideMenuItem.PageContent>
 
 				</sukiUi:SukiSideMenuItem>
@@ -101,23 +161,6 @@
 					</sukiUi:SukiSideMenuItem.PageContent>
 
 				</sukiUi:SukiSideMenuItem>
-
-
-				<!--<sukiUi:SukiSideMenuItem
-								Header="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='Allenatori'}">
-
-					<sukiUi:SukiSideMenuItem.Icon>
-						<icons:MaterialIcon Kind="AccountTie" />
-					</sukiUi:SukiSideMenuItem.Icon>
-
-					<sukiUi:SukiSideMenuItem.PageContent>
-						<Grid Margin="21">
-							<TextBlock Text="Quarta pagina test" />
-							--><!--<pagine:IntroView />--><!--
-						</Grid>
-					</sukiUi:SukiSideMenuItem.PageContent>
-
-				</sukiUi:SukiSideMenuItem>-->
 
 
 				<sukiUi:SukiSideMenuItem
@@ -167,26 +210,26 @@
 					</sukiUi:SukiSideMenuItem.PageContent>
 				</sukiUi:SukiSideMenuItem>
 
-					<sukiUi:SukiSideMenuItem
-							Header="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='Salva'}">
+				<sukiUi:SukiSideMenuItem
+						Header="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='Salva'}">
 
-						<sukiUi:SukiSideMenuItem.Icon>
-							<icons:MaterialIcon Kind="ContentSaveAll" />
-						</sukiUi:SukiSideMenuItem.Icon>
+					<sukiUi:SukiSideMenuItem.Icon>
+						<icons:MaterialIcon Kind="ContentSaveAll" />
+					</sukiUi:SukiSideMenuItem.Icon>
 
-						<sukiUi:SukiSideMenuItem.PageContent>
-							<Grid Margin="21">
-								<TextBlock Text="Ottava pagina test" />
-								<!--<pagine:IntroView />-->
-							</Grid>
-						</sukiUi:SukiSideMenuItem.PageContent>
+					<sukiUi:SukiSideMenuItem.PageContent>
+						<Grid Margin="21">
+							<TextBlock Text="Ottava pagina test" />
+							<!--<pagine:IntroView />-->
+						</Grid>
+					</sukiUi:SukiSideMenuItem.PageContent>
 
 				</sukiUi:SukiSideMenuItem>
-				
-				
-				
-				
-				
+
+
+
+
+
 			</sukiUi:SukiSideMenu.Items>
 
 			<sukiUi:SukiSideMenu.FooterContent>
@@ -196,16 +239,16 @@
 
 
 		</sukiUi:SukiSideMenu>
-
+		<!--</ScrollViewer>-->
 
 
 		<Border BorderThickness="1" Grid.Row="2">
 			<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
 				<TextBlock Text="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='Year'}" />
-			    <TextBlock Text="{Binding Footer}" />
+				<TextBlock Text="{Binding Footer}" />
 			</StackPanel>
 		</Border>
 
 	</Grid>
 
-</sukiUi:Window>
+</Window>
