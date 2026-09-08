@@ -10,9 +10,8 @@
 			 xmlns:lng="clr-namespace:MultiEditorPCC.Locales;assembly=MultiEditorPCC"
 			 x:Name="Intro"
 			 xmlns:sukiUi="clr-namespace:SukiUI.Controls;assembly=SukiUI"
-			
+		
 			 x:Class="MultiEditorPCC.Pagine.IntroView">
-
 
 	<Grid RowDefinitions="Auto,*" Margin="21" RowSpacing="21">
 		<Grid.Styles>
@@ -124,19 +123,32 @@
 
 		</Grid>
 
-		<ScrollViewer Grid.Row="1">
-		<StackPanel Orientation="Vertical" ScrollViewer.VerticalScrollBarVisibility="Visible">
+		<!--<ScrollViewer Grid.Row="1">-->
+		<StackPanel Orientation="Vertical" Grid.Row="1">
 			<TextBlock
 						FontWeight="DemiBold"
 						Text="{Binding Testo,Converter={StaticResource LngConverter},
 					ConverterParameter='Dettagli Progetto'}" />
-			<DataGrid ItemsSource="{Binding ProgettiViewModel.Progetto.DatabaseFiles}"
-					  AutoGenerateColumns="True" />
 
-			<DataGrid ItemsSource="{Binding ProgettiViewModel.Progetto.Archivi}"
-					  AutoGenerateColumns="True" />
+			<TextBlock
+						FontWeight="DemiBold"
+						Text="{Binding Testo,Converter={StaticResource LngConverter},
+					ConverterParameter='File database'}" />
+
+			<ListBox ItemsSource="{Binding ProgettiViewModel.Progetto.DatabaseFiles}" />
+
+			<TextBlock
+					FontWeight="DemiBold"
+					Text="{Binding Testo,Converter={StaticResource LngConverter},
+					ConverterParameter='Archivi'}" />
+
+			<ListBox ItemsSource="{Binding ProgettiViewModel.Progetto.Archivi}" />
+				
+		
+
+			
 		</StackPanel>
-		</ScrollViewer>
+		<!--</ScrollViewer>-->
 
 
 

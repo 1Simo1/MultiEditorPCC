@@ -137,10 +137,10 @@
 					</sukiUi:SukiSideMenuItem.Icon>
 
 					<sukiUi:SukiSideMenuItem.PageContent>
-						<Grid Margin="21">
-							<TextBlock Text="Seconda pagina test" />
-							<!--<pagine:IntroView />-->
-						</Grid>
+						
+							<pagine:SquadreView />
+							
+						
 					</sukiUi:SukiSideMenuItem.PageContent>
 
 				</sukiUi:SukiSideMenuItem>

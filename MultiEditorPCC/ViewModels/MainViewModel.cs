@@ -17,8 +17,8 @@ public partial class MainViewModel : ViewModelBase, IEventSubscriber<AppMsgEvent
     //TODO Aggiungere gradualmente i vari viewmodel per le singole pagine
     //[Property] private TestViewModel _testViewModel;
     [Property] private ProgettiViewModel _progettiViewModel;
-
-
+    [Property] private SquadreViewModel _squadreViewModel;
+    [Property] private GiocatoriViewModel _giocatoriViewModel;
 
     partial void OnInitialize()
     {

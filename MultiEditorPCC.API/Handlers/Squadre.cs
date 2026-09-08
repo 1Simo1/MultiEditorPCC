@@ -10,4 +10,15 @@ public static class Squadre
     {
         return TypedResults.Ok(db.Squadre.AsEnumerable());
     }
+
+    public static async Task<Ok<IEnumerable<Giocatore>>> GetGiocatoriSquadra(Editor db, int id)
+    {
+        return TypedResults.Ok(db.Giocatori.Where(g => g.CodiceSquadra == id));
+    }
+
+    public static async Task<Ok<IEnumerable<Giocatore>>> GiocatoriSenzaSquadra(Editor db)
+    {
+        return TypedResults.Ok(db.Giocatori.Where(g => g.CodiceSquadra == 0));
+    }
+
 }

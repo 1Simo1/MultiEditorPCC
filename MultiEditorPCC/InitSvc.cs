@@ -16,7 +16,8 @@ public class InitSvc
         //TODO Aggiungere gradualmente i vari viewmodel per le singole pagine
         //m.TestViewModel = App.Services.GetRequiredService<TestViewModel>();
         m.ProgettiViewModel = App.Services.GetRequiredService<ProgettiViewModel>();
-
+        m.SquadreViewModel = App.Services.GetRequiredService<SquadreViewModel>();
+        m.GiocatoriViewModel = App.Services.GetRequiredService<GiocatoriViewModel>();
 
         /* TODO Init varie operazioni, una volta definito il collegamento con API, 
          * anche i casi di modalità Editor senza API (ClientMod.Editor) 
@@ -35,6 +36,11 @@ public class InitSvc
                 m.ProgettiViewModel.Progetto = m.ProgettiViewModel.ElencoProgetti.OrderByDescending(p => p.Modifica.Ticks).First();
                 m.ProgettiViewModel.Progetto = await App.Client.Risposta<Progetto>(HttpMethod.Post, $"progetti/carica/{m.ProgettiViewModel.Progetto.Nome}", "");
             }
+
+
+            m.SquadreViewModel.ElencoSquadre = await App.Client.Risposta<ObservableCollection<Squadra>>(HttpMethod.Get, "squadre", "");
+
+            m.GiocatoriViewModel.ElencoGiocatori = await App.Client.Risposta<ObservableCollection<Giocatore>>(HttpMethod.Get, "giocatori", "");
 
         }
     }

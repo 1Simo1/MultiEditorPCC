@@ -1,0 +1,269 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:dto="using:MultiEditorPCC.Shared.DTO"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:vm="using:MultiEditorPCC.ViewModels"
+             xmlns:dc="using:MultiEditorPCC.DataConverters"
+             x:DataType="vm:MainViewModel"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+             xmlns:pagine="using:MultiEditorPCC.Pagine"
+             xmlns:sukiUi="clr-namespace:SukiUI.Controls;assembly=SukiUI"
+             x:Class="MultiEditorPCC.Pagine.SchedaGiocatore">
+
+    <UserControl.Resources>
+        <dc:EnumDataConverter x:Key="EnumDataConverter" />
+    </UserControl.Resources>
+
+
+    <!--              xmlns:lng="clr-namespace:MultiEditorPCC.Locales;assembly=MultiEditorPCC"
+    -->
+
+    <sukiUi:GlassCard>
+        <Grid Margin="21"
+              RowSpacing="3"
+              ColumnSpacing="3"
+              RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,*"
+              ColumnDefinitions="Auto,3*">
+            <TextBlock Grid.Row="0" Grid.ColumnSpan="2"
+                       Text="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='Scheda Giocatore'}" FontWeight="DemiBold" />
+            <StackPanel Orientation="Horizontal" Grid.Row="1">
+                <TextBlock Text="#" VerticalAlignment="Center"/>
+                <sukiUi:GlassCard Padding="0">
+                    <TextBox Text="{Binding GiocatoriViewModel.Giocatore.Numero,Mode=TwoWay}" />
+                </sukiUi:GlassCard>
+            </StackPanel>
+
+
+            <TextBox Text="{Binding GiocatoriViewModel.Giocatore.Nome}"
+                     Grid.Row="1" Grid.Column="1"
+                     PlaceholderText="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='Nome'}"
+
+                     />
+
+            <TextBox Text="{Binding GiocatoriViewModel.Giocatore.NomeCompleto}"
+                     Grid.Row="2" Grid.Column="0"
+                     PlaceholderText="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='Nome completo'}"
+
+                     />
+
+            <StackPanel Orientation="Vertical" Grid.Row="2" Grid.Column="1">
+                <TextBlock Text="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='Paese'}" Margin="0,0,0,3"/>
+                <ComboBox ItemsSource="{Binding GiocatoriViewModel.Giocatore.Nazione, Converter={StaticResource EnumDataConverter},ConverterParameter='List'}"
+                          SelectedItem="{Binding GiocatoriViewModel.Giocatore.Nazione,Mode=TwoWay, Converter={StaticResource EnumDataConverter}}"
+                          />
+
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2">
+
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Text="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='Pelle'}" Margin="0,0,0,3"/>
+                    <ComboBox ItemsSource="{Binding GiocatoriViewModel.Giocatore.CodColorePelle, Converter={StaticResource EnumDataConverter},ConverterParameter='List'}"
+                              SelectedItem="{Binding GiocatoriViewModel.Giocatore.CodColorePelle,Mode=TwoWay, Converter={StaticResource EnumDataConverter}}"
+                              />
+                </StackPanel>
+
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Text="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='Colore capelli'}" Margin="0,0,0,3"/>
+                    <ComboBox ItemsSource="{Binding GiocatoriViewModel.Giocatore.CodColoreCapelli, Converter={StaticResource EnumDataConverter},ConverterParameter='List'}"
+                              SelectedItem="{Binding GiocatoriViewModel.Giocatore.CodColoreCapelli,Mode=TwoWay, Converter={StaticResource EnumDataConverter}}"
+                              />
+                </StackPanel>
+
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Text="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='Stile capelli'}" Margin="0,0,0,3"/>
+                    <ComboBox ItemsSource="{Binding GiocatoriViewModel.Giocatore.CodStileCapelli, Converter={StaticResource EnumDataConverter},ConverterParameter='List'}"
+                              SelectedItem="{Binding GiocatoriViewModel.Giocatore.CodStileCapelli,Mode=TwoWay, Converter={StaticResource EnumDataConverter}}"
+                              />
+                </StackPanel>
+
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Text="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='Barba'}" Margin="0,0,0,3"/>
+                    <ComboBox ItemsSource="{Binding GiocatoriViewModel.Giocatore.CodStileBarba, Converter={StaticResource EnumDataConverter},ConverterParameter='List'}"
+                              SelectedItem="{Binding GiocatoriViewModel.Giocatore.CodStileBarba,Mode=TwoWay, Converter={StaticResource EnumDataConverter}}"
+                              />
+                </StackPanel>
+
+            </StackPanel>
+
+
+            <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.ColumnSpan="2">
+                <TextBlock Text="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='Nazionalizzato'}" VerticalAlignment="Center" />
+                <CheckBox Margin="3,0" IsChecked="{Binding GiocatoriViewModel.Giocatore.Nazionalizzato,Mode=TwoWay}" />
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Text="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='Reparto'}" Margin="0,0,0,3"/>
+                    <ComboBox ItemsSource="{Binding GiocatoriViewModel.Giocatore.Reparto, Converter={StaticResource EnumDataConverter},ConverterParameter='List'}"
+                              SelectedItem="{Binding GiocatoriViewModel.Giocatore.Reparto,Mode=TwoWay, Converter={StaticResource EnumDataConverter}}"
+                              />
+
+                </StackPanel>
+
+                <StackPanel Orientation="Vertical">
+                    <TextBlock VerticalAlignment="Center"
+                               Text="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='Data di nascita'}" Margin="0,0,0,3"/>
+                    <StackPanel Orientation="Horizontal">
+                        <NumericUpDown Value="{Binding GiocatoriViewModel.Giocatore.GiornoNascita,Mode=TwoWay}" Minimum="1" Maximum="31"/>
+                        <TextBlock Text="/" VerticalAlignment="Center"/>
+                        <NumericUpDown Value="{Binding GiocatoriViewModel.Giocatore.MeseNascita,Mode=TwoWay}" Minimum="1" Maximum="12"/>
+                        <TextBlock Text="/" VerticalAlignment="Center"/>
+                        <NumericUpDown Value="{Binding GiocatoriViewModel.Giocatore.AnnoNascita,Mode=TwoWay}"/>
+                    </StackPanel>
+
+
+                </StackPanel>
+
+                <StackPanel Orientation="Vertical" Margin="3,0">
+                    <TextBlock VerticalAlignment="Center"
+                               Text="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='Altezza'}" Margin="0,0,0,3"/>
+                    <NumericUpDown Value="{Binding GiocatoriViewModel.Giocatore.Altezza,Mode=TwoWay}"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Vertical">
+                    <TextBlock VerticalAlignment="Center"
+                               Text="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='Peso'}" Margin="0,0,0,3"/>
+                    <NumericUpDown Value="{Binding GiocatoriViewModel.Giocatore.Peso,Mode=TwoWay}"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Vertical" Margin="3,0"
+                            IsVisible="{Binding GiocatoriViewModel.Giocatore.Giocabile}"
+                            >
+                    <TextBlock Text="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='Paese di nascita'}" Margin="0,0,0,3"/>
+                    <ComboBox ItemsSource="{Binding GiocatoriViewModel.Giocatore.PaeseNascita, Converter={StaticResource EnumDataConverter},ConverterParameter='List'}"
+                              SelectedItem="{Binding GiocatoriViewModel.Giocatore.PaeseNascita,Mode=TwoWay, Converter={StaticResource EnumDataConverter}}"
+                              />
+
+                </StackPanel>
+
+
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Grid.Row="5" Grid.ColumnSpan="2">
+                <TextBlock VerticalAlignment="Center"
+                           Text="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='Ruolo'}" Margin="0,0,0,3"/>
+                <ComboBox ItemsSource="{Binding GiocatoriViewModel.Giocatore.Ruolo, Converter={StaticResource EnumDataConverter},ConverterParameter='List'}"
+                          SelectedItem="{Binding GiocatoriViewModel.Giocatore.Ruolo,Mode=TwoWay, Converter={StaticResource EnumDataConverter}}"
+                          />
+                <ItemsControl ItemsSource="{Binding GiocatoriViewModel.Giocatore.AltriRuoli}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <ComboBox ItemsSource="{Binding , Converter={StaticResource EnumDataConverter},ConverterParameter='List'}"
+                                      SelectedItem="{Binding ,Mode=TwoWay, Converter={StaticResource EnumDataConverter}}"
+                                      />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+
+
+            <UniformGrid Grid.Row="6" Grid.ColumnSpan="2" Columns="16" ColumnSpacing="3">
+                <TextBlock Text="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='VE'}" />
+                <TextBlock Text="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='RE'}" />
+                <TextBlock Text="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='AG'}" />
+                <TextBlock Text="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='QU'}" />
+                <TextBlock Text="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='RI'}" />
+                <TextBlock Text="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='DR'}" />
+                <TextBlock Text="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='PA'}" />
+                <TextBlock Text="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='TI'}" />
+                <TextBlock Text="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='EN'}" />
+                <TextBlock Text="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='GM'}" />
+                <TextBlock Text="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='PPR'}" />
+                <TextBlock Text="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='RIG'}" />
+                <TextBlock Text="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='CSX'}" />
+                <TextBlock Text="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='CDX'}" />
+                <TextBlock Text="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='FSX'}" />
+                <TextBlock Text="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='FDX'}" />
+
+
+                <NumericUpDown Minimum="0" Maximum="99"
+                               Value="{Binding GiocatoriViewModel.Giocatore.VE,Mode=TwoWay}"
+                               />
+                <NumericUpDown Minimum="0" Maximum="99"
+                               Value="{Binding GiocatoriViewModel.Giocatore.RE,Mode=TwoWay}"
+                               />
+                <NumericUpDown Minimum="0" Maximum="99"
+                               Value="{Binding GiocatoriViewModel.Giocatore.AG,Mode=TwoWay}"
+                               />
+                <NumericUpDown Minimum="0" Maximum="99"
+                               Value="{Binding GiocatoriViewModel.Giocatore.QU,Mode=TwoWay}"
+                               />
+                <NumericUpDown Minimum="0" Maximum="99"
+                               Value="{Binding GiocatoriViewModel.Giocatore.RI,Mode=TwoWay}"
+                               />
+                <NumericUpDown Minimum="0" Maximum="99"
+                               Value="{Binding GiocatoriViewModel.Giocatore.DR,Mode=TwoWay}"
+                               />
+                <NumericUpDown Minimum="0" Maximum="99"
+                               Value="{Binding GiocatoriViewModel.Giocatore.PA,Mode=TwoWay}"
+                               />
+                <NumericUpDown Minimum="0" Maximum="99"
+                               Value="{Binding GiocatoriViewModel.Giocatore.TI,Mode=TwoWay}"
+                               />
+                <NumericUpDown Minimum="0" Maximum="99"
+                               Value="{Binding GiocatoriViewModel.Giocatore.EN,Mode=TwoWay}"
+                               />
+                <NumericUpDown Minimum="0" Maximum="99"
+                               Value="{Binding GiocatoriViewModel.Giocatore.GM,Mode=TwoWay}"
+                               />
+
+                <ComboBox ItemsSource="{Binding GiocatoriViewModel.Giocatore.PPR, Converter={StaticResource EnumDataConverter},ConverterParameter='List'}"
+                          SelectedItem="{Binding GiocatoriViewModel.Giocatore.PPR,Mode=TwoWay, Converter={StaticResource EnumDataConverter}}"
+                          />
+
+                <NumericUpDown Minimum="0" Maximum="99"
+                               Value="{Binding GiocatoriViewModel.Giocatore.RIG,Mode=TwoWay}"
+                               />
+                <NumericUpDown Minimum="0" Maximum="99"
+                               Value="{Binding GiocatoriViewModel.Giocatore.CSX,Mode=TwoWay}"
+                               />
+                <NumericUpDown Minimum="0" Maximum="99"
+                               Value="{Binding GiocatoriViewModel.Giocatore.CDX,Mode=TwoWay}"
+                               />
+                <NumericUpDown Minimum="0" Maximum="99"
+                               Value="{Binding GiocatoriViewModel.Giocatore.FSX,Mode=TwoWay}"
+                               />
+                <NumericUpDown Minimum="0" Maximum="99"
+                               Value="{Binding GiocatoriViewModel.Giocatore.FDX,Mode=TwoWay}"
+                               />
+
+            </UniformGrid>
+
+            <ComboBox ItemsSource="{Binding SquadreViewModel.ElencoSquadre}" Grid.Row="7" Grid.ColumnSpan="2"
+                      SelectedItem="{Binding GiocatoriViewModel.Giocatore.CodiceSquadra,Mode=TwoWay}"
+                      >
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Nome}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+                </ComboBox>
+            <StackPanel Grid.Row="8" Grid.ColumnSpan="2" Orientation="Vertical">
+                <TextBlock Text="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='Note'}" />
+                
+                <TextBox Text="{Binding GiocatoriViewModel.Giocatore.Note, Mode=TwoWay}" />
+            </StackPanel>
+            <!-- <DataGrid Grid.Row="6" Grid.ColumnSpan="2" ItemsSource="{Binding GiocatoriViewModel.Giocatore}">
+            <DataGrid.Columns>
+            <DataGridTemplateColumn
+            Header="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='VE'}">
+            <DataTemplate>
+            <NumericUpDown Minimum="0" Maximum="99"
+            Value="{Binding GiocatoriViewModel.Giocatore.VE,Mode=TwoWay}"
+            />
+            </DataTemplate>
+            </DataGridTemplateColumn>
+            </DataGrid.Columns>
+            </DataGrid>-->
+
+        </Grid>
+    </sukiUi:GlassCard>
+
+
+
+</UserControl>

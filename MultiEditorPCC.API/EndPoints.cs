@@ -24,6 +24,11 @@ public static class EndpointExtensions
         var squadre = api.MapGroup("/squadre");
 
         squadre.MapGet("", Squadre.GetElenco).WithDescription("Elenco squadre caricate nel progetto Editor");
+        squadre.MapGet("{id:int}", Squadre.GetGiocatoriSquadra).WithDescription("Giocatori della squadra selezionata");
+
+        var giocatori = api.MapGroup("/giocatori");
+        giocatori.MapGet("", Giocatori.GetElenco).WithDescription("Elenco giocatori caricati nel progetto Editor");
+        giocatori.MapGet("svincolati", Squadre.GiocatoriSenzaSquadra).WithDescription("Elenco giocatori senza squadra");
 
     }
 }
