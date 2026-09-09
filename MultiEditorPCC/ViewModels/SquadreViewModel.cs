@@ -15,7 +15,7 @@ public partial class SquadreViewModel : ViewModelBase, IEventSubscriber<RosaSqua
     [Property] private ObservableCollection<Squadra> _elencoSquadre;
 
     [Property]
-    [PropertyCallMethod(nameof(SquadraSelezionata), MethodArgs = "value.Id")]
+    [PropertyCallMethod(nameof(SquadraSelezionata), MethodArgs = "value?.Id")]
     private Squadra _squadra;
 
     [Property] private ObservableCollection<Giocatore> _elencoGiocatoriSquadra;
@@ -23,8 +23,9 @@ public partial class SquadreViewModel : ViewModelBase, IEventSubscriber<RosaSqua
     //[Property] private Giocatore _giocatore;
 
 
-    private void SquadraSelezionata(uint IdSquadra)
+    private void SquadraSelezionata(uint? IdSquadra)
     {
+        if (IdSquadra == null) return;
         EventAggregator.Publish<RichiestaRosaSquadra>(new((int)IdSquadra));
     }
 

@@ -16,10 +16,6 @@
         <dc:EnumDataConverter x:Key="EnumDataConverter" />
     </UserControl.Resources>
 
-
-    <!--              xmlns:lng="clr-namespace:MultiEditorPCC.Locales;assembly=MultiEditorPCC"
-    -->
-
     <sukiUi:GlassCard>
         <Grid Margin="21"
               RowSpacing="3"
@@ -159,10 +155,17 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
+
+              
+                    <TextBlock Text="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='Piede Preferito'}" VerticalAlignment="Center" />
+                    <ComboBox ItemsSource="{Binding GiocatoriViewModel.Giocatore.PPR, Converter={StaticResource EnumDataConverter},ConverterParameter='List'}"
+                              SelectedItem="{Binding GiocatoriViewModel.Giocatore.PPR,Mode=TwoWay, Converter={StaticResource EnumDataConverter}}"
+                              />
+              
             </StackPanel>
 
 
-            <UniformGrid Grid.Row="6" Grid.ColumnSpan="2" Columns="16" ColumnSpacing="3">
+            <UniformGrid Grid.Row="6" Grid.ColumnSpan="2" Columns="15" ColumnSpacing="3">
                 <TextBlock Text="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='VE'}" />
                 <TextBlock Text="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='RE'}" />
                 <TextBlock Text="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='AG'}" />
@@ -173,7 +176,7 @@
                 <TextBlock Text="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='TI'}" />
                 <TextBlock Text="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='EN'}" />
                 <TextBlock Text="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='GM'}" />
-                <TextBlock Text="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='PPR'}" />
+
                 <TextBlock Text="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='RIG'}" />
                 <TextBlock Text="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='CSX'}" />
                 <TextBlock Text="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='CDX'}" />
@@ -212,9 +215,7 @@
                                Value="{Binding GiocatoriViewModel.Giocatore.GM,Mode=TwoWay}"
                                />
 
-                <ComboBox ItemsSource="{Binding GiocatoriViewModel.Giocatore.PPR, Converter={StaticResource EnumDataConverter},ConverterParameter='List'}"
-                          SelectedItem="{Binding GiocatoriViewModel.Giocatore.PPR,Mode=TwoWay, Converter={StaticResource EnumDataConverter}}"
-                          />
+
 
                 <NumericUpDown Minimum="0" Maximum="99"
                                Value="{Binding GiocatoriViewModel.Giocatore.RIG,Mode=TwoWay}"
@@ -242,10 +243,10 @@
                         <TextBlock Text="{Binding Nome}" />
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
-                </ComboBox>
+            </ComboBox>
             <StackPanel Grid.Row="8" Grid.ColumnSpan="2" Orientation="Vertical">
                 <TextBlock Text="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='Note'}" />
-                
+
                 <TextBox Text="{Binding GiocatoriViewModel.Giocatore.Note, Mode=TwoWay}" />
             </StackPanel>
             <!-- <DataGrid Grid.Row="6" Grid.ColumnSpan="2" ItemsSource="{Binding GiocatoriViewModel.Giocatore}">
