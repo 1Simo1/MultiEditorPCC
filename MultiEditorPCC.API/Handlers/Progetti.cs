@@ -107,7 +107,7 @@ public static class Progetti
 
 
         db.Squadre = Utils.CaricaSquadreCSV(db.ProgettoAttivo);
-        db.Giocatori = Utils.CaricaGiocatoriCSV(db.ProgettoAttivo);
+        db.Giocatori = Utils.CaricaGiocatoriCSV(db.ProgettoAttivo, db.Squadre);
 
 
 

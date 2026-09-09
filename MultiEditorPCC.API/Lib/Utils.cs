@@ -276,18 +276,63 @@ public static class Utils
         //di ogni squadra e dei codici originali per poi distribuire 
         //le squadre nei vari gruppi di competizioni nel gioco
         //e nei vari Paesi
-        if (ElencoCSV.Length > 1) Squadre = new();
+        //if (ElencoCSV.Length > 1) Squadre = new();
 
         foreach (var fileCSV in ElencoCSV)
         {
             if (!fileCSV.EndsWith($"Squadre_{ProgettoAttivo.VersionePCC}.csv"))
             {
+                csv = File.ReadAllLines(fileCSV);
                 Header = csv[0];
                 foreach (var row in csv)
                 {
                     if (row != Header)
                     {
                         Squadra Squadra = CaricaElementoCSV<Squadra>(Header, row);
+
+                        Squadra? CercaSquadra = Squadre.Where
+                            (sq => (sq.Nome == Squadra.Nome && sq.Nazione == Squadra.Nazione) ||
+                                   (sq.NomeStadio == Squadra.NomeStadio || Squadra.NomeStadio.Contains(sq.NomeStadio) || sq.NomeStadio.Contains(Squadra.NomeStadio)) ||
+                                   (sq.Nome.Contains(Squadra.Nome) || Squadra.Nome.Contains(sq.Nome))
+
+                            ).FirstOrDefault();
+
+                        if (CercaSquadra != null)
+                        {
+                            try
+                            {
+                                Squadre.Remove(CercaSquadra);
+                            }
+                            catch (Exception ex)
+                            {
+
+                            }
+                            Squadra.Note = Squadra.Id.ToString();
+                            Squadra.Id = CercaSquadra.Id;
+                            Squadra.Nome = CercaSquadra.Nome;
+                            Squadra.AnnoFondazione = CercaSquadra.AnnoFondazione;
+                            Squadra.Boh = CercaSquadra.Boh;
+                            Squadra.NumeroAbbonati = CercaSquadra.NumeroAbbonati;
+                            Squadra.CassaGioco = CercaSquadra.CassaGioco;
+                            Squadra.CassaReale = CercaSquadra.CassaReale;
+                            Squadra.SquadraRiserve = CercaSquadra.SquadraRiserve;
+                            Squadra.TerzaSquadra = CercaSquadra.TerzaSquadra;
+                            Squadra.Girone2B = CercaSquadra.Girone2B;
+                            Squadra.Girone3 = CercaSquadra.Girone3;
+                            Squadra.PercentualeToccoDiPrima = CercaSquadra.PercentualeToccoDiPrima;
+                            Squadra.PercentualeContropiede = CercaSquadra.PercentualeContropiede;
+                            Squadra.TipoAttacco = CercaSquadra.TipoAttacco;
+                            Squadra.TipoEntrata = CercaSquadra.TipoEntrata;
+                            Squadra.TipoMarcatura = CercaSquadra.TipoMarcatura;
+                            Squadra.TipoRinvii = CercaSquadra.TipoRinvii;
+                            Squadra.PressingDa = CercaSquadra.PressingDa;
+                            Squadra.TatticaCompleta = CercaSquadra.TatticaCompleta;
+                            Squadra.NumeroBoh = CercaSquadra.NumeroBoh;
+
+                        }
+
+
+
 
                         Squadre.Add(Squadra);
                     }
@@ -302,7 +347,7 @@ public static class Utils
 
 
 
-    public static List<Giocatore> CaricaGiocatoriCSV(Progetto ProgettoAttivo)
+    public static List<Giocatore> CaricaGiocatoriCSV(Progetto ProgettoAttivo, List<Squadra>? Squadre = null)
     {
         List<Giocatore> Giocatori = new();
 
@@ -327,18 +372,41 @@ public static class Utils
         //di ogni squadra e dei codici originali per poi distribuire 
         //le squadre nei vari gruppi di competizioni nel gioco
         //e nei vari Paesi
-        if (ElencoCSV.Length > 1) Giocatori = new();
+        //if (ElencoCSV.Length > 1) Giocatori = new();
 
         foreach (var fileCSV in ElencoCSV)
         {
             if (!fileCSV.EndsWith($"Giocatori_{ProgettoAttivo.VersionePCC}.csv"))
             {
+
+                if (Squadre != null)
+                {
+                    var test = Squadre.Where(sq => sq.Note != "").ToList();
+                    foreach (var sq in test)
+                    {
+                        Giocatori.RemoveAll(g => g.CodiceSquadra == sq.Id);
+                    }
+                }
+
+
+                csv = File.ReadAllLines(fileCSV);
                 Header = csv[0];
                 foreach (var row in csv)
                 {
                     if (row != Header)
                     {
                         Giocatore Giocatore = CaricaElementoCSV<Giocatore>(Header, row);
+
+                        if (Squadre != null)
+                        {
+
+                            var test = Squadre.Where(sq => sq.Note != "").Select(sq => sq.Note);
+                            if (test.Contains(Giocatore.CodiceSquadra.ToString()))
+                            {
+                                Giocatore.CodiceSquadra = Squadre.Where(sq => sq.Note == Giocatore.CodiceSquadra.ToString()).First().Id;
+                            }
+                        }
+
 
                         Giocatori.Add(Giocatore);
                     }
@@ -351,79 +419,94 @@ public static class Utils
     }
 
 
-    public static T CaricaElementoCSV<T>(String Header, String Row, String Sep = ";") where T : class, new()
+    public static T? CaricaElementoCSV<T>(String Header, String Row, String Sep = ";") where T : class, new()
     {
         T Elemento = new();
-        string[] Col = Header.Split(Sep);
-        string[] Val = Row.Split(Sep);
 
-
-
-        for (int n = 0; n < Col.Length; n++)
+        try
         {
-            PropertyInfo? prop = Elemento.GetType().GetProperty(Col[n]);
-            if (prop != null)
+
+            string[] Col = Header.Split(Sep);
+            string[] Val = Row.Split(Sep);
+
+
+
+            for (int n = 0; n < Col.Length; n++)
             {
-                object v = Val[n];
-                if (prop.PropertyType != typeof(string))
+                PropertyInfo? prop = Elemento.GetType().GetProperty(Col[n]);
+                if (prop != null)
                 {
-
-                    var nome = prop.PropertyType.Name;
-
-                    if (nome.StartsWith("Nullable") || nome.StartsWith("List"))
+                    object v = Val[n];
+                    if (prop.PropertyType != typeof(string))
                     {
-                        nome = prop.PropertyType.GenericTypeArguments[0].Name;
 
-                        if (prop.PropertyType.GenericTypeArguments[0].IsEnum)
+                        var nome = prop.PropertyType.Name;
+
+                        if (nome.StartsWith("Nullable") || nome.StartsWith("List"))
                         {
-                            nome = "List<Enum>";
-                        }
-                    }
+                            nome = prop.PropertyType.GenericTypeArguments[0].Name;
 
-                    switch (nome)
-                    {
-                        case "UInt16": v = UInt16.Parse(Val[n]); break;
-                        case "UInt32": v = uint.Parse(Val[n]); break;
-                        case "Int16": v = Int16.Parse(Val[n]); break;
-                        case "Int32": v = int.Parse(Val[n]); break;
-                        case "Boolean": v = Val[n] == true.ToString(); break;
-                        case "Byte": v = Convert.FromBase64String(Val[n]).ToList(); break;
-
-                    }
-
-                    if (prop.PropertyType.IsEnum)
-                    {
-                        try
-                        {
-                            v = Enum.Parse(prop.PropertyType, Val[n]);
-                        }
-                        catch (Exception)
-                        {
-
-
-                        }
-                    }
-
-                    if (nome == "List<Enum>")
-                    {
-                        var e = Val[n].Split("|");
-
-                        var ruoli = new List<Ruolo>();
-
-                        foreach (var en in e)
-                        {
-                            ruoli.Add((Ruolo)(Enum.Parse(prop.PropertyType.GenericTypeArguments[0], en)));
+                            if (prop.PropertyType.GenericTypeArguments[0].IsEnum)
+                            {
+                                nome = "List<Enum>";
+                            }
                         }
 
-                        prop.SetValue(Elemento, ruoli, null);
-                        continue;
+                        switch (nome)
+                        {
+                            case "UInt16": v = UInt16.Parse(Val[n]); break;
+                            case "UInt32": v = uint.Parse(Val[n]); break;
+                            case "Int16": v = Int16.Parse(Val[n]); break;
+                            case "Int32": v = int.Parse(Val[n]); break;
+                            case "Boolean": v = Val[n] == true.ToString(); break;
+                            case "Byte": v = Convert.FromBase64String(Val[n]).ToList(); break;
+
+                        }
+
+                        if (prop.PropertyType.IsEnum)
+                        {
+                            try
+                            {
+                                v = Enum.Parse(prop.PropertyType, Val[n]);
+                            }
+                            catch (Exception)
+                            {
+
+
+                            }
+                        }
+
+                        if (nome == "List<Enum>")
+                        {
+                            var e = Val[n].Split("|");
+
+                            var ruoli = new List<Ruolo>();
+
+                            foreach (var en in e)
+                            {
+                                ruoli.Add((Ruolo)(Enum.Parse(prop.PropertyType.GenericTypeArguments[0], en)));
+                            }
+
+                            prop.SetValue(Elemento, ruoli, null);
+                            continue;
+                        }
+
                     }
 
+                    prop.SetValue(Elemento, v, null);
                 }
-
-                prop.SetValue(Elemento, v, null);
             }
+
+
         }
+        catch (Exception ex)
+        {
+
+            return Elemento;
+        }
+
+
+
         return Elemento;
     }
 
