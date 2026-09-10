@@ -6,4 +6,6 @@ public class EventiMVVM
 
     public record RichiestaRosaSquadra(int IdSquadra);
     public record RosaSquadraSelezionata(System.Collections.Generic.List<Shared.DTO.Giocatore> Giocatori);
+
+    public record AperturaProgetto();
 }

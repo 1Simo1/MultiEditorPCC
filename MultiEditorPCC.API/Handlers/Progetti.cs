@@ -109,7 +109,28 @@ public static class Progetti
         db.Squadre = Utils.CaricaSquadreCSV(db.ProgettoAttivo);
         db.Giocatori = Utils.CaricaGiocatoriCSV(db.ProgettoAttivo, db.Squadre);
 
+        foreach (var sq in db.Squadre)
+        {
+            try
+            {
+                var GiocatoriSquadra = db.Giocatori.Where(g => g.CodiceSquadra == sq.Id);
+                if (GiocatoriSquadra.Any())
+                {
+                    var anno = GiocatoriSquadra.Max(g => g.AnnoNascita);
+                    sq.SquadraOriginale = GiocatoriSquadra.Where(g => g.AnnoNascita == anno).First().AnnoNascita < 2000;
+                }
+            }
+            catch (Exception ex)
+            {
 
+
+            }
+        }
+
+        progetto.Modifica = DateTime.Now;
+        db.ProgettoAttivo.Modifica = DateTime.Now;
+
+        File.WriteAllText($"Progetti/{db.ProgettoAttivo.Nome}/Pro.json", JsonSerializer.Serialize(db.ProgettoAttivo));
 
         return TypedResults.Ok(progetto);
     }
@@ -127,8 +148,8 @@ public static class Progetti
         File.WriteAllText($"Progetti/{db.ProgettoAttivo.Nome}/Pro.json", JsonSerializer.Serialize(db.ProgettoAttivo));
 
 
-        db.Squadre = Utils.CaricaSquadreCSV(db.ProgettoAttivo);
-        db.Giocatori = Utils.CaricaGiocatoriCSV(db.ProgettoAttivo);
+        //db.Squadre = Utils.CaricaSquadreCSV(db.ProgettoAttivo);
+        //db.Giocatori = Utils.CaricaGiocatoriCSV(db.ProgettoAttivo);
 
         return TypedResults.Ok(db.ProgettoAttivo);
     }
@@ -155,9 +176,10 @@ public static class Progetti
 
         db.ProgettoAttivo.Modifica = DateTime.Now;
 
+
         File.WriteAllText($"Progetti/{db.ProgettoAttivo.Nome}/Pro.json", JsonSerializer.Serialize(db.ProgettoAttivo));
-        db.Squadre = Utils.CaricaSquadreCSV(db.ProgettoAttivo);
-        db.Giocatori = Utils.CaricaGiocatoriCSV(db.ProgettoAttivo);
+        //db.Squadre = Utils.CaricaSquadreCSV(db.ProgettoAttivo);
+        //db.Giocatori = Utils.CaricaGiocatoriCSV(db.ProgettoAttivo);
 
         return TypedResults.Ok(db.DatabaseFiles.Count.ToString());
     }

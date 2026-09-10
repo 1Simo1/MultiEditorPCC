@@ -1,10 +1,11 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:dto="using:MultiEditorPCC.Shared.DTO"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              xmlns:vm="using:MultiEditorPCC.ViewModels"
-
+             xmlns:icons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              x:DataType="vm:MainViewModel"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
              xmlns:lng="clr-namespace:MultiEditorPCC.Locales;assembly=MultiEditorPCC"
@@ -13,123 +14,160 @@
              x:Class="MultiEditorPCC.Pagine.SquadreView">
 
     <StackPanel Orientation="Vertical" Margin="21">
+
+        <StackPanel Orientation="Horizontal" Spacing="3">
         <TextBlock FontWeight="DemiBold"
                    Text="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='Squadre'}" />
-        <Grid Margin="21" RowDefinitions="Auto,*,21">
+        <TextBlock Text="{Binding SquadreViewModel.ElencoSquadre.Count,Mode=TwoWay}" FontWeight="DemiBold" />
+             <TextBlock 
+                   Text="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='Valide'}" />
 
-            <StackPanel Orientation="Horizontal" Grid.Row="0">
+             <TextBlock Text="{Binding SquadreViewModel.TotaleSquadreAggiornateValide,Mode=TwoWay}" FontWeight="DemiBold" />
 
-                <StackPanel Orientation="Vertical">
-                    <TextBlock Text="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='Scegli Squadra'}" />
-
-                    <AutoCompleteBox ItemsSource="{Binding SquadreViewModel.ElencoSquadre,Mode=TwoWay}"
-                                     ValueMemberBinding="{Binding Nome}"
-                                     SelectedItem="{Binding SquadreViewModel.Squadra}"
-                                     />
+        </StackPanel>
+        <Grid Margin="21" RowDefinitions="Auto,*,21" ColumnDefinitions="210,*">
 
 
-                    <ComboBox ItemsSource="{Binding SquadreViewModel.ElencoSquadre,Mode=TwoWay}"
-                              SelectedItem="{Binding SquadreViewModel.Squadra,Mode=TwoWay}"
-                           
-                              >
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate>
+
+            <StackPanel Orientation="Vertical"  Grid.Row="0" Grid.Column="0">
+                <TextBlock Text="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='Scegli Squadra'}" />
+
+                <AutoCompleteBox ItemsSource="{Binding SquadreViewModel.ElencoSquadre,Mode=TwoWay}"
+                                 ValueMemberBinding="{Binding Nome}"
+                                 SelectedItem="{Binding SquadreViewModel.Squadra}"
+                                 x:Name="Elenco"
+                                 >
+                    <AutoCompleteBox.ItemTemplate>
+                        <DataTemplate x:DataType="dto:Squadra">
+                            <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="{Binding Nome}" />
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
+                                 <icons:MaterialIcon Kind="Warning" Foreground="DarkGoldenrod"
+                                                    Margin="3,0" VerticalAlignment="Center"
+                                                    IsVisible="{Binding SquadraOriginale,Mode=TwoWay}"
+
+                                                    />
+                            </StackPanel>
+                        </DataTemplate>
+                    </AutoCompleteBox.ItemTemplate>
+
+
+                </AutoCompleteBox>
+
+
+                <ComboBox ItemsSource="{Binding SquadreViewModel.ElencoSquadre,Mode=TwoWay}"
+                          SelectedItem="{Binding SquadreViewModel.Squadra,Mode=TwoWay}"
+
+                          >
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding Nome}" />
+                                <icons:MaterialIcon Kind="Warning" Foreground="DarkGoldenrod"
+                                                    Margin="3,0" VerticalAlignment="Center"
+                                                    IsVisible="{Binding SquadraOriginale,Mode=TwoWay}"
+
+                                                    />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+
+            </StackPanel>
+
+
+            <sukiUi:GlassCard Margin="3" Grid.Row="0" Grid.Column="1"
+                              IsVisible="{Binding SquadreViewModel.Squadra,
+                              Converter={x:Static ObjectConverters.IsNotNull}}"
+                              >
+                <StackPanel Orientation="Vertical">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding SquadreViewModel.Squadra.Nome}" FontWeight="DemiBold"/>
+                        <icons:MaterialIcon Kind="Warning" Foreground="DarkGoldenrod"
+                                            Margin="3,0" VerticalAlignment="Center"
+                                            IsVisible="{Binding SquadreViewModel.Squadra.SquadraOriginale,Mode=TwoWay}"
+
+                                            />
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock VerticalAlignment="Center"
+                                   Text="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='Sostituisci con'}" />
+
+
+                        <AutoCompleteBox ItemsSource="{Binding SquadreViewModel.ElencoSquadre,Mode=TwoWay}"
+                                         ValueMemberBinding="{Binding Nome}"
+                                         SelectedItem="{Binding SquadreViewModel.SquadraAggiornata}"
+                                         />
+                        <ComboBox ItemsSource="{Binding SquadreViewModel.ElencoSquadre,Mode=TwoWay}"
+                                  SelectedItem="{Binding SquadreViewModel.SquadraAggiornata,Mode=TwoWay}"
+
+                                  >
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Nome}" />
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+
+                        <Button Command="" Margin="3,0">
+                            <TextBlock Text="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='Conferma'}" />
+                        </Button>
+
+                    </StackPanel>
+
+                    <Expander ExpandDirection="Down"
+                              Header="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='Informazioni squadra'}"
+                              >
+
+                        <pagine:SchedaGiocatore Grid.Row="1" Grid.Column="1"
+                                                IsVisible="{Binding GiocatoriViewModel.Giocatore,
+                                                Converter={x:Static ObjectConverters.IsNotNull}}"
+
+                                                />
+
+                    </Expander>
+
 
                 </StackPanel>
+            </sukiUi:GlassCard>
 
 
+            <!--<Grid Grid.Row="1" Grid.Column="0" Grid.ColumnDefinitions="210,*,Auto"
+            IsVisible="{Binding SquadreViewModel.Squadra,
+            Converter={x:Static ObjectConverters.IsNotNull}}">-->
 
-                <Grid
-                    IsVisible="{Binding SquadreViewModel.Squadra,
-                    Converter={x:Static ObjectConverters.IsNotNull}}"
-                    >
+            <ScrollViewer VerticalScrollBarVisibility="Visible" Height="521" Grid.Column="0" Grid.Row="1"
+                          IsVisible="{Binding SquadreViewModel.Squadra,
+                          Converter={x:Static ObjectConverters.IsNotNull}}"
 
-                    <TextBlock Text="{Binding SquadreViewModel.Squadra.Nome}" FontWeight="DemiBold"/>
-
-                </Grid>
-
-            </StackPanel>
-
-            <Grid Grid.Row="1" Grid.ColumnDefinitions="210,*,Auto"
-                  IsVisible="{Binding SquadreViewModel.Squadra,
-                  Converter={x:Static ObjectConverters.IsNotNull}}">
-
-                <ScrollViewer VerticalScrollBarVisibility="Visible" Height="521" Grid.Column="0">
-                    <ListBox ItemsSource="{Binding SquadreViewModel.ElencoGiocatoriSquadra,Mode=TwoWay}"
-                             SelectedItem="{Binding GiocatoriViewModel.Giocatore,Mode=TwoWay}"
-                             ScrollViewer.VerticalScrollBarVisibility="Visible"
-                             >
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Nome,Mode=TwoWay}" />
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-                </ScrollViewer>
-
-
-                <pagine:SchedaGiocatore Grid.Column="1"
-                                        IsVisible="{Binding GiocatoriViewModel.Giocatore,
-                                        Converter={x:Static ObjectConverters.IsNotNull}}"
-                                        />
-            </Grid>
-            <!--
-
-            <StackPanel Orientation="Vertical" Grid.Row="1" Grid.Column="0">
-            <AutoCompleteBox ItemsSource="{Binding SquadreViewModel.ElencoSquadre,Mode=TwoWay}"
-            SelectedItem="{Binding SquadreViewModel.Squadra.Nome}" />
-
-            <ScrollViewer VerticalScrollBarVisibility="Visible" Height="1021">
-            <ListBox ItemsSource="{Binding SquadreViewModel.ElencoSquadre,Mode=TwoWay}"
-            SelectedItem="{Binding SquadreViewModel.Squadra,Mode=TwoWay}"
-            ScrollViewer.VerticalScrollBarVisibility="Visible"
-            >
-            <ListBox.ItemTemplate>
-            <DataTemplate>
-            <TextBlock Text="{Binding Nome,Mode=TwoWay}" />
-            </DataTemplate>
-            </ListBox.ItemTemplate>
-            </ListBox>
+                          >
+                <ListBox ItemsSource="{Binding SquadreViewModel.ElencoGiocatoriSquadra,Mode=TwoWay}"
+                         SelectedItem="{Binding GiocatoriViewModel.Giocatore,Mode=TwoWay}"
+                         ScrollViewer.VerticalScrollBarVisibility="Visible"
+                         >
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Nome,Mode=TwoWay}" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
             </ScrollViewer>
-            </StackPanel>
 
 
-            <Grid Grid.Row="1" Grid.Column="1" Grid.ColumnDefinitions="Auto,*">
-            <ScrollViewer VerticalScrollBarVisibility="Visible" Height="1021" Grid.Column="">
-            <ListBox ItemsSource="{Binding SquadreViewModel.ElencoSquadre,Mode=TwoWay}"
-            SelectedItem="{Binding SquadreViewModel.Squadra,Mode=TwoWay}"
-            ScrollViewer.VerticalScrollBarVisibility="Visible"
-            >
-            <ListBox.ItemTemplate>
-            <DataTemplate>
-            <TextBlock Text="{Binding Nome,Mode=TwoWay}" />
-            </DataTemplate>
-            </ListBox.ItemTemplate>
-            </ListBox>
-            </ScrollViewer>
-            </Grid>-->
+
+            <!--</Grid>-->
+
+            <pagine:SchedaGiocatore Grid.Row="1" Grid.Column="1"
+                                    IsVisible="{Binding GiocatoriViewModel.Giocatore,
+                                    Converter={x:Static ObjectConverters.IsNotNull}}"
+
+                                    />
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+            <TextBlock Text=" " Grid.Row="2" Grid.ColumnSpan="2"/>
         </Grid>
     </StackPanel>
 

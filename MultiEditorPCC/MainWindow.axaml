@@ -46,7 +46,7 @@
 					VerticalAlignment="Center">
 
 			<sukiUi:GlassCard
-                IsVisible="{Binding ProgettiViewModel.Progetto, 
+                IsVisible="{Binding ProgettiViewModel.Progetto, Mode=TwoWay,
                             Converter={x:Static ObjectConverters.IsNull}}">
 				<TextBlock Text="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='Nessun progetto attivo'}" />
 			</sukiUi:GlassCard>
@@ -55,7 +55,7 @@
 
 
 			<sukiUi:GlassCard
-                IsVisible="{Binding ProgettiViewModel.Progetto, 
+                IsVisible="{Binding ProgettiViewModel.Progetto, Mode=TwoWay,
                             Converter={x:Static ObjectConverters.IsNotNull}}">
 
 				<StackPanel Orientation="Vertical">

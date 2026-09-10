@@ -17,7 +17,7 @@
     </UserControl.Resources>
 
     <sukiUi:GlassCard>
-        <Grid Margin="21"
+        <Grid Margin="3"
               RowSpacing="3"
               ColumnSpacing="3"
               RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,*"

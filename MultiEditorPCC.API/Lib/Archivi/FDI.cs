@@ -71,183 +71,195 @@ public class FDI : IDatabaseFile
         {
             Squadra sq = new();
 
-            sq.Id = (uint)e.Codice;
-            sq.Giocabile = e.Dat[41] == 0;
-            var lnc = BitConverter.ToInt16(e.Dat.GetRange(42, 2).ToArray(), 0);
-            sq.Nome = Utils.DecodificaTesto(e.Dat.GetRange(44, lnc));
-
-            int offset = 0;
-
-
-            if (e.VersioneElemento == 800)
+            try
             {
-                sq.Nazione = (Paese)e.Dat[44 + lnc + 2];
-                var lnl = BitConverter.ToInt16(e.Dat.GetRange(47 + lnc, 2).ToArray(), 0);
-                sq.NomeCompleto = Utils.DecodificaTesto(e.Dat.GetRange(49 + lnc, lnl));
-                sq.AnnoFondazione = (ushort)BitConverter.ToInt16(e.Dat.GetRange(49 + lnc + lnl, 2).ToArray(), 0);
-                sq.Boh = e.Dat[51 + lnc + lnl];
-                offset = 52 + lnc + lnl;
-                if (sq.Giocabile)
+                sq.Id = (uint)e.Codice;
+                sq.Giocabile = e.Dat[41] == 0;
+                var lnc = BitConverter.ToInt16(e.Dat.GetRange(42, 2).ToArray(), 0);
+                sq.Nome = Utils.DecodificaTesto(e.Dat.GetRange(44, lnc));
+
+                int offset = 0;
+
+
+                if (e.VersioneElemento == 800)
                 {
-                    sq.NumeroAbbonati = BitConverter.ToInt32(e.Dat.GetRange(52 + lnc + lnl, 4).ToArray(), 0);
+                    sq.Nazione = (Paese)e.Dat[44 + lnc + 2];
+                    var lnl = BitConverter.ToInt16(e.Dat.GetRange(47 + lnc, 2).ToArray(), 0);
+                    sq.NomeCompleto = Utils.DecodificaTesto(e.Dat.GetRange(49 + lnc, lnl));
+                    sq.AnnoFondazione = (ushort)BitConverter.ToInt16(e.Dat.GetRange(49 + lnc + lnl, 2).ToArray(), 0);
+                    sq.Boh = e.Dat[51 + lnc + lnl];
+                    offset = 52 + lnc + lnl;
+                    if (sq.Giocabile)
+                    {
+                        sq.NumeroAbbonati = BitConverter.ToInt32(e.Dat.GetRange(52 + lnc + lnl, 4).ToArray(), 0);
 
-                    var lnp = BitConverter.ToInt16(e.Dat.GetRange(56 + lnc + lnl, 2).ToArray(), 0);
-                    sq.NomePresidente = Utils.DecodificaTesto(e.Dat.GetRange(58 + lnc + lnl, lnp));
-                    sq.CassaGioco = BitConverter.ToInt32(e.Dat.GetRange(58 + lnc + lnl + lnp, 4).ToArray(), 0);
-                    sq.CassaReale = BitConverter.ToInt32(e.Dat.GetRange(62 + lnc + lnl + lnp, 4).ToArray(), 0);
+                        var lnp = BitConverter.ToInt16(e.Dat.GetRange(56 + lnc + lnl, 2).ToArray(), 0);
+                        sq.NomePresidente = Utils.DecodificaTesto(e.Dat.GetRange(58 + lnc + lnl, lnp));
+                        sq.CassaGioco = BitConverter.ToInt32(e.Dat.GetRange(58 + lnc + lnl + lnp, 4).ToArray(), 0);
+                        sq.CassaReale = BitConverter.ToInt32(e.Dat.GetRange(62 + lnc + lnl + lnp, 4).ToArray(), 0);
 
-                    var lnsp = BitConverter.ToInt16(e.Dat.GetRange(66 + lnc + lnl + lnp, 2).ToArray(), 0);
-                    sq.NomeSponsor = Utils.DecodificaTesto(e.Dat.GetRange(68 + lnc + lnl + lnp, lnsp));
-                    var lnst = BitConverter.ToInt16(e.Dat.GetRange(68 + lnc + lnl + lnp + lnsp, 2).ToArray(), 0);
-                    sq.NomeSponsorTecnico = Utils.DecodificaTesto(e.Dat.GetRange(70 + lnc + lnl + lnp + lnsp, lnst));
-                    sq.SquadraRiserve = BitConverter.ToInt16(e.Dat.GetRange(70 + lnc + lnl + lnp + lnsp + lnst, 2).ToArray(), 0);
-                    sq.Girone2B = (Girone2B)e.Dat[72 + lnc + lnl + lnp + lnsp + lnst];
-                    sq.Girone3 = e.Dat[73 + lnc + lnl + lnp + lnsp + lnst];
-                    offset = 74 + lnc + lnl + lnp + lnsp + lnst;
-                    offset = offset + 82 + (e.Dat[offset + 81] * 3);
+                        var lnsp = BitConverter.ToInt16(e.Dat.GetRange(66 + lnc + lnl + lnp, 2).ToArray(), 0);
+                        sq.NomeSponsor = Utils.DecodificaTesto(e.Dat.GetRange(68 + lnc + lnl + lnp, lnsp));
+                        var lnst = BitConverter.ToInt16(e.Dat.GetRange(68 + lnc + lnl + lnp + lnsp, 2).ToArray(), 0);
+                        sq.NomeSponsorTecnico = Utils.DecodificaTesto(e.Dat.GetRange(70 + lnc + lnl + lnp + lnsp, lnst));
+                        sq.SquadraRiserve = BitConverter.ToInt16(e.Dat.GetRange(70 + lnc + lnl + lnp + lnsp + lnst, 2).ToArray(), 0);
+                        sq.Girone2B = (Girone2B)e.Dat[72 + lnc + lnl + lnp + lnsp + lnst];
+                        sq.Girone3 = e.Dat[73 + lnc + lnl + lnp + lnsp + lnst];
+                        offset = 74 + lnc + lnl + lnp + lnsp + lnst;
+                        offset = offset + 82 + (e.Dat[offset + 81] * 3);
+                    }
+
+
+                    var codiceStadio = (uint)BitConverter.ToInt16(e.Dat.GetRange(44 + lnc, 2).ToArray(), 0);
+                    var dati = st.Where(e => e.Codice == codiceStadio).First().Dat;
+                    var lns = BitConverter.ToInt16(dati.GetRange(0, 2).ToArray(), 0);
+                    sq.NomeStadio = Utils.DecodificaTesto(dati.GetRange(2, lns));
+                    sq.Larghezza = dati[lns + 2];
+                    sq.Lunghezza = dati[lns + 3];
+                    sq.NumeroBoh = dati[lns + 4];
+                    sq.Nazione = (Paese)dati[lns + 5];
+                    sq.AnnoCostruzione = (ushort)BitConverter.ToInt16(dati.GetRange(lns + 6, 2).ToArray(), 0);
+                    sq.Capienza = BitConverter.ToInt32(dati.GetRange(lns + 8, 4).ToArray(), 0);
+                    sq.PostiInPiedi = BitConverter.ToInt32(dati.GetRange(lns + 12, 4).ToArray(), 0);
+
+
+
+                }
+                else
+                {
+                    var lns = BitConverter.ToInt16(e.Dat.GetRange(44 + lnc, 2).ToArray(), 0);
+                    sq.Nazione = (Paese)e.Dat[44 + lnc + lns + 2];
+
+
+                    sq.NomeStadio = Utils.DecodificaTesto(e.Dat.GetRange(44 + lnc + 2, lns));
+
+                    sq.Boh = e.Dat[47 + lnc + lns]; // byte dati[47 + lnc + lns] significato ignoto
+                    sq.NumeroBoh = sq.Boh; //Nella versione FDI 700, c'è un solo byte incognito, perchè non c'è un file distinto per gli stadi
+                                           // var lnsq = BitConverter.ToInt16(e.Dat.GetRange(48 + lnc + lns, 2).ToArray(), 0);
+
+                    var lnl = BitConverter.ToInt16(e.Dat.GetRange(48 + lnc + lns, 2).ToArray(), 0);
+                    sq.NomeCompleto = Utils.DecodificaTesto(e.Dat.GetRange(50 + lnc + lns, lnl));
+
+                    offset = 50 + lnc + lns + lnl;
+
+                    sq.Capienza = BitConverter.ToInt32(e.Dat.GetRange(offset, 4).ToArray(), 0);
+
+                    sq.PostiInPiedi = BitConverter.ToInt32(e.Dat.GetRange(offset + 4, 4).ToArray(), 0);
+
+                    sq.Larghezza = BitConverter.ToInt16(e.Dat.GetRange(offset + 8, 2).ToArray(), 0);
+                    sq.Lunghezza = BitConverter.ToInt16(e.Dat.GetRange(offset + 10, 2).ToArray(), 0);
+
+                    if (sq.Giocabile) sq.AnnoCostruzione = (ushort)BitConverter.ToInt16(e.Dat.GetRange(offset + 14, 2).ToArray(), 0);
+
+
+                    offset = 62 + lnc + lns + lnl;
+
+                    sq.AnnoFondazione = (ushort)BitConverter.ToInt16(e.Dat.GetRange(offset, 2).ToArray(), 0);
+
+                    offset = 64 + lnc + lns + lnl;
+
+                    if (sq.Giocabile)
+                    {
+                        sq.NumeroAbbonati = BitConverter.ToInt32(e.Dat.GetRange(offset + 2, 4).ToArray(), 0);
+
+                        var lnp = BitConverter.ToInt16(e.Dat.GetRange(offset + 6, 2).ToArray(), 0);
+                        sq.NomePresidente = Utils.DecodificaTesto(e.Dat.GetRange(offset + 8, lnp));
+                        sq.CassaGioco = BitConverter.ToInt32(e.Dat.GetRange(offset + 8 + lnp, 4).ToArray(), 0);
+                        sq.CassaReale = BitConverter.ToInt32(e.Dat.GetRange(offset + 12 + lnp, 4).ToArray(), 0);
+
+                        var lnsp = BitConverter.ToInt16(e.Dat.GetRange(offset + 16 + lnp, 2).ToArray(), 0);
+                        sq.NomeSponsor = Utils.DecodificaTesto(e.Dat.GetRange(offset + 18 + lnp, lnsp));
+                        var lnst = BitConverter.ToInt16(e.Dat.GetRange(offset + 18 + lnp + lnsp, 2).ToArray(), 0);
+                        sq.NomeSponsorTecnico = Utils.DecodificaTesto(e.Dat.GetRange(offset + 20 + lnp + lnsp, lnst));
+                        sq.SquadraRiserve = BitConverter.ToInt16(e.Dat.GetRange(offset + 20 + lnp + lnsp + lnst, 2).ToArray(), 0);
+                        sq.Girone2B = (Girone2B)e.Dat[offset + 22 + lnp + lnsp + lnst];
+                        offset = offset + 23 + lnp + lnsp + lnst;
+                        offset = offset + 82 + (e.Dat[offset + 81] * 3);
+                    }
+
+
+
+
                 }
 
+                sq.TatticaCompleta = e.Dat.GetRange(offset, 1760);
 
-                var codiceStadio = (uint)BitConverter.ToInt16(e.Dat.GetRange(44 + lnc, 2).ToArray(), 0);
-                var dati = st.Where(e => e.Codice == codiceStadio).First().Dat;
-                var lns = BitConverter.ToInt16(dati.GetRange(0, 2).ToArray(), 0);
-                sq.NomeStadio = Utils.DecodificaTesto(dati.GetRange(2, lns));
-                sq.Larghezza = dati[lns + 2];
-                sq.Lunghezza = dati[lns + 3];
-                sq.NumeroBoh = dati[lns + 4];
-                sq.Nazione = (Paese)dati[lns + 5];
-                sq.AnnoCostruzione = (ushort)BitConverter.ToInt16(dati.GetRange(lns + 6, 2).ToArray(), 0);
-                sq.Capienza = BitConverter.ToInt32(dati.GetRange(lns + 8, 4).ToArray(), 0);
-                sq.PostiInPiedi = BitConverter.ToInt32(dati.GetRange(lns + 12, 4).ToArray(), 0);
+                offset += 1760;
 
+                sq.PercentualeToccoDiPrima = e.Dat[offset];
+                sq.PercentualeContropiede = e.Dat[offset + 1];
+                sq.TipoAttacco = (TipoAttacco)e.Dat[offset + 2];
+                sq.TipoEntrata = (TipoEntrata)e.Dat[offset + 3];
+                sq.TipoMarcatura = (TipoMarcatura)e.Dat[offset + 4];
+                sq.TipoRinvii = (TipoRinvii)e.Dat[offset + 5];
+                sq.PressingDa = (PressingDa)e.Dat[offset + 6];
 
+                offset += 7;
 
-            }
-            else
-            {
-                var lns = BitConverter.ToInt16(e.Dat.GetRange(44 + lnc, 2).ToArray(), 0);
-                sq.Nazione = (Paese)e.Dat[44 + lnc + lns + 2];
+                int na = e.Dat[offset];
 
-
-                sq.NomeStadio = Utils.DecodificaTesto(e.Dat.GetRange(44 + lnc + 2, lns));
-
-                sq.Boh = e.Dat[47 + lnc + lns]; // byte dati[47 + lnc + lns] significato ignoto
-                sq.NumeroBoh = sq.Boh; //Nella versione FDI 700, c'è un solo byte incognito, perchè non c'è un file distinto per gli stadi
-                                       // var lnsq = BitConverter.ToInt16(e.Dat.GetRange(48 + lnc + lns, 2).ToArray(), 0);
-
-                var lnl = BitConverter.ToInt16(e.Dat.GetRange(48 + lnc + lns, 2).ToArray(), 0);
-                sq.NomeCompleto = Utils.DecodificaTesto(e.Dat.GetRange(50 + lnc + lns, lnl));
-
-                offset = 50 + lnc + lns + lnl;
-
-                sq.Capienza = BitConverter.ToInt32(e.Dat.GetRange(offset, 4).ToArray(), 0);
-
-                sq.PostiInPiedi = BitConverter.ToInt32(e.Dat.GetRange(offset + 4, 4).ToArray(), 0);
-
-                sq.Larghezza = BitConverter.ToInt16(e.Dat.GetRange(offset + 8, 2).ToArray(), 0);
-                sq.Lunghezza = BitConverter.ToInt16(e.Dat.GetRange(offset + 10, 2).ToArray(), 0);
-
-                if (sq.Giocabile) sq.AnnoCostruzione = (ushort)BitConverter.ToInt16(e.Dat.GetRange(offset + 14, 2).ToArray(), 0);
-
-
-                offset = 62 + lnc + lns + lnl;
-
-                sq.AnnoFondazione = (ushort)BitConverter.ToInt16(e.Dat.GetRange(offset, 2).ToArray(), 0);
-
-                offset = 64 + lnc + lns + lnl;
-
-                if (sq.Giocabile)
-                {
-                    sq.NumeroAbbonati = BitConverter.ToInt32(e.Dat.GetRange(offset + 2, 4).ToArray(), 0);
-
-                    var lnp = BitConverter.ToInt16(e.Dat.GetRange(offset + 6, 2).ToArray(), 0);
-                    sq.NomePresidente = Utils.DecodificaTesto(e.Dat.GetRange(offset + 8, lnp));
-                    sq.CassaGioco = BitConverter.ToInt32(e.Dat.GetRange(offset + 8 + lnp, 4).ToArray(), 0);
-                    sq.CassaReale = BitConverter.ToInt32(e.Dat.GetRange(offset + 12 + lnp, 4).ToArray(), 0);
-
-                    var lnsp = BitConverter.ToInt16(e.Dat.GetRange(offset + 16 + lnp, 2).ToArray(), 0);
-                    sq.NomeSponsor = Utils.DecodificaTesto(e.Dat.GetRange(offset + 18 + lnp, lnsp));
-                    var lnst = BitConverter.ToInt16(e.Dat.GetRange(offset + 18 + lnp + lnsp, 2).ToArray(), 0);
-                    sq.NomeSponsorTecnico = Utils.DecodificaTesto(e.Dat.GetRange(offset + 20 + lnp + lnsp, lnst));
-                    sq.SquadraRiserve = BitConverter.ToInt16(e.Dat.GetRange(offset + 20 + lnp + lnsp + lnst, 2).ToArray(), 0);
-                    sq.Girone2B = (Girone2B)e.Dat[offset + 22 + lnp + lnsp + lnst];
-                    offset = offset + 23 + lnp + lnsp + lnst;
-                    offset = offset + 82 + (e.Dat[offset + 81] * 3);
-                }
-
-
-
-
-            }
-
-            sq.TatticaCompleta = e.Dat.GetRange(offset, 1760);
-
-            offset += 1760;
-
-            sq.PercentualeToccoDiPrima = e.Dat[offset];
-            sq.PercentualeContropiede = e.Dat[offset + 1];
-            sq.TipoAttacco = (TipoAttacco)e.Dat[offset + 2];
-            sq.TipoEntrata = (TipoEntrata)e.Dat[offset + 3];
-            sq.TipoMarcatura = (TipoMarcatura)e.Dat[offset + 4];
-            sq.TipoRinvii = (TipoRinvii)e.Dat[offset + 5];
-            sq.PressingDa = (PressingDa)e.Dat[offset + 6];
-
-            offset += 7;
-
-            int na = e.Dat[offset];
-
-            offset++;
-
-            for (int a = 1; a <= na; a++)
-            {
-                sq.CodiceAllenatore = (uint)BitConverter.ToInt32(e.Dat.GetRange(offset, 4).ToArray(), 0);
-
-                offset += 4;
-            }
-
-
-
-            if (al.Where(a => a.Codice == sq.CodiceAllenatore).FirstOrDefault() != null)
-            {
-                var allenatore = al.Find(a => a.Codice == sq.CodiceAllenatore)!.Dat;
-
-                var lna = BitConverter.ToInt16(allenatore.GetRange(7, 2).ToArray(), 0);
-
-                sq.NomeAllenatore = Utils.DecodificaTesto(allenatore.GetRange(9, lna));
-
-                if (sq.Giocabile)
-                {
-                    var lnl = 0;
-                    if (11 + lna <= allenatore.Count)
-                        lnl = BitConverter.ToInt16(allenatore.GetRange(9 + lna, 2).ToArray(), 0);
-
-                    if (11 + lna + lnl <= allenatore.Count)
-                        sq.NomeCompletoAllenatore = Utils.DecodificaTesto(allenatore.GetRange(11 + lna, lnl));
-                }
-
-                //sq.ExGiocatore = false;
-
-            }
-
-            int ng = e.Dat[offset];
-
-            offset++;
-
-            if (e.VersioneElemento == 800)
-            {
-                ng += 256 * e.Dat[offset + 1];
                 offset++;
-            }
 
-            for (int g = 1; g <= ng; g++)
+                for (int a = 1; a <= na; a++)
+                {
+                    sq.CodiceAllenatore = (uint)BitConverter.ToInt32(e.Dat.GetRange(offset, 4).ToArray(), 0);
+
+                    offset += 4;
+                }
+
+
+
+                if (al.Where(a => a.Codice == sq.CodiceAllenatore).FirstOrDefault() != null)
+                {
+                    var allenatore = al.Find(a => a.Codice == sq.CodiceAllenatore)!.Dat;
+
+                    var lna = BitConverter.ToInt16(allenatore.GetRange(7, 2).ToArray(), 0);
+
+                    sq.NomeAllenatore = Utils.DecodificaTesto(allenatore.GetRange(9, lna));
+
+                    if (sq.Giocabile)
+                    {
+                        var lnl = 0;
+                        if (11 + lna <= allenatore.Count)
+                            lnl = BitConverter.ToInt16(allenatore.GetRange(9 + lna, 2).ToArray(), 0);
+
+                        if (11 + lna + lnl <= allenatore.Count)
+                            sq.NomeCompletoAllenatore = Utils.DecodificaTesto(allenatore.GetRange(11 + lna, lnl));
+                    }
+
+                    //sq.ExGiocatore = false;
+
+                }
+
+                int ng = e.Dat[offset];
+
+                offset++;
+
+                if (e.VersioneElemento == 800)
+                {
+                    ng += 256 * e.Dat[offset + 1];
+                    offset++;
+                }
+
+                for (int g = 1; g <= ng; g++)
+                {
+                    String v = g == 1 ? String.Empty : "#";
+                    sq.Note = $"{sq.Note}{v}{e.Dat[offset] == 0}|{BitConverter.ToInt32(e.Dat.GetRange(offset + 1, 4).ToArray(), 0)}";
+                    offset += 5;
+                }
+            }
+            catch (Exception ex)
             {
-                String v = g == 1 ? String.Empty : "#";
-                sq.Note = $"{sq.Note}{v}{e.Dat[offset] == 0}|{BitConverter.ToInt32(e.Dat.GetRange(offset + 1, 4).ToArray(), 0)}";
-                offset += 5;
+
+
+            }
+            finally
+            {
+                Squadre.Add(sq);
             }
 
 
-            Squadre.Add(sq);
+
         }
 
 

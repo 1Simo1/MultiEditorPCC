@@ -2,6 +2,8 @@
 using MvvmGen;
 using System;
 using System.Collections.ObjectModel;
+using System.Net.Http;
+using static MultiEditorPCC.EventiMVVM;
 
 namespace MultiEditorPCC.ViewModels;
 
@@ -34,12 +36,15 @@ public partial class ProgettiViewModel : VM
 
 
     [Command(CanExecuteMethod = nameof(CanApriProgetto))]
-    public void ApriProgetto(object ProgettoSelezionato)
+    public async void ApriProgetto(object ProgettoSelezionato)
     {
-
+        var p = (Progetto)ProgettoSelezionato;
+        //TODO Dialog mentre carica progetto
+        Progetto = await App.Client.Risposta<Progetto>(HttpMethod.Post, $"progetti/carica/{p.Nome}", "");
+        EventAggregator.Publish(new AperturaProgetto());
     }
 
     [CommandInvalidate(nameof(Progetto))]
-    private bool CanApriProgetto(object ProgettoSelezionato) => ((Progetto)ProgettoSelezionato).Id != Progetto.Id;
+    private bool CanApriProgetto(object ProgettoSelezionato) => ((Progetto)ProgettoSelezionato)?.Id != Progetto?.Id;
 
 }

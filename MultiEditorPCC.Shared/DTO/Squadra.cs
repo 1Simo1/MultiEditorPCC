@@ -91,6 +91,8 @@ public class Squadra
         return $"{header.TrimEnd(';')}{Environment.NewLine}{st.TrimEnd(';')}";
     }
 
+    public bool SquadraOriginale { get; set; } = true;
+
 }
 public enum TipoAttacco
 {

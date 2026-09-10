@@ -21,4 +21,28 @@ public static class Squadre
         return TypedResults.Ok(db.Giocatori.Where(g => g.CodiceSquadra == 0));
     }
 
+    public static async Task<Results<Ok, NotFound, InternalServerError<String>>> SostituisciSquadra(Editor db, int id, int nuovoId)
+    {
+        if (id == nuovoId) return TypedResults.Ok();
+
+        try
+        {
+            Squadra? Precedente = db.Squadre.Where(sq => sq.Id == id).FirstOrDefault();
+            Squadra? Nuova = db.Squadre.Where(sq => sq.Id == id).FirstOrDefault();
+
+            if (Precedente == null || Nuova == null) return TypedResults.NotFound();
+
+            Precedente = Nuova;
+
+            db.Squadre.Remove(Nuova);
+        }
+        catch (Exception ex)
+        {
+
+            return TypedResults.InternalServerError($"Errore : {ex.Message}");
+        }
+
+        return TypedResults.Ok();
+
+    }
 }

@@ -192,15 +192,18 @@ public static class Utils
     {
         foreach (var Squadra in Squadre)
         {
-            foreach (var c in Squadra.Note.Split("#"))
+            if (Squadra.Note.Contains("#"))
             {
-                Giocatore? g = Giocatori.Where(g => g.Id == int.Parse(c.Split("|")[1])).FirstOrDefault();
-
-                if (g != null)
+                foreach (var c in Squadra.Note.Split("#"))
                 {
-                    g.CodiceSquadra = Squadra.Id;
-                    g.Squadra = Squadra.Nome;
-                    g.AttivoInRosa = c.Split("|")[0] == true.ToString();
+                    Giocatore? g = Giocatori.Where(g => g.Id == int.Parse(c.Split("|")[1])).FirstOrDefault();
+
+                    if (g != null)
+                    {
+                        g.CodiceSquadra = Squadra.Id;
+                        g.Squadra = Squadra.Nome;
+                        g.AttivoInRosa = c.Split("|")[0] == true.ToString();
+                    }
                 }
             }
         }
@@ -307,6 +310,7 @@ public static class Utils
                             {
 
                             }
+                            Squadra.SquadraOriginale = false;
                             Squadra.Note = Squadra.Id.ToString();
                             Squadra.Id = CercaSquadra.Id;
                             Squadra.Nome = CercaSquadra.Nome;
@@ -372,7 +376,24 @@ public static class Utils
         //di ogni squadra e dei codici originali per poi distribuire 
         //le squadre nei vari gruppi di competizioni nel gioco
         //e nei vari Paesi
-        //if (ElencoCSV.Length > 1) Giocatori = new();
+        if (ElencoCSV.Length > 1)
+        {
+            int Limite_Index_Squadra = 65621;
+
+            if (ProgettoAttivo != null)
+            {
+
+                switch (ProgettoAttivo.VersionePCC)
+                {
+                    case VersionePCC.PCC2001:
+                    case VersionePCC.PCF2001:
+                    case VersionePCC.PCC7P:
+                    case VersionePCC.PCF7P: Limite_Index_Squadra = 9900; break;
+                }
+
+                Giocatori = new(Giocatori.Where(g => g.CodiceSquadra >= Limite_Index_Squadra));
+            }
+        }
 
         foreach (var fileCSV in ElencoCSV)
         {
