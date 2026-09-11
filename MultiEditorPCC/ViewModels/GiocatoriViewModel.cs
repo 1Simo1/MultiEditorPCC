@@ -17,8 +17,13 @@ public partial class GiocatoriViewModel : ViewModelBase, IEventSubscriber<Apertu
 
     [Property] private Giocatore _giocatore;
 
-    public void OnEvent(RichiestaRosaSquadra eventData)
+    public async void OnEvent(RichiestaRosaSquadra eventData)
     {
+        if (eventData.ElencoGiocatori)
+        {
+            ElencoGiocatori = await App.Client.Risposta<ObservableCollection<Giocatore>>(HttpMethod.Get, "giocatori", "");
+        }
+
         EventAggregator.Publish<RosaSquadraSelezionata>((new(ElencoGiocatori.Where(g => g.CodiceSquadra == eventData.IdSquadra).ToList())));
     }
 

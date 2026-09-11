@@ -43,7 +43,7 @@ public partial class SquadreViewModel : ViewModelBase, IEventSubscriber<Apertura
     public void OnEvent(RosaSquadraSelezionata eventData)
     {
         ElencoGiocatoriSquadra = new(eventData.Giocatori.OrderBy(g => g.Slot));
-
+        if (Squadra.SquadraOriginale && ElencoGiocatoriSquadra.Any()) Squadra.SquadraOriginale = false;
     }
 
     private void ElencoModificato()
@@ -55,5 +55,32 @@ public partial class SquadreViewModel : ViewModelBase, IEventSubscriber<Apertura
     public async void OnEvent(AperturaProgetto eventData)
     {
         ElencoSquadre = await App.Client.Risposta<ObservableCollection<Squadra>>(HttpMethod.Get, "squadre", "");
+    }
+
+
+
+
+    [Command(CanExecuteMethod = nameof(CanAggiornaSostituisciSquadra))]
+    private async void AggiornaSostituisciSquadra()
+    {
+
+        int codiceSquadra = (int)Squadra.Id;
+        await App.Client.Risposta<String>(HttpMethod.Post, $"squadre/{Squadra.Id}/sostituisciCon/{SquadraAggiornata.Id}", "");
+
+        ElencoSquadre = new(await App.Client.Risposta<ObservableCollection<Squadra>>(HttpMethod.Get, "squadre", ""));
+        Squadra = ElencoSquadre.Where(sq => sq.Id == codiceSquadra).FirstOrDefault();
+        if (Squadra == null) return;
+
+        EventAggregator.Publish<RichiestaRosaSquadra>(new(codiceSquadra, true));
+
+
+        if (Squadra.SquadraOriginale && ElencoGiocatoriSquadra.Any()) Squadra.SquadraOriginale = false;
+    }
+
+    [CommandInvalidate(nameof(Squadra))]
+    [CommandInvalidate(nameof(SquadraAggiornata))]
+    private bool CanAggiornaSostituisciSquadra()
+    {
+        return Squadra == null || SquadraAggiornata == null || Squadra.Id == SquadraAggiornata.Id ? false : true;
     }
 }

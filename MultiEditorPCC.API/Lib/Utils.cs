@@ -210,38 +210,57 @@ public static class Utils
         return Giocatori;
     }
 
-    public static bool ScriviCSV(Progetto ProgettoAttivo, List<Squadra> Squadre, List<Giocatore> Giocatori)
+    public static bool ScriviCSV(Progetto ProgettoAttivo, List<Squadra> Squadre, List<Giocatore> Giocatori, bool Default = true, bool Temp = false)
     {
         try
         {
             Directory.CreateDirectory($"Progetti/{ProgettoAttivo.Nome}/CSV");
 
+            String PathSquadre = $"Progetti/{ProgettoAttivo.Nome}/CSV/Squadre_{ProgettoAttivo.VersionePCC}.csv";
+            String PathGiocatori = $"Progetti/{ProgettoAttivo.Nome}/CSV/Giocatori_{ProgettoAttivo.VersionePCC}.csv";
+
+            if (!Default)
+            {
+                if (!Temp)
+                {
+                    //TODO
+
+                }
+                else
+                {
+
+                    PathSquadre = $"Progetti/{ProgettoAttivo.Nome}/CSV/Squadre_TEMP.csv";
+                    PathGiocatori = $"Progetti/{ProgettoAttivo.Nome}/CSV/Giocatori_TEMP.csv";
+                }
+            }
+
+
             StringBuilder sb = new();
 
-            String HeaderCSV = Squadre.First().ToString().Split(Environment.NewLine)[0];
+            String HeaderCSV = Squadre.First().DataString().Split(Environment.NewLine)[0];
 
             sb.Append(HeaderCSV);
 
             foreach (var Squadra in Squadre)
             {
                 sb.AppendLine();
-                sb.Append(Squadra.ToString().Split(Environment.NewLine)[1]);
+                sb.Append(Squadra.DataString().Split(Environment.NewLine)[1]);
             }
 
-            File.WriteAllText($"Progetti/{ProgettoAttivo.Nome}/CSV/Squadre_{ProgettoAttivo.VersionePCC}.csv", sb.ToString());
+            File.WriteAllText(PathSquadre, sb.ToString());
             sb = new();
 
-            HeaderCSV = Giocatori.First().ToString().Split(Environment.NewLine)[0];
+            HeaderCSV = Giocatori.First().DataString().Split(Environment.NewLine)[0];
 
             sb.Append(HeaderCSV);
 
             foreach (var Giocatore in Giocatori)
             {
                 sb.AppendLine();
-                sb.Append(Giocatore.ToString().Split(Environment.NewLine)[1]);
+                sb.Append(Giocatore.DataString().Split(Environment.NewLine)[1]);
             }
 
-            File.WriteAllText($"Progetti/{ProgettoAttivo.Nome}/CSV/Giocatori_{ProgettoAttivo.VersionePCC}.csv", sb.ToString());
+            File.WriteAllText(PathGiocatori, sb.ToString());
         }
         catch (Exception)
         {
@@ -258,10 +277,31 @@ public static class Utils
     {
         List<Squadra> Squadre = new();
 
-        var csv = File.ReadAllLines(
+        string[]? csv = null;
+        string Header = "";
+
+        if (File.Exists($"Progetti/{ProgettoAttivo.Nome}/CSV/Squadre_TEMP.csv"))
+        {
+            csv = File.ReadAllLines($"Progetti/{ProgettoAttivo.Nome}/CSV/Squadre_TEMP.csv");
+
+            Header = csv[0];
+            foreach (var row in csv)
+            {
+                if (row != Header)
+                {
+                    Squadra Squadra = CaricaElementoCSV<Squadra>(Header, row);
+
+                    Squadre.Add(Squadra);
+                }
+            }
+
+            return Squadre;
+        }
+
+        csv = File.ReadAllLines(
             $"Progetti/{ProgettoAttivo.Nome}/CSV/Squadre_{ProgettoAttivo.VersionePCC}.csv");
 
-        var Header = csv[0];
+        Header = csv[0];
         foreach (var row in csv)
         {
             if (row != Header)
@@ -272,6 +312,8 @@ public static class Utils
             }
         }
 
+        var codicePartenza = Squadre.Max(sq => sq.Id) + 1;
+
         var ElencoCSV = Directory.GetFiles($"Progetti/{ProgettoAttivo.Nome}/CSV", "Squadre*.csv", SearchOption.TopDirectoryOnly);
 
         //In caso di CSV aggiornati, sostituiscono i dati originali
@@ -279,7 +321,11 @@ public static class Utils
         //di ogni squadra e dei codici originali per poi distribuire 
         //le squadre nei vari gruppi di competizioni nel gioco
         //e nei vari Paesi
-        //if (ElencoCSV.Length > 1) Squadre = new();
+
+        List<Squadra> SquadreOriginali = new();
+
+
+        if (ElencoCSV.Length > 1) SquadreOriginali = new(Squadre);
 
         foreach (var fileCSV in ElencoCSV)
         {
@@ -293,18 +339,15 @@ public static class Utils
                     {
                         Squadra Squadra = CaricaElementoCSV<Squadra>(Header, row);
 
-                        Squadra? CercaSquadra = Squadre.Where
-                            (sq => (sq.Nome == Squadra.Nome && sq.Nazione == Squadra.Nazione) ||
-                                   (sq.NomeStadio == Squadra.NomeStadio || Squadra.NomeStadio.Contains(sq.NomeStadio) || sq.NomeStadio.Contains(Squadra.NomeStadio)) ||
-                                   (sq.Nome.Contains(Squadra.Nome) || Squadra.Nome.Contains(sq.Nome))
+                        List<Squadra> CercaSquadra = new();
 
-                            ).FirstOrDefault();
+                        Squadra? SquadraTrovata = RicercaSquadra(Squadra, SquadreOriginali);
 
-                        if (CercaSquadra != null)
+                        if (SquadraTrovata != null)
                         {
                             try
                             {
-                                Squadre.Remove(CercaSquadra);
+                                Squadre.Remove(SquadraTrovata);
                             }
                             catch (Exception ex)
                             {
@@ -312,27 +355,35 @@ public static class Utils
                             }
                             Squadra.SquadraOriginale = false;
                             Squadra.Note = Squadra.Id.ToString();
-                            Squadra.Id = CercaSquadra.Id;
-                            Squadra.Nome = CercaSquadra.Nome;
-                            Squadra.AnnoFondazione = CercaSquadra.AnnoFondazione;
-                            Squadra.Boh = CercaSquadra.Boh;
-                            Squadra.NumeroAbbonati = CercaSquadra.NumeroAbbonati;
-                            Squadra.CassaGioco = CercaSquadra.CassaGioco;
-                            Squadra.CassaReale = CercaSquadra.CassaReale;
-                            Squadra.SquadraRiserve = CercaSquadra.SquadraRiserve;
-                            Squadra.TerzaSquadra = CercaSquadra.TerzaSquadra;
-                            Squadra.Girone2B = CercaSquadra.Girone2B;
-                            Squadra.Girone3 = CercaSquadra.Girone3;
-                            Squadra.PercentualeToccoDiPrima = CercaSquadra.PercentualeToccoDiPrima;
-                            Squadra.PercentualeContropiede = CercaSquadra.PercentualeContropiede;
-                            Squadra.TipoAttacco = CercaSquadra.TipoAttacco;
-                            Squadra.TipoEntrata = CercaSquadra.TipoEntrata;
-                            Squadra.TipoMarcatura = CercaSquadra.TipoMarcatura;
-                            Squadra.TipoRinvii = CercaSquadra.TipoRinvii;
-                            Squadra.PressingDa = CercaSquadra.PressingDa;
-                            Squadra.TatticaCompleta = CercaSquadra.TatticaCompleta;
-                            Squadra.NumeroBoh = CercaSquadra.NumeroBoh;
+                            Squadra.Id = SquadraTrovata.Id;
+                            Squadra.Nome = SquadraTrovata.Nome;
+                            Squadra.AnnoFondazione = SquadraTrovata.AnnoFondazione;
+                            Squadra.Boh = SquadraTrovata.Boh;
+                            Squadra.NumeroAbbonati = SquadraTrovata.NumeroAbbonati;
+                            Squadra.CassaGioco = SquadraTrovata.CassaGioco;
+                            Squadra.CassaReale = SquadraTrovata.CassaReale;
+                            Squadra.SquadraRiserve = SquadraTrovata.SquadraRiserve;
+                            Squadra.TerzaSquadra = SquadraTrovata.TerzaSquadra;
+                            Squadra.Girone2B = SquadraTrovata.Girone2B;
+                            Squadra.Girone3 = SquadraTrovata.Girone3;
+                            Squadra.PercentualeToccoDiPrima = SquadraTrovata.PercentualeToccoDiPrima;
+                            Squadra.PercentualeContropiede = SquadraTrovata.PercentualeContropiede;
+                            Squadra.TipoAttacco = SquadraTrovata.TipoAttacco;
+                            Squadra.TipoEntrata = SquadraTrovata.TipoEntrata;
+                            Squadra.TipoMarcatura = SquadraTrovata.TipoMarcatura;
+                            Squadra.TipoRinvii = SquadraTrovata.TipoRinvii;
+                            Squadra.PressingDa = SquadraTrovata.PressingDa;
+                            Squadra.TatticaCompleta = SquadraTrovata.TatticaCompleta;
+                            Squadra.NumeroBoh = SquadraTrovata.NumeroBoh;
 
+                        }
+                        else
+                        {
+                            //Parte per distinguere id Squadre originali e/o applicate nel gioco,
+                            //e id scritti in propri CSV di aggiornamento
+
+                            Squadra.Note = Squadra.Id.ToString();
+                            Squadra.Id += codicePartenza;
                         }
 
 
@@ -348,17 +399,65 @@ public static class Utils
         return Squadre;
     }
 
+    private static Squadra? RicercaSquadra(Squadra? Squadra, List<Squadra> Squadre)
+    {
+        if (Squadra == null) return null;
+
+        var CercaSquadra = Squadre.Where(sq => sq.Nome == Squadra.Nome && sq.Nazione == Squadra.Nazione).ToList();
+
+        if (CercaSquadra.Count == 1) return CercaSquadra.First();
+
+        CercaSquadra = Squadre.Where(sq => sq.NomeStadio == Squadra.NomeStadio).ToList();
+
+        if (CercaSquadra.Count == 1) return CercaSquadra.First();
+
+        if (CercaSquadra.Count > 1)
+        {
+            CercaSquadra = CercaSquadra.Where(sq => sq.Nome.Contains(Squadra.Nome) || Squadra.Nome.Contains(sq.Nome)).ToList();
+            if (CercaSquadra.Count == 1) return CercaSquadra.First();
+        }
 
 
+        //Squadra? SquadraTrovata = Squadre.Where
+        //    (sq => (sq.Nome == Squadra.Nome && sq.Nazione == Squadra.Nazione) ||
+        //           ((sq.NomeStadio == Squadra.NomeStadio && sq.Nome.Contains(Squadra.Nome)) || Squadra.NomeStadio.Contains(sq.NomeStadio) || sq.NomeStadio.Contains(Squadra.NomeStadio)) ||
+        //           (sq.Nome.Contains(Squadra.Nome) || Squadra.Nome.Contains(sq.Nome))
+        //            && sq.Nazione == Squadra.Nazione
+
+        //    ).FirstOrDefault();
+
+        return null;
+    }
 
     public static List<Giocatore> CaricaGiocatoriCSV(Progetto ProgettoAttivo, List<Squadra>? Squadre = null)
     {
         List<Giocatore> Giocatori = new();
 
-        var csv = File.ReadAllLines(
-            $"Progetti/{ProgettoAttivo.Nome}/CSV/Giocatori_{ProgettoAttivo.VersionePCC}.csv");
+        string[]? csv = null;
+        string Header = "";
 
-        var Header = csv[0];
+        if (File.Exists($"Progetti/{ProgettoAttivo.Nome}/CSV/Giocatori_TEMP.csv"))
+        {
+            csv = File.ReadAllLines($"Progetti/{ProgettoAttivo.Nome}/CSV/Giocatori_TEMP.csv");
+
+            Header = csv[0];
+            foreach (var row in csv)
+            {
+                if (row != Header)
+                {
+                    Giocatore Giocatore = CaricaElementoCSV<Giocatore>(Header, row);
+
+                    Giocatori.Add(Giocatore);
+                }
+            }
+
+            return Giocatori;
+        }
+
+        csv = File.ReadAllLines(
+        $"Progetti/{ProgettoAttivo.Nome}/CSV/Giocatori_{ProgettoAttivo.VersionePCC}.csv");
+
+        Header = csv[0];
         foreach (var row in csv)
         {
             if (row != Header)

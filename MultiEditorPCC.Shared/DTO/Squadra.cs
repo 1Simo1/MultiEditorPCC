@@ -69,7 +69,7 @@ public class Squadra
     public int TipoInfo { get; set; } = 1;
     public int V { get; set; } = 3;
 
-    public override string ToString()
+    public string DataString()
     {
         string header = string.Empty;
         string st = string.Empty;
@@ -90,6 +90,9 @@ public class Squadra
 
         return $"{header.TrimEnd(';')}{Environment.NewLine}{st.TrimEnd(';')}";
     }
+
+    public override string ToString() => Nome;
+
 
     public bool SquadraOriginale { get; set; } = true;
 

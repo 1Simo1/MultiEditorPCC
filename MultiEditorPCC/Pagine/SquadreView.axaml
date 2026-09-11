@@ -11,18 +11,19 @@
              xmlns:lng="clr-namespace:MultiEditorPCC.Locales;assembly=MultiEditorPCC"
              xmlns:pagine="using:MultiEditorPCC.Pagine"
              xmlns:sukiUi="clr-namespace:SukiUI.Controls;assembly=SukiUI"
+             
              x:Class="MultiEditorPCC.Pagine.SquadreView">
 
     <StackPanel Orientation="Vertical" Margin="21">
 
         <StackPanel Orientation="Horizontal" Spacing="3">
-        <TextBlock FontWeight="DemiBold"
-                   Text="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='Squadre'}" />
-        <TextBlock Text="{Binding SquadreViewModel.ElencoSquadre.Count,Mode=TwoWay}" FontWeight="DemiBold" />
-             <TextBlock 
-                   Text="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='Valide'}" />
+            <TextBlock FontWeight="DemiBold"
+                       Text="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='Squadre'}" />
+            <TextBlock Text="{Binding SquadreViewModel.ElencoSquadre.Count,Mode=TwoWay}" FontWeight="DemiBold" />
+            <TextBlock
+                Text="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='Valide'}" />
 
-             <TextBlock Text="{Binding SquadreViewModel.TotaleSquadreAggiornateValide,Mode=TwoWay}" FontWeight="DemiBold" />
+            <TextBlock Text="{Binding SquadreViewModel.TotaleSquadreAggiornateValide,Mode=TwoWay}" FontWeight="DemiBold" />
 
         </StackPanel>
         <Grid Margin="21" RowDefinitions="Auto,*,21" ColumnDefinitions="210,*">
@@ -35,13 +36,13 @@
                 <AutoCompleteBox ItemsSource="{Binding SquadreViewModel.ElencoSquadre,Mode=TwoWay}"
                                  ValueMemberBinding="{Binding Nome}"
                                  SelectedItem="{Binding SquadreViewModel.Squadra}"
-                                 x:Name="Elenco"
+                                 Foreground="{DynamicResource SukiText}"
                                  >
                     <AutoCompleteBox.ItemTemplate>
                         <DataTemplate x:DataType="dto:Squadra">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="{Binding Nome}" />
-                                 <icons:MaterialIcon Kind="Warning" Foreground="DarkGoldenrod"
+                                <icons:MaterialIcon Kind="Warning" Foreground="DarkGoldenrod"
                                                     Margin="3,0" VerticalAlignment="Center"
                                                     IsVisible="{Binding SquadraOriginale,Mode=TwoWay}"
 
@@ -56,12 +57,13 @@
 
                 <ComboBox ItemsSource="{Binding SquadreViewModel.ElencoSquadre,Mode=TwoWay}"
                           SelectedItem="{Binding SquadreViewModel.Squadra,Mode=TwoWay}"
-
+                                                                
+                                           Foreground="{DynamicResource SukiText}"
                           >
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{Binding Nome}" />
+                                <TextBlock Text="{Binding Nome}"  />
                                 <icons:MaterialIcon Kind="Warning" Foreground="DarkGoldenrod"
                                                     Margin="3,0" VerticalAlignment="Center"
                                                     IsVisible="{Binding SquadraOriginale,Mode=TwoWay}"
@@ -97,19 +99,40 @@
                         <AutoCompleteBox ItemsSource="{Binding SquadreViewModel.ElencoSquadre,Mode=TwoWay}"
                                          ValueMemberBinding="{Binding Nome}"
                                          SelectedItem="{Binding SquadreViewModel.SquadraAggiornata}"
-                                         />
+                                         Foreground="{DynamicResource SukiText}"
+                                         >
+                            <AutoCompleteBox.ItemTemplate>
+                                <DataTemplate x:DataType="dto:Squadra">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Nome}" />
+                                        <icons:MaterialIcon Kind="Warning" Foreground="DarkGoldenrod"
+                                                            Margin="3,0" VerticalAlignment="Center"
+                                                            IsVisible="{Binding SquadraOriginale,Mode=TwoWay}"
+
+                                                            />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </AutoCompleteBox.ItemTemplate>
+                        </AutoCompleteBox>
                         <ComboBox ItemsSource="{Binding SquadreViewModel.ElencoSquadre,Mode=TwoWay}"
                                   SelectedItem="{Binding SquadreViewModel.SquadraAggiornata,Mode=TwoWay}"
-
+                                     Foreground="{DynamicResource SukiText}"
                                   >
                             <ComboBox.ItemTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding Nome}" />
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Nome}"/>
+                                        <icons:MaterialIcon Kind="Warning" Foreground="DarkGoldenrod"
+                                                            Margin="3,0" VerticalAlignment="Center"
+                                                            IsVisible="{Binding SquadraOriginale,Mode=TwoWay}"
+
+                                                            />
+                                    </StackPanel>
                                 </DataTemplate>
                             </ComboBox.ItemTemplate>
                         </ComboBox>
 
-                        <Button Command="" Margin="3,0">
+                        <Button Command="{Binding SquadreViewModel.AggiornaSostituisciSquadraCommand}" Margin="3,0">
                             <TextBlock Text="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='Conferma'}" />
                         </Button>
 
