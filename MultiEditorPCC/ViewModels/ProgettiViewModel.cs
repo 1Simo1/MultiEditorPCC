@@ -27,7 +27,28 @@ public partial class ProgettiViewModel : VM
     public async void ConfermaNuovoProgetto()
     {
 
+        EventAggregator.Publish(new RichiestaDialog());
+        Progetto? p = null;
 
+        try
+        {
+            p = await App.Client.Risposta<Progetto>(HttpMethod.Post, $"progetti/nuovo?Nome={NuovoProgetto}&Cartella={Cartella}", "");
+            p = await App.Client.Risposta<Progetto>(HttpMethod.Post, $"progetti/caricaPercorsiProgettoAttivo", "");
+            await App.Client.Risposta<String>(HttpMethod.Post, $"progetti/db/carica/info", "");
+            await App.Client.Risposta<String>(HttpMethod.Post, $"progetti/db/carica/editor", "");
+        }
+        catch (Exception ex)
+        {
+            p = null;
+            EventAggregator.Publish(new ChiudiDialog());
+        }
+
+        if (p != null)
+        {
+            Progetto = await App.Client.Risposta<Progetto>(HttpMethod.Post, $"progetti/carica/{p.Nome}", "");
+            EventAggregator.Publish(new AperturaProgetto());
+            EventAggregator.Publish(new ChiudiDialog());
+        }
     }
 
     [CommandInvalidate(nameof(NuovoProgetto))]
@@ -39,9 +60,10 @@ public partial class ProgettiViewModel : VM
     public async void ApriProgetto(object ProgettoSelezionato)
     {
         var p = (Progetto)ProgettoSelezionato;
-        //TODO Dialog mentre carica progetto
+        EventAggregator.Publish(new RichiestaDialog());
         Progetto = await App.Client.Risposta<Progetto>(HttpMethod.Post, $"progetti/carica/{p.Nome}", "");
         EventAggregator.Publish(new AperturaProgetto());
+        EventAggregator.Publish(new ChiudiDialog());
     }
 
     [CommandInvalidate(nameof(Progetto))]

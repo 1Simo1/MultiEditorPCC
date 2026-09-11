@@ -54,7 +54,6 @@
 						Text="{Binding ProgettiViewModel.Cartella}" />
 
 					<Button Grid.Row="4" Grid.ColumnSpan="2"
-						Click="Nuovo_Progetto"
 						FontWeight="DemiBold"
 						Command="{Binding ProgettiViewModel.ConfermaNuovoProgettoCommand}">
 						<TextBlock Text="{Binding Testo,Converter={StaticResource LngConverter},

@@ -1,18 +1,22 @@
-﻿using MvvmGen;
+﻿using MultiEditorPCC.Pagine;
+using MvvmGen;
 using MvvmGen.Events;
 using MvvmGen.ViewModels;
+using SukiUI.Dialogs;
 using static MultiEditorPCC.EventiMVVM;
 
 namespace MultiEditorPCC.ViewModels;
 
 [ViewModel]
-public partial class MainViewModel : ViewModelBase, IEventSubscriber<AppMsgEvent>
+public partial class MainViewModel : ViewModelBase, IEventSubscriber<AppMsgEvent, RichiestaDialog, ChiudiDialog>
 {
 
     [Property] private AppMsg? _msg;
 
     [Property] private string _testo;
     [Property] private string _footer;
+
+    public ISukiDialogManager DialogManager { get; } = new SukiDialogManager();
 
     //TODO Aggiungere gradualmente i vari viewmodel per le singole pagine
     //[Property] private TestViewModel _testViewModel;
@@ -38,5 +42,27 @@ public partial class MainViewModel : ViewModelBase, IEventSubscriber<AppMsgEvent
     public void OnEvent(AppMsgEvent eventData)
     {
         Msg = new(eventData.Msg.Status, eventData.Msg.Title, eventData.Msg.Content);
+    }
+
+    public void OnEvent(RichiestaDialog eventData)
+    {
+        var d = DialogManager.CreateDialog()
+            .WithContent(new SchermataCaricamento())
+            .Dialog;
+
+        DialogManager.TryShowDialog(d);
+
+
+    }
+
+    public void OnEvent(ChiudiDialog eventData)
+    {
+        if (eventData.Dialog == null)
+        {
+            DialogManager.DismissDialog();
+            return;
+        }
+
+        DialogManager.TryDismissDialog(eventData.Dialog);
     }
 }

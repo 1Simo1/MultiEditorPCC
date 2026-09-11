@@ -4,11 +4,11 @@ using Avalonia.Markup.Xaml;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using MultiEditorPCC.Pagine;
 using MultiEditorPCC.ViewModels;
 using MvvmGen.Events;
 using System.Linq;
 using System.Reflection;
+using static MultiEditorPCC.EventiMVVM;
 
 //using System.Linq;
 //using System.Reflection;
@@ -23,8 +23,6 @@ public partial class App : Application
     public static Client Client { get; set; }
 
     //public static AppSettings Config { get; set; }
-
-    public SchermataCaricamento SchermataCaricamento { get; set; }
 
     public override void Initialize()
     {
@@ -62,17 +60,6 @@ public partial class App : Application
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            SchermataCaricamento = new();
-
-            desktop.MainWindow = SchermataCaricamento;
-            SchermataCaricamento.Show();
-
-
-
-            Client = App.Services.GetRequiredService<Client>();
-            await Client.Init();
-
-            await Services.GetRequiredService<InitSvc>().Load();
 
             desktop.MainWindow = new MainWindow
             {
@@ -81,10 +68,19 @@ public partial class App : Application
 
             desktop.MainWindow.Show();
 
+            Services.GetRequiredService<MainViewModel>().OnEvent(new RichiestaDialog());
+
+            Client = App.Services.GetRequiredService<Client>();
+            await Client.Init();
+
+            await Services.GetRequiredService<InitSvc>().Load();
+
+            Services.GetRequiredService<MainViewModel>().OnEvent(new ChiudiDialog());
 
 
-            SchermataCaricamento.Close();
-            SchermataCaricamento?.Dispose();
+
+            //SchermataCaricamentoIniziale.Close();
+            //SchermataCaricamentoIniziale?.Dispose();
         }
 
         base.OnFrameworkInitializationCompleted();

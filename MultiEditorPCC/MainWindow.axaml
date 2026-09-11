@@ -35,6 +35,11 @@
 			<icons:MaterialIcon Kind="ThemeLightDark"/>
 		</Button>
 	</sukiUi:SukiWindow.RightWindowTitleBarControls>
+	
+	<sukiUi:SukiWindow.Hosts>
+		<sukiUi:SukiDialogHost Manager="{Binding DialogManager}"/>
+	</sukiUi:SukiWindow.Hosts>
+
 
 	<Grid RowDefinitions="Auto,*,Auto">
 
@@ -232,9 +237,9 @@
 
 			</sukiUi:SukiSideMenu.Items>
 
-			<sukiUi:SukiSideMenu.FooterContent>
+			<!--<sukiUi:SukiSideMenu.FooterContent>
 
-			</sukiUi:SukiSideMenu.FooterContent>
+			</sukiUi:SukiSideMenu.FooterContent>-->
 
 
 

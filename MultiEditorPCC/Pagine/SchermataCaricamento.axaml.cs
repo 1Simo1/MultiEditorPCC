@@ -1,8 +1,8 @@
-using SukiUI.Controls;
+using Avalonia.Controls;
 
 namespace MultiEditorPCC.Pagine;
 
-public partial class SchermataCaricamento : SukiWindow
+public partial class SchermataCaricamento : UserControl
 {
     public SchermataCaricamento()
     {
