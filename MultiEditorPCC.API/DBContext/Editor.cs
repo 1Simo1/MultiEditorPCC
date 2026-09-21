@@ -14,6 +14,8 @@ public class Editor()
 
     public List<FileDatabaseInfo> DatabaseFiles { get; set; } = new();
 
+
+
 }
 
 public class FileDatabaseInfo

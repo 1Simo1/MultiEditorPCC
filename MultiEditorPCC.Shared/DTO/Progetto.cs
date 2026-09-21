@@ -20,6 +20,8 @@ public class Progetto
 
     public List<String> Archivi { get; set; } = new();
 
+    public List<SlotCompetizioneSquadra> SlotCompetizioniSquadre { get; set; } = new();
+
     public String Note { get; set; } = String.Empty;
 
 }
@@ -37,4 +39,24 @@ public enum VersionePCC
     PCF5_ORO,
     PCC4,
     PCC3
+}
+
+public class SlotCompetizioneSquadra
+{
+    public VersionePCC VersionePCC { get; set; } = VersionePCC.NESSUNA;
+
+    public String Competizione { get; set; } = String.Empty;
+
+    public Paese Paese { get; set; } = Paese.ITALIA;
+
+    public int Slot { get; set; } = -1;
+
+    public uint CodiceSquadra { get; set; } = 0;
+
+    public int TotaleSquadre { get; set; } = -1;
+
+    public uint CodiceSquadraAssegnata { get; set; } = 0;
+
+    public bool Campionato { get; set; } = true;
+
 }

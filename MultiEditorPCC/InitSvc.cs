@@ -19,6 +19,9 @@ public class InitSvc
         m.SquadreViewModel = App.Services.GetRequiredService<SquadreViewModel>();
         m.GiocatoriViewModel = App.Services.GetRequiredService<GiocatoriViewModel>();
 
+
+        m.SalvataggioViewModel = App.Services.GetRequiredService<SalvataggioViewModel>();
+
         /* TODO Init varie operazioni, una volta definito il collegamento con API, 
          * anche i casi di modalità Editor senza API (ClientMod.Editor) 
          */
@@ -42,6 +45,9 @@ public class InitSvc
 
             m.GiocatoriViewModel.ElencoGiocatori = await App.Client.Risposta<ObservableCollection<Giocatore>>(HttpMethod.Get, "giocatori", "");
 
+            m.SalvataggioViewModel.Versioni = new(System.Enum.GetValues<VersionePCC>().Where(v => v > 0));
+
+            m.SalvataggioViewModel.VersioneSelezionata = m.ProgettiViewModel.Progetto?.VersionePCC;
         }
     }
 

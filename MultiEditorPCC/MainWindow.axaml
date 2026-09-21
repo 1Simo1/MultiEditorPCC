@@ -224,8 +224,8 @@
 
 					<sukiUi:SukiSideMenuItem.PageContent>
 						<Grid Margin="21">
-							<TextBlock Text="Ottava pagina test" />
-							<!--<pagine:IntroView />-->
+							<pagine:SalvataggioView />
+							
 						</Grid>
 					</sukiUi:SukiSideMenuItem.PageContent>
 

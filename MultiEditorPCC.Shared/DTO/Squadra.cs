@@ -349,5 +349,8 @@ public enum Paese
     TUVALU,
     EMIRATI_ARABI,
     REGNO_UNITO = 205,
-    VANUATU = 206
+    VANUATU = 206,
+
+    NESSUNO = 0,
+    ALTRO = -1
 }

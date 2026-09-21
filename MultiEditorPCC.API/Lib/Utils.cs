@@ -275,7 +275,11 @@ public static class Utils
 
     public static List<Squadra> CaricaSquadreCSV(Progetto ProgettoAttivo)
     {
+        if (ProgettoAttivo == null) return new List<Squadra>();
+
         List<Squadra> Squadre = new();
+
+
 
         string[]? csv = null;
         string Header = "";
@@ -315,6 +319,17 @@ public static class Utils
         var codicePartenza = Squadre.Max(sq => sq.Id) + 1;
 
         var ElencoCSV = Directory.GetFiles($"Progetti/{ProgettoAttivo.Nome}/CSV", "Squadre*.csv", SearchOption.TopDirectoryOnly);
+
+        #region TEST TEMP PER RICERCA OFFSET SQUADRE CAMPIONATI/COPPE
+
+        List<SlotCompetizioneSquadra> Slot = CalcolaSlotSquadre(ProgettoAttivo, null);
+
+
+
+
+
+        //Squadre = Squadre.Where(sq => sq.Giocabile && sq.Id < 9900).ToList(); //TEST!
+        #endregion
 
         //In caso di CSV aggiornati, sostituiscono i dati originali
         //e i CSV originali servono per tenere conto dei valori incogniti
@@ -397,6 +412,116 @@ public static class Utils
         }
 
         return Squadre;
+    }
+
+    public static List<SlotCompetizioneSquadra> CalcolaSlotSquadre(Progetto ProgettoAttivo, String? ManagerPath = null)
+    {
+        List<SlotCompetizioneSquadra> Slot = ProgettoAttivo.SlotCompetizioniSquadre;
+
+        String NomeManager = ManagerPath == null ? "" : ManagerPath;
+
+
+        if (ManagerPath == null)
+        {
+            switch (ProgettoAttivo.VersionePCC)
+            {
+                case VersionePCC.NESSUNA:
+                    break;
+                case VersionePCC.PCC2001:
+                    NomeManager = "managcal";
+                    break;
+                case VersionePCC.PCF2001:
+                    NomeManager = "manager";
+                    break;
+                case VersionePCC.PCC7P:
+                    NomeManager = "managcal";
+                    break;
+                case VersionePCC.PCF7P:
+                    NomeManager = "manager";
+                    break;
+                case VersionePCC.PCC6:
+                    NomeManager = "managcal";
+                    break;
+                case VersionePCC.PCF6_ORO:
+                    break;
+                case VersionePCC.PCC5:
+                    NomeManager = "manager";
+                    break;
+                case VersionePCC.PCF5_ORO:
+                    break;
+                case VersionePCC.PCC4:
+                    break;
+                case VersionePCC.PCC3:
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        NomeManager = NomeManager != ManagerPath ? $"{ProgettoAttivo.Cartella}{Path.DirectorySeparatorChar}{NomeManager}.exe" : ManagerPath;
+
+        if (!File.Exists(NomeManager)) return Slot;
+
+        List<Byte> Manager = File.ReadAllBytes(NomeManager).ToList();
+        int DimensioneManager = Manager.Count;
+
+        List<SlotCompetizioneSquadra> SquadreRegistrateCompetizione = new();
+
+        var csv = File.ReadAllLines($"Progetti/TabellaOffsetSquadre.csv");
+
+        var Header = csv[0];
+        foreach (var row in csv)
+        {
+            if (row != Header)
+            {
+                var OffsetComp = CaricaElementoCSV<OffsetCompetizione>(Header, row);
+
+                if ((OffsetComp.Id == ProgettoAttivo.VersionePCC || ManagerPath is not null) && OffsetComp.Dimensione == DimensioneManager)
+                {
+                    int NumeroSquadreCompetizione = OffsetComp.NumeroSquadre;
+                    for (int i = 0; i < OffsetComp.NumeroSquadre; i++)
+                    {
+                        var CodiceSquadra =
+                        BitConverter.ToUInt16(Manager.GetRange(OffsetComp.Offset + (i * OffsetComp.B), OffsetComp.B).ToArray());
+
+                        if (CodiceSquadra != 0)
+                        {
+                            //Squadre.Remove(Squadre.Find(sq => sq.Id == CodiceSquadra)); //TEST!
+
+                            SquadreRegistrateCompetizione = Slot.Where(slot => slot.VersionePCC == ProgettoAttivo.VersionePCC && slot.Competizione == OffsetComp.Competizione).ToList();
+                            int n = SquadreRegistrateCompetizione.Count();
+
+                            if (!ProgettoAttivo.SlotCompetizioniSquadre
+                                .Where(c => c.VersionePCC == ProgettoAttivo.VersionePCC &&
+                                            c.Paese == OffsetComp.Paese &&
+                                            c.Competizione == OffsetComp.Competizione &&
+                                            c.CodiceSquadra == CodiceSquadra
+                                ).Any())
+                            {
+                                Slot.Add(new()
+                                {
+                                    VersionePCC = ProgettoAttivo.VersionePCC,
+                                    Paese = OffsetComp.Paese,
+                                    Competizione = OffsetComp.Competizione,
+                                    Campionato = !OffsetComp.Coppa,
+                                    Slot = n + 1,
+                                    CodiceSquadra = CodiceSquadra,
+                                    TotaleSquadre = NumeroSquadreCompetizione,
+                                    CodiceSquadraAssegnata = CodiceSquadra
+                                });
+                            }
+                        }
+                        else
+                        {
+                            NumeroSquadreCompetizione--;
+                            foreach (var squadra in SquadreRegistrateCompetizione) squadra.TotaleSquadre = NumeroSquadreCompetizione;
+                        }
+                    }
+                }
+            }
+        }
+
+        return Slot;
     }
 
     private static Squadra? RicercaSquadra(Squadra? Squadra, List<Squadra> Squadre)
@@ -578,7 +703,7 @@ public static class Utils
                             case "UInt32": v = uint.Parse(Val[n]); break;
                             case "Int16": v = Int16.Parse(Val[n]); break;
                             case "Int32": v = int.Parse(Val[n]); break;
-                            case "Boolean": v = Val[n] == true.ToString(); break;
+                            case "Boolean": v = Val[n] == true.ToString() || Val[n].Equals("*"); break;
                             case "Byte": v = Convert.FromBase64String(Val[n]).ToList(); break;
 
                         }

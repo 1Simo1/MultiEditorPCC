@@ -1,14 +1,18 @@
 ﻿using MultiEditorPCC.Shared.DTO;
 using MvvmGen;
+using MvvmGen.Events;
+using MvvmGen.ViewModels;
 using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Net.Http;
 using static MultiEditorPCC.EventiMVVM;
 
 namespace MultiEditorPCC.ViewModels;
 
 [ViewModel]
-public partial class ProgettiViewModel : VM
+[Inject(typeof(IEventAggregator))]
+public partial class ProgettiViewModel : ViewModelBase, IEventSubscriber<RichiestaPaesiGiocabili>
 {
     [Property] private string _nuovoProgetto;
     [Property] private string _cartella;
@@ -69,4 +73,11 @@ public partial class ProgettiViewModel : VM
     [CommandInvalidate(nameof(Progetto))]
     private bool CanApriProgetto(object ProgettoSelezionato) => ((Progetto)ProgettoSelezionato)?.Id != Progetto?.Id;
 
+    public void OnEvent(RichiestaPaesiGiocabili eventData)
+    {
+        if (eventData.VersionePCC == VersionePCC.NESSUNA) return;
+        EventAggregator.Publish<RispostaPaesiGiocabili>(new(Progetto.SlotCompetizioniSquadre.Where
+                                                           (p => p.VersionePCC == eventData.VersionePCC)
+                                                           .Select(p => p.Paese).Distinct().ToList()));
+    }
 }

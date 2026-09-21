@@ -1,0 +1,49 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:vm="using:MultiEditorPCC.ViewModels"
+             xmlns:dc="using:MultiEditorPCC.DataConverters"
+             x:DataType="vm:MainViewModel"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+             xmlns:pagine="using:MultiEditorPCC.Pagine"
+             xmlns:sukiUi="clr-namespace:SukiUI.Controls;assembly=SukiUI"
+             x:Name="PaginaSalvataggio"
+             x:Class="MultiEditorPCC.Pagine.SalvataggioView">
+
+    <StackPanel Orientation="Vertical">
+
+        <ListBox ItemsSource="{Binding SalvataggioViewModel.Versioni}"
+                 SelectedItem="{Binding SalvataggioViewModel.VersioneSelezionata,Mode=TwoWay}"
+                 VerticalAlignment="Top">
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+        </ListBox>
+
+        <ListBox ItemsSource="{Binding SalvataggioViewModel.PaesiGiocabili, Mode=TwoWay}"
+                 SelectedItem="{Binding SalvataggioViewModel.PaeseSelezionato,Mode=TwoWay}"
+                 VerticalAlignment="Top">
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+        </ListBox>
+        <Grid Margin="21">
+            <StackPanel Orientation="Vertical">
+                <TextBlock Text="Test" />
+                <TextBlock Text="{Binding SalvataggioViewModel.VersioneSelezionata,Mode=TwoWay}" />
+                <TextBlock Text="{Binding SalvataggioViewModel.PaeseSelezionato,Mode=TwoWay}" />
+                <TextBlock Text="{Binding SalvataggioViewModel.TorneoSelezionato,Mode=TwoWay}" />
+                <TextBlock Text="Test" />
+            </StackPanel>
+        </Grid>
+       
+    </StackPanel>
+
+   
+</UserControl>

@@ -24,6 +24,11 @@ public partial class MainViewModel : ViewModelBase, IEventSubscriber<AppMsgEvent
     [Property] private SquadreViewModel _squadreViewModel;
     [Property] private GiocatoriViewModel _giocatoriViewModel;
 
+
+
+
+
+    [Property] private SalvataggioViewModel _salvataggioViewModel;
     partial void OnInitialize()
     {
         Testo = string.Empty;
