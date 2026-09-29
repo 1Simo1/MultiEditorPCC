@@ -26,7 +26,7 @@ public static class EndpointExtensions
         squadre.MapGet("", Squadre.GetElenco).WithDescription("Elenco squadre caricate nel progetto Editor");
         squadre.MapGet("{id:int}", Squadre.GetGiocatoriSquadra).WithDescription("Giocatori della squadra selezionata");
         squadre.MapPost("{id:int}/sostituisciCon/{nuovoId:int}", Squadre.SostituisciSquadra).WithDescription("Sostiutisce ed aggiorna una squadra con un'altra in elenco");
-
+        squadre.MapPost("calcolaSlot", Squadre.CalcolaSlot).WithDescription("Calcolo squadre disponibili e slot competizione");
 
         var giocatori = api.MapGroup("/giocatori");
         giocatori.MapGet("", Giocatori.GetElenco).WithDescription("Elenco giocatori caricati nel progetto Editor");

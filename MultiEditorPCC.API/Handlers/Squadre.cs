@@ -51,4 +51,15 @@ public static class Squadre
         return TypedResults.Ok("");
 
     }
+
+    public static async Task<Ok<(IEnumerable<Squadra>, IEnumerable<SlotCompetizioneSquadra>)>> CalcolaSlot(Editor db, VersionePCC VersionePCC, Paese Paese, String Competizione)
+    {
+        List<Squadra> Squadre = new();
+        List<SlotCompetizioneSquadra> Slot = new();
+
+        //TODO Calcolo Squadre e Slot
+
+
+        return TypedResults.Ok((Squadre.AsEnumerable(), Slot.AsEnumerable()));
+    }
 }
