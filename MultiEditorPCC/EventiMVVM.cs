@@ -1,5 +1,6 @@
 ﻿using MultiEditorPCC.Shared.DTO;
 using SukiUI.Dialogs;
+using System;
 using System.Collections.Generic;
 
 namespace MultiEditorPCC;
@@ -19,4 +20,7 @@ public class EventiMVVM
 
     public record RichiestaPaesiGiocabili(VersionePCC VersionePCC = VersionePCC.NESSUNA);
     public record RispostaPaesiGiocabili(List<Paese> PaesiGiocabili);
+
+    public record RichiestaCompetizioniPaese(VersionePCC VersionePCC, Paese Paese);
+    public record RispostaCompetizioniPaese(List<String> Competizioni);
 }

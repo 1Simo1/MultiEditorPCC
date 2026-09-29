@@ -33,15 +33,19 @@
                 </ItemsPanelTemplate>
             </ListBox.ItemsPanel>
         </ListBox>
-        <Grid Margin="21">
+        <UniformGrid Margin="21">
+            <ListBox ItemsSource="{Binding SalvataggioViewModel.Tornei,Mode=TwoWay}" 
+                     SelectedItem="{Binding SalvataggioViewModel.TorneoSelezionato,Mode=TwoWay}" 
+                     />
             <StackPanel Orientation="Vertical">
                 <TextBlock Text="Test" />
                 <TextBlock Text="{Binding SalvataggioViewModel.VersioneSelezionata,Mode=TwoWay}" />
+                <TextBlock Text="{Binding SalvataggioViewModel.PaesiGiocabili.Count,Mode=TwoWay}" />
                 <TextBlock Text="{Binding SalvataggioViewModel.PaeseSelezionato,Mode=TwoWay}" />
                 <TextBlock Text="{Binding SalvataggioViewModel.TorneoSelezionato,Mode=TwoWay}" />
                 <TextBlock Text="Test" />
             </StackPanel>
-        </Grid>
+        </UniformGrid>
        
     </StackPanel>
 

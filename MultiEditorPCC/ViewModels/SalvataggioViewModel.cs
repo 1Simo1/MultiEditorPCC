@@ -12,7 +12,7 @@ namespace MultiEditorPCC.ViewModels;
 
 [ViewModel]
 [Inject(typeof(IEventAggregator))]
-public partial class SalvataggioViewModel : ViewModelBase, IEventSubscriber<RispostaPaesiGiocabili>
+public partial class SalvataggioViewModel : ViewModelBase, IEventSubscriber<RispostaPaesiGiocabili, RispostaCompetizioniPaese>
 {
     [Property] private ObservableCollection<VersionePCC> _versioni;
 
@@ -23,7 +23,14 @@ public partial class SalvataggioViewModel : ViewModelBase, IEventSubscriber<Risp
 
 
     [Property] private ObservableCollection<Paese> _paesiGiocabili;
-    [Property] private Paese _paeseSelezionato;
+
+
+    [Property]
+    [PropertyCallMethod(nameof(CercaCompetizioniPaeseSelezionato))]
+    private Paese _paeseSelezionato;
+
+    [Property] private ObservableCollection<String> _tornei;
+
     [Property] private String _torneoSelezionato;
 
     partial void OnInitialize()
@@ -40,10 +47,24 @@ public partial class SalvataggioViewModel : ViewModelBase, IEventSubscriber<Risp
         EventAggregator.Publish<RichiestaPaesiGiocabili>(new((VersionePCC)VersioneSelezionata));
     }
 
+    private void CercaCompetizioniPaeseSelezionato()
+    {
+        if (PaeseSelezionato == null || VersioneSelezionata == null) return;
+
+        EventAggregator.Publish<RichiestaCompetizioniPaese>(new((VersionePCC)VersioneSelezionata, PaeseSelezionato));
+    }
+
+
     public void OnEvent(RispostaPaesiGiocabili eventData)
     {
         PaesiGiocabili = new(eventData.PaesiGiocabili);
 
         PaeseSelezionato = PaesiGiocabili.First();
+    }
+
+    public void OnEvent(RispostaCompetizioniPaese eventData)
+    {
+        Tornei = new(eventData.Competizioni);
+        TorneoSelezionato = Tornei.First();
     }
 }

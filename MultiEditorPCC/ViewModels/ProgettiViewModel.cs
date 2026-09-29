@@ -12,7 +12,7 @@ namespace MultiEditorPCC.ViewModels;
 
 [ViewModel]
 [Inject(typeof(IEventAggregator))]
-public partial class ProgettiViewModel : ViewModelBase, IEventSubscriber<RichiestaPaesiGiocabili>
+public partial class ProgettiViewModel : ViewModelBase, IEventSubscriber<RichiestaPaesiGiocabili, RichiestaCompetizioniPaese>
 {
     [Property] private string _nuovoProgetto;
     [Property] private string _cartella;
@@ -79,5 +79,13 @@ public partial class ProgettiViewModel : ViewModelBase, IEventSubscriber<Richies
         EventAggregator.Publish<RispostaPaesiGiocabili>(new(Progetto.SlotCompetizioniSquadre.Where
                                                            (p => p.VersionePCC == eventData.VersionePCC)
                                                            .Select(p => p.Paese).Distinct().ToList()));
+    }
+
+    public void OnEvent(RichiestaCompetizioniPaese eventData)
+    {
+
+        EventAggregator.Publish<RispostaCompetizioniPaese>(new(Progetto.SlotCompetizioniSquadre.Where
+                                                           (p => p.VersionePCC == eventData.VersionePCC && p.Paese == eventData.Paese)
+                                                           .Select(p => p.Competizione).Distinct().ToList()));
     }
 }
