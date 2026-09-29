@@ -54,8 +54,12 @@ public static class Squadre
 
     public static async Task<Ok<(IEnumerable<Squadra>, IEnumerable<SlotCompetizioneSquadra>)>> CalcolaSlot(Editor db, VersionePCC VersionePCC, Paese Paese, String Competizione)
     {
-        List<Squadra> Squadre = new();
-        List<SlotCompetizioneSquadra> Slot = new();
+        List<Squadra> Squadre = db.Squadre;
+        List<SlotCompetizioneSquadra> Slot = db.ProgettoAttivo.SlotCompetizioniSquadre.Where(slot => slot.Paese == Paese &&
+                                                                                                     slot.VersionePCC == VersionePCC &&
+                                                                                                     slot.Competizione == Competizione
+                                                                                                     ).ToList();
+        bool Coppa = !Slot.First().Campionato;
 
         //TODO Calcolo Squadre e Slot
 
