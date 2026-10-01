@@ -55,14 +55,31 @@ public static class Squadre
     public static async Task<Ok<(IEnumerable<Squadra>, IEnumerable<SlotCompetizioneSquadra>)>> CalcolaSlot(Editor db, VersionePCC VersionePCC, Paese Paese, String Competizione)
     {
         List<Squadra> Squadre = db.Squadre;
-        List<SlotCompetizioneSquadra> Slot = db.ProgettoAttivo.SlotCompetizioniSquadre.Where(slot => slot.Paese == Paese &&
-                                                                                                     slot.VersionePCC == VersionePCC &&
-                                                                                                     slot.Competizione == Competizione
-                                                                                                     ).ToList();
+        List<SlotCompetizioneSquadra> Slot = db.ProgettoAttivo.SlotCompetizioniSquadre;
+
         bool Coppa = !Slot.First().Campionato;
 
-        //TODO Calcolo Squadre e Slot
+        if (Coppa)
+        {
+            //TODO
+            return TypedResults.Ok((Squadre.AsEnumerable(), Slot.AsEnumerable()));
+        }
 
+        if (Paese > Paese.NESSUNO)
+        {
+            Squadre = Squadre.Where(sq => sq.Nazione == Paese).ToList();
+            Slot = Slot.Where(slot => slot.Paese == Paese &&
+                                      slot.VersionePCC == VersionePCC &&
+                                      slot.Campionato
+            ).ToList();
+        }
+
+        foreach (var CodiceSquadra in Slot.Select(slot => slot.CodiceSquadraAssegnata))
+        {
+            Squadre.Remove(Squadre.Where(sq => sq.Id == CodiceSquadra).FirstOrDefault());
+        }
+
+        Slot = Slot.Where(slot => slot.Competizione == Competizione).ToList();
 
         return TypedResults.Ok((Squadre.AsEnumerable(), Slot.AsEnumerable()));
     }
