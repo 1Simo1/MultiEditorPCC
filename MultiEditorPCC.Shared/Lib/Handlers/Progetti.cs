@@ -1,0 +1,211 @@
+﻿using MultiEditorPCC.Shared.DTO;
+using System.Text.Json;
+
+namespace MultiEditorPCC.Shared.Lib.Handlers;
+
+public static class Progetti
+{
+    public static List<Progetto> GetElenco(Editor db)
+    {
+        List<Progetto> progetti = new();
+
+        if (!Directory.Exists("Progetti"))
+        {
+            Directory.CreateDirectory("Progetti");
+            return new();
+        }
+
+        var files = Directory.GetFiles("Progetti", "Pro.json", SearchOption.AllDirectories);
+
+        foreach (var file in files)
+        {
+
+            try
+            {
+                progetti.Add(JsonSerializer.Deserialize<Progetto>(File.ReadAllText(file)));
+            }
+            catch (Exception ex)
+            {
+
+                continue;
+            }
+
+
+        }
+
+        if (!db.Progetti.Any()) db.Progetti.AddRange(progetti);
+
+        if (db.Progetti.Any()) db.ProgettoAttivo = db.Progetti.Where(p => p.Modifica.Ticks == db.Progetti.Max(p => p.Modifica.Ticks)).First();
+
+        return progetti;
+    }
+
+    public static Progetto? InfoProgetto(Editor db, String Nome)
+    {
+        Progetto? progetto = db.Progetti.Where(p => p.Nome == Nome).FirstOrDefault();
+
+        if (progetto == null) return null;
+
+        return progetto;
+    }
+
+    //    public static async Task<Results<Ok<Progetto>, BadRequest<ProblemDetails>>> NuovoProgetto(Editor db, String Nome, String Cartella)
+    //    {
+    //        try
+    //        {
+    //            Directory.CreateDirectory($"Progetti/{Nome}");
+
+    //            if (File.Exists($"Progetti/{Nome}/Pro.json"))
+    //            {
+    //                return TypedResults.BadRequest<ProblemDetails>(new() { Status = 400, Detail = "Errore: progetto già esistente" });
+    //            }
+
+    //            Progetto progetto = new()
+    //            {
+    //                Nome = Nome,
+    //                Cartella = Cartella
+    //            };
+
+    //            progetto.VersionePCC = Utils.TestVersionePCC(Cartella);
+
+    //            File.WriteAllText($"Progetti/{Nome}/Pro.json", JsonSerializer.Serialize(progetto));
+
+    //            db.Progetti.Add(progetto);
+
+    //            db.ProgettoAttivo = progetto;
+
+    //            //await CaricaDatiProgetto(db);
+
+    //            return TypedResults.Ok(progetto);
+
+
+    //        }
+    //        catch (Exception ex)
+    //        {
+
+    //            return TypedResults.BadRequest<ProblemDetails>(new() { Status = 400, Detail = "Errore nell'aggiunta di un nuovo progetto" });
+    //        }
+    //    }
+
+    public static Progetto CaricaProgetto(Editor db, String Nome)
+    {
+
+        Progetto? progetto = db.Progetti.Where(p => p.Nome == Nome).FirstOrDefault();
+        //TODO Reimplementare in odalità Editor
+        //        if (progetto == null)
+        //        {
+        //            return TypedResults.BadRequest<ProblemDetails>(new() { Status = 400, Detail = "Errore: progetto non trovato" });
+        //        }
+
+        //        db.ProgettoAttivo = progetto;
+
+
+        //        db.Squadre = Utils.CaricaSquadreCSV(db.ProgettoAttivo);
+        //        db.Giocatori = Utils.CaricaGiocatoriCSV(db.ProgettoAttivo, db.Squadre);
+
+        //        foreach (var sq in db.Squadre)
+        //        {
+        //            try
+        //            {
+        //                var GiocatoriSquadra = db.Giocatori.Where(g => g.CodiceSquadra == sq.Id);
+        //                if (GiocatoriSquadra.Any())
+        //                {
+        //                    var anno = GiocatoriSquadra.Max(g => g.AnnoNascita);
+        //                    sq.SquadraOriginale = GiocatoriSquadra.Where(g => g.AnnoNascita == anno).First().AnnoNascita < 2000;
+        //                }
+        //            }
+        //            catch (Exception ex)
+        //            {
+
+
+        //            }
+        //        }
+
+        //        progetto.Modifica = DateTime.Now;
+        //        db.ProgettoAttivo.Modifica = DateTime.Now;
+
+        //        File.WriteAllText($"Progetti/{db.ProgettoAttivo.Nome}/Pro.json", JsonSerializer.Serialize(db.ProgettoAttivo));
+
+        return progetto;
+    }
+
+    //    public static async Task<Results<Ok<Progetto>, BadRequest<ProblemDetails>>> CaricaDatiProgetto(Editor db)
+    //    {
+    //        if (db.ProgettoAttivo == null)
+    //            return TypedResults.BadRequest<ProblemDetails>(
+    //                new() { Status = 400, Detail = "Nessun progetto attivo nell'editor" }
+    //                );
+
+    //        db.ProgettoAttivo = Utils.CaricaPercorsiArchivi(db.ProgettoAttivo);
+    //        db.ProgettoAttivo.Modifica = DateTime.Now;
+
+    //        File.WriteAllText($"Progetti/{db.ProgettoAttivo.Nome}/Pro.json", JsonSerializer.Serialize(db.ProgettoAttivo));
+
+
+    //        //db.Squadre = Utils.CaricaSquadreCSV(db.ProgettoAttivo);
+    //        //db.Giocatori = Utils.CaricaGiocatoriCSV(db.ProgettoAttivo);
+
+    //        return TypedResults.Ok(db.ProgettoAttivo);
+    //    }
+
+    //    public static async Task<Results<Ok<String>, BadRequest<ProblemDetails>>> CaricaFileDatabaseInfo(Editor db)
+    //    {
+    //        if (db.ProgettoAttivo == null)
+    //            return TypedResults.BadRequest<ProblemDetails>(
+    //                new() { Status = 400, Detail = "Nessun progetto attivo nell'editor" }
+    //                );
+    //        try
+    //        {
+    //            db.DatabaseFiles = !db.DatabaseFiles.Any() ?
+    //                Utils.CaricaFileDatabaseInfo(db.ProgettoAttivo) :
+    //                db.DatabaseFiles;
+    //        }
+    //        catch (Exception)
+    //        {
+
+    //            return TypedResults.BadRequest<ProblemDetails>(
+    //               new() { Status = 400, Detail = "Errore nel caricamento delle informazioni" }
+    //               );
+    //        }
+
+    //        db.ProgettoAttivo.Modifica = DateTime.Now;
+
+
+    //        File.WriteAllText($"Progetti/{db.ProgettoAttivo.Nome}/Pro.json", JsonSerializer.Serialize(db.ProgettoAttivo));
+    //        //db.Squadre = Utils.CaricaSquadreCSV(db.ProgettoAttivo);
+    //        //db.Giocatori = Utils.CaricaGiocatoriCSV(db.ProgettoAttivo);
+
+    //        return TypedResults.Ok(db.DatabaseFiles.Count.ToString());
+    //    }
+
+    //    public static async Task<Results<Ok<String>, BadRequest<ProblemDetails>>> CaricaFileDatabaseEditor(Editor db)
+    //    {
+    //        if (db.ProgettoAttivo == null)
+    //            return TypedResults.BadRequest<ProblemDetails>(
+    //                new() { Status = 400, Detail = "Nessun progetto attivo nell'editor" }
+    //                );
+
+    //        db.Squadre = Utils.CaricaSquadre(db.ProgettoAttivo, db.DatabaseFiles);
+    //        db.Giocatori = Utils.CaricaGiocatori(db.ProgettoAttivo, db.DatabaseFiles);
+
+    //        if (db.DatabaseFiles.Where(e => e.TipoFileDatabase == TipoFileDatabase.FDI).Any())
+    //        {
+    //            db.Giocatori = Utils.AssegnaGiocatoriSquadre(db.Squadre, db.Giocatori);
+    //            db.Squadre.ToList().ForEach(u => u.Note = String.Empty);
+    //        }
+
+
+
+
+    //        if (!Utils.ScriviCSV(db.ProgettoAttivo, db.Squadre, db.Giocatori))
+    //            return TypedResults.BadRequest<ProblemDetails>(
+    //                new() { Status = 400, Detail = "Errore nella scrittura dei file CSV" }
+    //                );
+
+    //        db.ProgettoAttivo.Modifica = DateTime.Now;
+
+    //        File.WriteAllText($"Progetti/{db.ProgettoAttivo.Nome}/Pro.json", JsonSerializer.Serialize(db.ProgettoAttivo));
+
+    //        return TypedResults.Ok($"{db.Squadre.Count} {db.Giocatori.Count}");
+    //    }
+}

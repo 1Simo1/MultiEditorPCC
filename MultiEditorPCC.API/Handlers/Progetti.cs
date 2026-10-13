@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using MultiEditorPCC.API.DBContext;
 using MultiEditorPCC.API.Lib;
+using MultiEditorPCC.Shared;
 using MultiEditorPCC.Shared.DTO;
 using System.Text.Json;
 
@@ -11,38 +11,9 @@ public static class Progetti
 {
     public static async Task<Ok<IEnumerable<Progetto>>> GetElenco(Editor db)
     {
-        List<Progetto> progetti = new();
-
-        if (!Directory.Exists("Progetti"))
-        {
-            Directory.CreateDirectory("Progetti");
-            return TypedResults.Ok(progetti.AsEnumerable());
-        }
-
-        var files = Directory.GetFiles("Progetti", "Pro.json", SearchOption.AllDirectories);
-
-        foreach (var file in files)
-        {
-
-            try
-            {
-                progetti.Add(JsonSerializer.Deserialize<Progetto>(File.ReadAllText(file)));
-            }
-            catch (Exception ex)
-            {
-
-                continue;
-            }
-
-
-        }
-
-        if (!db.Progetti.Any()) db.Progetti.AddRange(progetti);
-
-        if (db.Progetti.Any()) db.ProgettoAttivo = db.Progetti.Where(p => p.Modifica.Ticks == db.Progetti.Max(p => p.Modifica.Ticks)).First();
+        var progetti = Shared.Lib.Handlers.Progetti.GetElenco(db);
 
         return TypedResults.Ok(progetti.AsEnumerable());
-
     }
 
     public static async Task<Results<Ok<Progetto>, NotFound>> InfoProgetto(Editor db, String Nome)

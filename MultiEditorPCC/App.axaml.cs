@@ -4,6 +4,7 @@ using Avalonia.Markup.Xaml;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using MultiEditorPCC.Shared;
 using MultiEditorPCC.ViewModels;
 using MvvmGen.Events;
 using System.Linq;
@@ -50,13 +51,13 @@ public partial class App : Application
         foreach (var t in ViewModels) svc.TryAddScoped(t);
 
 
-
+        svc.AddSingleton<Editor>();
         svc.AddSingleton<InitSvc>();
 
 
+        Shared.App.Services = svc.BuildServiceProvider();
+
         Services = svc.BuildServiceProvider();
-
-
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {

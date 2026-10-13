@@ -19,36 +19,25 @@ public class InitSvc
         m.SquadreViewModel = App.Services.GetRequiredService<SquadreViewModel>();
         m.GiocatoriViewModel = App.Services.GetRequiredService<GiocatoriViewModel>();
 
-
         m.SalvataggioViewModel = App.Services.GetRequiredService<SalvataggioViewModel>();
 
-        /* TODO Init varie operazioni, una volta definito il collegamento con API, 
-         * anche i casi di modalità Editor senza API (ClientMod.Editor) 
-         */
-
-        if (App.Client.Mod == ClientMod.Editor)
+        m.ProgettiViewModel.ElencoProgetti = await App.Client.Risposta<ObservableCollection<Progetto>>(HttpMethod.Get, "progetti", "");
+        if (m.ProgettiViewModel.ElencoProgetti.Any())
         {
-
+            m.ProgettiViewModel.Progetto = m.ProgettiViewModel.ElencoProgetti.OrderByDescending(p => p.Modifica.Ticks).First();
+            m.ProgettiViewModel.Progetto = await App.Client.Risposta<Progetto>(HttpMethod.Post, $"progetti/carica?Nome={System.Uri.EscapeDataString(m.ProgettiViewModel.Progetto.Nome)}", "");
+            //m.ProgettiViewModel.Progetto = await App.Client.Risposta<Progetto>(HttpMethod.Post, $"progetti/carica/{m.ProgettiViewModel.Progetto.Nome}", "");
         }
 
-        if (App.Client.Mod == ClientMod.API)
-        {
-            m.ProgettiViewModel.ElencoProgetti = await App.Client.Risposta<ObservableCollection<Progetto>>(HttpMethod.Get, "progetti", "");
-            if (m.ProgettiViewModel.ElencoProgetti.Any())
-            {
-                m.ProgettiViewModel.Progetto = m.ProgettiViewModel.ElencoProgetti.OrderByDescending(p => p.Modifica.Ticks).First();
-                m.ProgettiViewModel.Progetto = await App.Client.Risposta<Progetto>(HttpMethod.Post, $"progetti/carica/{m.ProgettiViewModel.Progetto.Nome}", "");
-            }
 
+        m.SquadreViewModel.ElencoSquadre = await App.Client.Risposta<ObservableCollection<Squadra>>(HttpMethod.Get, "squadre", "");
 
-            m.SquadreViewModel.ElencoSquadre = await App.Client.Risposta<ObservableCollection<Squadra>>(HttpMethod.Get, "squadre", "");
+        m.GiocatoriViewModel.ElencoGiocatori = await App.Client.Risposta<ObservableCollection<Giocatore>>(HttpMethod.Get, "giocatori", "");
 
-            m.GiocatoriViewModel.ElencoGiocatori = await App.Client.Risposta<ObservableCollection<Giocatore>>(HttpMethod.Get, "giocatori", "");
+        m.SalvataggioViewModel.Versioni = new(System.Enum.GetValues<VersionePCC>().Where(v => v > 0));
 
-            m.SalvataggioViewModel.Versioni = new(System.Enum.GetValues<VersionePCC>().Where(v => v > 0));
+        m.SalvataggioViewModel.VersioneSelezionata = m.ProgettiViewModel.Progetto?.VersionePCC;
 
-            m.SalvataggioViewModel.VersioneSelezionata = m.ProgettiViewModel.Progetto?.VersionePCC;
-        }
     }
 
 

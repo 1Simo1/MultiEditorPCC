@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
-using MultiEditorPCC.API.DBContext;
 using MultiEditorPCC.API.Lib;
+using MultiEditorPCC.Shared;
 using MultiEditorPCC.Shared.DTO;
 
 namespace MultiEditorPCC.API.Handlers;
@@ -9,7 +9,7 @@ public static class Squadre
 {
     public static async Task<Ok<IEnumerable<Squadra>>> GetElenco(Editor db)
     {
-        return TypedResults.Ok(db.Squadre.AsEnumerable());
+        return TypedResults.Ok(Shared.Lib.Handlers.Squadre.GetElenco(db).AsEnumerable());
     }
 
     public static async Task<Ok<IEnumerable<Giocatore>>> GetGiocatoriSquadra(Editor db, int id)

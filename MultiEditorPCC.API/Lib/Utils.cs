@@ -1,5 +1,5 @@
-﻿using MultiEditorPCC.API.DBContext;
-using MultiEditorPCC.API.Lib.Archivi;
+﻿using MultiEditorPCC.API.Lib.Archivi;
+using MultiEditorPCC.Shared;
 using MultiEditorPCC.Shared.DTO;
 using System.Reflection;
 using System.Text;

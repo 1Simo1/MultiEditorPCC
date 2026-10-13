@@ -1,6 +1,6 @@
 ﻿using MultiEditorPCC.Shared.DTO;
 
-namespace MultiEditorPCC.API.DBContext;
+namespace MultiEditorPCC.Shared;
 
 public class Editor()
 {

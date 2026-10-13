@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MultiEditorPCC.Shared.Lib;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
@@ -12,6 +13,8 @@ public class Client
 {
 
     private HttpClient EditorClient { get; init; }
+
+    private LibClient? LibClient { get; set; } = null;
 
     private string BaseUrl { get; set; } = "";
 
@@ -56,22 +59,17 @@ public class Client
 
     public async Task<HttpResponseMessage>? Richiesta(HttpMethod method, string path, string stringContent, Encoding? encoding = null, string mediaType = "application/json")
     {
-        if (Mod == ClientMod.Editor && (!path.EndsWith("/api") && !path.EndsWith("/api/")))
-        {
-            return new()
-            {
-                StatusCode = System.Net.HttpStatusCode.InternalServerError,
-                Content = new StringContent("Client in modalità Editor!")
-            };
-        }
-
         if (encoding == null) encoding = Encoding.UTF8;
 
         var trailingSlash = !String.IsNullOrEmpty(BaseUrl) &&
                             !BaseUrl.EndsWith("/") && !path.StartsWith("/") ?
                             "/" : String.Empty;
 
-        var request = new HttpRequestMessage(method, new Uri($"{BaseUrl}{trailingSlash}{path}"));
+
+        var address = $"{BaseUrl}{trailingSlash}{path}";
+        if (!address.StartsWith("http")) address = $"https://localhost:2121/{address}"; //Se ClientMod.Editor
+
+        var request = new HttpRequestMessage(method, new Uri(address));
 
 
         HttpContent content = new StringContent(stringContent);
@@ -83,6 +81,14 @@ public class Client
 
         try
         {
+            if (Mod == ClientMod.Editor && (!path.EndsWith("/api") && !path.EndsWith("/api/")))
+            {
+
+                if (LibClient == null) LibClient = new("https://localhost:2121/");
+
+                return await LibClient.Risposta(request);
+
+            }
             response = await EditorClient.SendAsync(request);
         }
         catch (HttpRequestException ex)

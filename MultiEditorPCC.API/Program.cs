@@ -1,6 +1,6 @@
 using Microsoft.OpenApi;
 using MultiEditorPCC.API;
-using MultiEditorPCC.API.DBContext;
+using MultiEditorPCC.Shared;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
