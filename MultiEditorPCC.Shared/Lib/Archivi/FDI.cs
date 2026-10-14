@@ -1,8 +1,7 @@
-﻿using MultiEditorPCC.Shared;
-using MultiEditorPCC.Shared.DTO;
+﻿using MultiEditorPCC.Shared.DTO;
 
 
-namespace MultiEditorPCC.API.Lib.Archivi;
+namespace MultiEditorPCC.Shared.Lib.Archivi;
 
 public class FDI : IDatabaseFile
 {

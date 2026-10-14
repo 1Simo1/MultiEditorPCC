@@ -8,6 +8,6 @@ public static class Giocatori
 {
     public static async Task<Ok<IEnumerable<Giocatore>>> GetElenco(Editor db)
     {
-        return TypedResults.Ok(db.Giocatori.AsEnumerable());
+        return TypedResults.Ok(Shared.Lib.Handlers.Giocatori.GetElenco(db).AsEnumerable());
     }
 }

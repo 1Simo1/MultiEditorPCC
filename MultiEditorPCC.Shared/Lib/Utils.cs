@@ -1,10 +1,9 @@
-﻿using MultiEditorPCC.API.Lib.Archivi;
-using MultiEditorPCC.Shared;
-using MultiEditorPCC.Shared.DTO;
+﻿using MultiEditorPCC.Shared.DTO;
+using MultiEditorPCC.Shared.Lib.Archivi;
 using System.Reflection;
 using System.Text;
 
-namespace MultiEditorPCC.API.Lib;
+namespace MultiEditorPCC.Shared.Lib;
 
 public static class Utils
 {
@@ -756,5 +755,3 @@ public static class Utils
     }
 
 }
-
-

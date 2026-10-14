@@ -63,9 +63,8 @@ public partial class SquadreViewModel : ViewModelBase, IEventSubscriber<Apertura
     [Command(CanExecuteMethod = nameof(CanAggiornaSostituisciSquadra))]
     private async void AggiornaSostituisciSquadra()
     {
-
         int codiceSquadra = (int)Squadra.Id;
-        await App.Client.Risposta<String>(HttpMethod.Post, $"squadre/{Squadra.Id}/sostituisciCon/{SquadraAggiornata.Id}", "");
+        await App.Client.Risposta<String>(HttpMethod.Post, $"squadre/sostituisci?id={Squadra.Id}&nuovoId={SquadraAggiornata.Id}", "");
 
         ElencoSquadre = new(await App.Client.Risposta<ObservableCollection<Squadra>>(HttpMethod.Get, "squadre", ""));
         Squadra = ElencoSquadre.Where(sq => sq.Id == codiceSquadra).FirstOrDefault();

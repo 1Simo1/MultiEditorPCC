@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using MultiEditorPCC.Shared.DTO;
 using MultiEditorPCC.Shared.Lib.Handlers;
 using System.Reflection;
 using System.Text.Json;
@@ -51,7 +52,25 @@ public class LibClient(String VirtualBaseUrl = "")
                 foreach (var pq in ParametriQuery)
                 {
                     if (parametro.Name == pq.Split('=')[0])
-                        Parametri.Add(System.Uri.UnescapeDataString(pq.Split('=')[1]));
+                    {
+                        String v = pq.Split('=')[1];
+                        object p = System.Uri.UnescapeDataString(v);
+
+                        if (parametro.ParameterType.Name != "String")
+                        {
+
+                            p = (parametro.ParameterType.Name) switch
+                            {
+                                "Int32" => Int32.Parse(v),
+                                "VersionePCC" => (VersionePCC)int.Parse(v),
+                                "Paese" => (Paese)int.Parse(v),
+                                _ => new()
+                            };
+                        }
+
+                        Parametri.Add(p);
+                    }
+
                 }
             }
         }
@@ -59,9 +78,6 @@ public class LibClient(String VirtualBaseUrl = "")
         LibResponse.Content = new StringContent(
             JsonSerializer.Serialize(Handler.Method.Invoke(Handler, Parametri.ToArray())));
 
-
-
-        //(HttpContent);
 
         return LibResponse;
 
@@ -73,8 +89,16 @@ public class LibClient(String VirtualBaseUrl = "")
         return (method, requestUri) switch
         {
             ("GET", "progetti") => Progetti.GetElenco,
-            ("POST", var request) when request.StartsWith("progetti/carica")
-            => Progetti.CaricaProgetto,
+            ("POST", var request) when request.StartsWith("progetti/nuovo") => Progetti.NuovoProgetto,
+            ("POST", var request) when request.StartsWith("progetti/carica") => Progetti.CaricaProgetto,
+            ("POST", "progetti/caricaPercorsiProgettoAttivo") => Progetti.CaricaDatiProgetto,
+            ("POST", "progetti/db/carica/info​") => Progetti.CaricaFileDatabaseInfo,
+            ("POST", "progetti/db/carica/editor") => Progetti.CaricaFileDatabaseEditor,
+            ("GET", "squadre") => Squadre.GetElenco,
+            ("POST", var request) when request.StartsWith("squadre/sostituisci") => Squadre.SostituisciSquadra,
+            ("POST", var request) when request.StartsWith("squadre/calcolaSlot") => Squadre.CalcolaSlot,
+            ("GET", "giocatori") => Giocatori.GetElenco,
+            ("GET", "giocatori/svincolati") => Squadre.GiocatoriSenzaSquadra,
 
             (_, _) => null
         };

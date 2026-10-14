@@ -1,6 +1,6 @@
 ﻿using MultiEditorPCC.Shared.DTO;
 
-namespace MultiEditorPCC.API.Lib;
+namespace MultiEditorPCC.Shared.Lib;
 
 public class OffsetCompetizione
 {

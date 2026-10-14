@@ -49,163 +49,136 @@ public static class Progetti
         return progetto;
     }
 
-    //    public static async Task<Results<Ok<Progetto>, BadRequest<ProblemDetails>>> NuovoProgetto(Editor db, String Nome, String Cartella)
-    //    {
-    //        try
-    //        {
-    //            Directory.CreateDirectory($"Progetti/{Nome}");
+    public static Progetto? NuovoProgetto(Editor db, String Nome, String Cartella)
+    {
+        try
+        {
+            Directory.CreateDirectory($"Progetti/{Nome}");
 
-    //            if (File.Exists($"Progetti/{Nome}/Pro.json"))
-    //            {
-    //                return TypedResults.BadRequest<ProblemDetails>(new() { Status = 400, Detail = "Errore: progetto già esistente" });
-    //            }
-
-    //            Progetto progetto = new()
-    //            {
-    //                Nome = Nome,
-    //                Cartella = Cartella
-    //            };
-
-    //            progetto.VersionePCC = Utils.TestVersionePCC(Cartella);
-
-    //            File.WriteAllText($"Progetti/{Nome}/Pro.json", JsonSerializer.Serialize(progetto));
-
-    //            db.Progetti.Add(progetto);
-
-    //            db.ProgettoAttivo = progetto;
-
-    //            //await CaricaDatiProgetto(db);
-
-    //            return TypedResults.Ok(progetto);
+            if (File.Exists($"Progetti/{Nome}/Pro.json")) return null;
 
 
-    //        }
-    //        catch (Exception ex)
-    //        {
+            Progetto progetto = new()
+            {
+                Nome = Nome,
+                Cartella = Cartella
+            };
 
-    //            return TypedResults.BadRequest<ProblemDetails>(new() { Status = 400, Detail = "Errore nell'aggiunta di un nuovo progetto" });
-    //        }
-    //    }
+            progetto.VersionePCC = Utils.TestVersionePCC(Cartella);
 
-    public static Progetto CaricaProgetto(Editor db, String Nome)
+            File.WriteAllText($"Progetti/{Nome}/Pro.json", JsonSerializer.Serialize(progetto));
+
+            db.Progetti.Add(progetto);
+
+            db.ProgettoAttivo = progetto;
+
+            return progetto;
+
+        }
+        catch (Exception ex)
+        {
+            return null;
+        }
+    }
+
+    public static Progetto? CaricaProgetto(Editor db, String Nome)
     {
 
         Progetto? progetto = db.Progetti.Where(p => p.Nome == Nome).FirstOrDefault();
-        //TODO Reimplementare in odalità Editor
-        //        if (progetto == null)
-        //        {
-        //            return TypedResults.BadRequest<ProblemDetails>(new() { Status = 400, Detail = "Errore: progetto non trovato" });
-        //        }
-
-        //        db.ProgettoAttivo = progetto;
+        if (progetto == null) return null;
 
 
-        //        db.Squadre = Utils.CaricaSquadreCSV(db.ProgettoAttivo);
-        //        db.Giocatori = Utils.CaricaGiocatoriCSV(db.ProgettoAttivo, db.Squadre);
-
-        //        foreach (var sq in db.Squadre)
-        //        {
-        //            try
-        //            {
-        //                var GiocatoriSquadra = db.Giocatori.Where(g => g.CodiceSquadra == sq.Id);
-        //                if (GiocatoriSquadra.Any())
-        //                {
-        //                    var anno = GiocatoriSquadra.Max(g => g.AnnoNascita);
-        //                    sq.SquadraOriginale = GiocatoriSquadra.Where(g => g.AnnoNascita == anno).First().AnnoNascita < 2000;
-        //                }
-        //            }
-        //            catch (Exception ex)
-        //            {
+        db.ProgettoAttivo = progetto;
 
 
-        //            }
-        //        }
+        db.Squadre = Utils.CaricaSquadreCSV(db.ProgettoAttivo);
+        db.Giocatori = Utils.CaricaGiocatoriCSV(db.ProgettoAttivo, db.Squadre);
 
-        //        progetto.Modifica = DateTime.Now;
-        //        db.ProgettoAttivo.Modifica = DateTime.Now;
+        foreach (var sq in db.Squadre)
+        {
+            try
+            {
+                var GiocatoriSquadra = db.Giocatori.Where(g => g.CodiceSquadra == sq.Id);
+                if (GiocatoriSquadra.Any())
+                {
+                    var anno = GiocatoriSquadra.Max(g => g.AnnoNascita);
+                    sq.SquadraOriginale = GiocatoriSquadra.Where(g => g.AnnoNascita == anno).First().AnnoNascita < 2000;
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+        }
 
-        //        File.WriteAllText($"Progetti/{db.ProgettoAttivo.Nome}/Pro.json", JsonSerializer.Serialize(db.ProgettoAttivo));
+        progetto.Modifica = DateTime.Now;
+        db.ProgettoAttivo.Modifica = DateTime.Now;
+
+        File.WriteAllText($"Progetti/{db.ProgettoAttivo.Nome}/Pro.json", JsonSerializer.Serialize(db.ProgettoAttivo));
 
         return progetto;
     }
 
-    //    public static async Task<Results<Ok<Progetto>, BadRequest<ProblemDetails>>> CaricaDatiProgetto(Editor db)
-    //    {
-    //        if (db.ProgettoAttivo == null)
-    //            return TypedResults.BadRequest<ProblemDetails>(
-    //                new() { Status = 400, Detail = "Nessun progetto attivo nell'editor" }
-    //                );
-
-    //        db.ProgettoAttivo = Utils.CaricaPercorsiArchivi(db.ProgettoAttivo);
-    //        db.ProgettoAttivo.Modifica = DateTime.Now;
-
-    //        File.WriteAllText($"Progetti/{db.ProgettoAttivo.Nome}/Pro.json", JsonSerializer.Serialize(db.ProgettoAttivo));
+    public static Progetto? CaricaDatiProgetto(Editor db)
+    {
+        if (db.ProgettoAttivo == null) return null;
 
 
-    //        //db.Squadre = Utils.CaricaSquadreCSV(db.ProgettoAttivo);
-    //        //db.Giocatori = Utils.CaricaGiocatoriCSV(db.ProgettoAttivo);
+        db.ProgettoAttivo = Utils.CaricaPercorsiArchivi(db.ProgettoAttivo);
+        db.ProgettoAttivo.Modifica = DateTime.Now;
 
-    //        return TypedResults.Ok(db.ProgettoAttivo);
-    //    }
-
-    //    public static async Task<Results<Ok<String>, BadRequest<ProblemDetails>>> CaricaFileDatabaseInfo(Editor db)
-    //    {
-    //        if (db.ProgettoAttivo == null)
-    //            return TypedResults.BadRequest<ProblemDetails>(
-    //                new() { Status = 400, Detail = "Nessun progetto attivo nell'editor" }
-    //                );
-    //        try
-    //        {
-    //            db.DatabaseFiles = !db.DatabaseFiles.Any() ?
-    //                Utils.CaricaFileDatabaseInfo(db.ProgettoAttivo) :
-    //                db.DatabaseFiles;
-    //        }
-    //        catch (Exception)
-    //        {
-
-    //            return TypedResults.BadRequest<ProblemDetails>(
-    //               new() { Status = 400, Detail = "Errore nel caricamento delle informazioni" }
-    //               );
-    //        }
-
-    //        db.ProgettoAttivo.Modifica = DateTime.Now;
+        File.WriteAllText($"Progetti/{db.ProgettoAttivo.Nome}/Pro.json", JsonSerializer.Serialize(db.ProgettoAttivo));
 
 
-    //        File.WriteAllText($"Progetti/{db.ProgettoAttivo.Nome}/Pro.json", JsonSerializer.Serialize(db.ProgettoAttivo));
-    //        //db.Squadre = Utils.CaricaSquadreCSV(db.ProgettoAttivo);
-    //        //db.Giocatori = Utils.CaricaGiocatoriCSV(db.ProgettoAttivo);
+        //db.Squadre = Utils.CaricaSquadreCSV(db.ProgettoAttivo);
+        //db.Giocatori = Utils.CaricaGiocatoriCSV(db.ProgettoAttivo);
 
-    //        return TypedResults.Ok(db.DatabaseFiles.Count.ToString());
-    //    }
+        return db.ProgettoAttivo;
+    }
 
-    //    public static async Task<Results<Ok<String>, BadRequest<ProblemDetails>>> CaricaFileDatabaseEditor(Editor db)
-    //    {
-    //        if (db.ProgettoAttivo == null)
-    //            return TypedResults.BadRequest<ProblemDetails>(
-    //                new() { Status = 400, Detail = "Nessun progetto attivo nell'editor" }
-    //                );
+    public static int CaricaFileDatabaseInfo(Editor db)
+    {
+        if (db.ProgettoAttivo == null) return -3;
 
-    //        db.Squadre = Utils.CaricaSquadre(db.ProgettoAttivo, db.DatabaseFiles);
-    //        db.Giocatori = Utils.CaricaGiocatori(db.ProgettoAttivo, db.DatabaseFiles);
+        try
+        {
+            db.DatabaseFiles = !db.DatabaseFiles.Any() ?
+                Utils.CaricaFileDatabaseInfo(db.ProgettoAttivo) :
+                db.DatabaseFiles;
+        }
+        catch (Exception)
+        {
+            return -1;
+        }
 
-    //        if (db.DatabaseFiles.Where(e => e.TipoFileDatabase == TipoFileDatabase.FDI).Any())
-    //        {
-    //            db.Giocatori = Utils.AssegnaGiocatoriSquadre(db.Squadre, db.Giocatori);
-    //            db.Squadre.ToList().ForEach(u => u.Note = String.Empty);
-    //        }
-
-
+        db.ProgettoAttivo.Modifica = DateTime.Now;
 
 
-    //        if (!Utils.ScriviCSV(db.ProgettoAttivo, db.Squadre, db.Giocatori))
-    //            return TypedResults.BadRequest<ProblemDetails>(
-    //                new() { Status = 400, Detail = "Errore nella scrittura dei file CSV" }
-    //                );
+        File.WriteAllText($"Progetti/{db.ProgettoAttivo.Nome}/Pro.json", JsonSerializer.Serialize(db.ProgettoAttivo));
+        //db.Squadre = Utils.CaricaSquadreCSV(db.ProgettoAttivo);
+        //db.Giocatori = Utils.CaricaGiocatoriCSV(db.ProgettoAttivo);
 
-    //        db.ProgettoAttivo.Modifica = DateTime.Now;
+        return db.DatabaseFiles.Count;
+    }
 
-    //        File.WriteAllText($"Progetti/{db.ProgettoAttivo.Nome}/Pro.json", JsonSerializer.Serialize(db.ProgettoAttivo));
+    public static int CaricaFileDatabaseEditor(Editor db)
+    {
+        if (db.ProgettoAttivo == null) return -3;
 
-    //        return TypedResults.Ok($"{db.Squadre.Count} {db.Giocatori.Count}");
-    //    }
+        db.Squadre = Utils.CaricaSquadre(db.ProgettoAttivo, db.DatabaseFiles);
+        db.Giocatori = Utils.CaricaGiocatori(db.ProgettoAttivo, db.DatabaseFiles);
+
+        if (db.DatabaseFiles.Where(e => e.TipoFileDatabase == TipoFileDatabase.FDI).Any())
+        {
+            db.Giocatori = Utils.AssegnaGiocatoriSquadre(db.Squadre, db.Giocatori);
+            db.Squadre.ToList().ForEach(u => u.Note = String.Empty);
+        }
+
+        if (!Utils.ScriviCSV(db.ProgettoAttivo, db.Squadre, db.Giocatori)) return -7;
+
+        db.ProgettoAttivo.Modifica = DateTime.Now;
+
+        File.WriteAllText($"Progetti/{db.ProgettoAttivo.Nome}/Pro.json", JsonSerializer.Serialize(db.ProgettoAttivo));
+
+        return db.Squadre.Count;
+    }
 }
