@@ -3,7 +3,7 @@
 public class Giocatore
 {
     public int Id { get; set; } = 0;
-    public bool Giocabile { get; set; }
+    public bool Giocabile { get; set; } = false;
 
     public int Numero { get; set; } = -1;
 
@@ -13,11 +13,11 @@ public class Giocatore
 
     public int Slot { get; set; } = -1;
 
-    public bool AltriDati { get; set; }
+    public bool AltriDati { get; set; } = true;
 
     public bool AttivoInRosa { get; set; } = true;
 
-    public Paese Nazione { get; set; }
+    public Paese Nazione { get; set; } = Paese.ITALIA;
 
     public ColorePelle CodColorePelle { get; set; } = ColorePelle.Nessuno;
 
@@ -29,7 +29,7 @@ public class Giocatore
 
     public bool Nazionalizzato { get; set; } = false;
 
-    public Reparto Reparto { get; set; }
+    public Reparto Reparto { get; set; } = Reparto.PORTIERE;
 
     public int GiornoNascita { get; set; } = -1;
 
