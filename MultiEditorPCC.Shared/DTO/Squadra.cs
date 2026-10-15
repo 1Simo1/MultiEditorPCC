@@ -6,7 +6,7 @@ public class Squadra
     public String Nome { get; set; } = String.Empty;
     public String NomeCompleto { get; set; } = String.Empty;
 
-    public bool Giocabile { get; set; }
+    public bool Giocabile { get; set; } = true;
     public Paese Nazione { get; set; } = Paese.ITALIA;
 
     public UInt16 AnnoFondazione { get; set; } = 2021;
