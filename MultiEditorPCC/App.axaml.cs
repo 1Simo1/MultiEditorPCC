@@ -54,10 +54,20 @@ public partial class App : Application
         svc.AddSingleton<Editor>();
         svc.AddSingleton<InitSvc>();
 
+        svc.AddSingleton<PluginSvc>();
+
+        var pluginSvc = new PluginSvc();
+
+        //foreach (var plugin in pluginSvc.LoadPlugins())
+        //    svc.AddSingleton<IEditorPlugin>(plugin);
 
         Shared.App.Services = svc.BuildServiceProvider();
 
-        Services = svc.BuildServiceProvider();
+        Services = Shared.App.Services;
+
+        Services.GetRequiredService<PluginSvc>().LoadPlugins();
+
+        var testTempPlugin = Services.GetRequiredService<PluginSvc>().Run("TestPlugin", "Test");
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {

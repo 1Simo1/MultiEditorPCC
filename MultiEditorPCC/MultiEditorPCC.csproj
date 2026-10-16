@@ -29,6 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MultiEditorPCC.Plugin\MultiEditorPCC.Plugin.csproj" />
     <ProjectReference Include="..\MultiEditorPCC.Shared\MultiEditorPCC.Shared.csproj" />
   </ItemGroup>
 </Project>

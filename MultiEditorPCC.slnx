@@ -5,6 +5,12 @@
   <Folder Name="/GUI/">
     <Project Path="MultiEditorPCC/MultiEditorPCC.csproj" />
   </Folder>
+  <Folder Name="/Plugin/">
+    <Project Path="MultiEditorPCC.Plugin/MultiEditorPCC.Plugin.csproj" Id="3e3d2ab4-5f98-4dc8-91f0-18af39ec7efa" />
+  </Folder>
+  <Folder Name="/Plugin/Esempi/">
+    <Project Path="MultiEditorPCC.Plugin.TestPlugin/MultiEditorPCC.Plugin.TestPlugin.csproj" Id="0ac87ab5-53c3-4d80-b768-dfa09a2482b9" />
+  </Folder>
   <Folder Name="/Shared/">
     <Project Path="MultiEditorPCC.Shared/MultiEditorPCC.Shared.csproj" />
   </Folder>
