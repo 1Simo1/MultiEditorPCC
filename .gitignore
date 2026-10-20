@@ -456,3 +456,5 @@ $RECYCLE.BIN/
 /.vscode
 /MultiEditorPCC.API/Progetti/*
 /MultiEditorPCC.API_0_1
+/MultiEditorPCC.Plugin.TestPlugin/Plugins_Dev
+/MultiEditorPCC.Test.Plugins/MultiEditorPCC.Test.Plugins.csproj
