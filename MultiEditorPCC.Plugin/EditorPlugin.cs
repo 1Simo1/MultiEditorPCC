@@ -7,6 +7,10 @@ public class EditorPlugin : IEditorPlugin
 {
     public virtual String Id { get; set; } = "EditorPlugin";
 
+    public virtual String Autore { get; set; } = "";
+
+    public virtual String Descrizione { get; set; } = "";
+
     public String Load(String pluginCommand = "", Dictionary<string, string>? Param = null)
     {
         MethodInfo? method = this.GetType().GetMethod(pluginCommand);
