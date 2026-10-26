@@ -1,9 +1,9 @@
-﻿using MultiEditorPCC.Pagine;
+﻿using Microsoft.Extensions.DependencyInjection;
 using MvvmGen;
 using MvvmGen.Events;
 using MvvmGen.ViewModels;
 using SukiUI.Dialogs;
-using static MultiEditorPCC.EventiMVVM;
+using static MultiEditorPCC.Shared.EventiMVVM;
 
 namespace MultiEditorPCC.ViewModels;
 
@@ -16,7 +16,7 @@ public partial class MainViewModel : ViewModelBase, IEventSubscriber<AppMsgEvent
     [Property] private string _testo;
     [Property] private string _footer;
 
-    public ISukiDialogManager DialogManager { get; } = new SukiDialogManager();
+    public ISukiDialogManager DialogManager { get; set; }
 
     //TODO Aggiungere gradualmente i vari viewmodel per le singole pagine
     //[Property] private TestViewModel _testViewModel;
@@ -24,7 +24,7 @@ public partial class MainViewModel : ViewModelBase, IEventSubscriber<AppMsgEvent
     [Property] private SquadreViewModel _squadreViewModel;
     [Property] private GiocatoriViewModel _giocatoriViewModel;
 
-
+    [Property] private PluginViewModel _pluginViewModel;
 
 
 
@@ -34,6 +34,8 @@ public partial class MainViewModel : ViewModelBase, IEventSubscriber<AppMsgEvent
         Testo = string.Empty;
 
         Footer = ScriviFooter();
+
+        DialogManager = App.Services.GetRequiredService<ISukiDialogManager>();
     }
 
     private string ScriviFooter()
@@ -52,22 +54,12 @@ public partial class MainViewModel : ViewModelBase, IEventSubscriber<AppMsgEvent
     public void OnEvent(RichiestaDialog eventData)
     {
         var d = DialogManager.CreateDialog()
-            .WithContent(new SchermataCaricamento())
+            .WithContent(eventData.Dialog)
             .Dialog;
 
         DialogManager.TryShowDialog(d);
-
-
     }
 
-    public void OnEvent(ChiudiDialog eventData)
-    {
-        if (eventData.Dialog == null)
-        {
-            DialogManager.DismissDialog();
-            return;
-        }
+    public void OnEvent(ChiudiDialog eventData) => DialogManager.DismissDialog();
 
-        DialogManager.TryDismissDialog(eventData.Dialog);
-    }
 }

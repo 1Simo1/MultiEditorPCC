@@ -201,16 +201,15 @@
 				</sukiUi:SukiSideMenuItem>
 
 				<sukiUi:SukiSideMenuItem
-							Header="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='Scarica dati esterni'}">
+							Header="{Binding Testo,Converter={StaticResource LngConverter},ConverterParameter='Plugins'}">
 
 					<sukiUi:SukiSideMenuItem.Icon>
-						<icons:MaterialIcon Kind="Download" />
+						<icons:MaterialIcon Kind="Connection" />
 					</sukiUi:SukiSideMenuItem.Icon>
 
 					<sukiUi:SukiSideMenuItem.PageContent>
 						<Grid Margin="21">
-							<TextBlock Text="Settima pagina test" />
-							<!--<pagine:IntroView />-->
+							<pagine:PluginView />
 						</Grid>
 					</sukiUi:SukiSideMenuItem.PageContent>
 				</sukiUi:SukiSideMenuItem>

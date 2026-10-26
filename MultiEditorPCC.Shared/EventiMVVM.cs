@@ -1,17 +1,14 @@
 ﻿using MultiEditorPCC.Shared.DTO;
-using SukiUI.Dialogs;
-using System;
-using System.Collections.Generic;
 
-namespace MultiEditorPCC;
+namespace MultiEditorPCC.Shared;
 
 public class EventiMVVM
 {
     public record AppMsgEvent(AppMsg Msg);
 
-    public record RichiestaDialog(ISukiDialog? Dialog = null);
+    public record RichiestaDialog(object? Dialog = null);
 
-    public record ChiudiDialog(ISukiDialog? Dialog = null);
+    public record ChiudiDialog(object? Dialog = null);
 
     public record RichiestaRosaSquadra(int IdSquadra, bool ElencoGiocatori = false);
     public record RosaSquadraSelezionata(System.Collections.Generic.List<Shared.DTO.Giocatore> Giocatori);

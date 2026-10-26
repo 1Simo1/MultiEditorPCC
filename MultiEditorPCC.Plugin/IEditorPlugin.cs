@@ -9,4 +9,6 @@ public interface IEditorPlugin
     public String Descrizione { get; set; }
     public String Load(String pluginCommand = "", Dictionary<String, String>? Param = null);
 
+    public void Show();
+
 }

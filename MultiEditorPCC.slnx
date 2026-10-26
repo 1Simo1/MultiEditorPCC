@@ -5,9 +5,7 @@
   <Folder Name="/GUI/">
     <Project Path="MultiEditorPCC/MultiEditorPCC.csproj" />
   </Folder>
-  <Folder Name="/Plugin/">
-    <Project Path="MultiEditorPCC.Plugin/MultiEditorPCC.Plugin.csproj" Id="3e3d2ab4-5f98-4dc8-91f0-18af39ec7efa" />
-  </Folder>
+  <Folder Name="/Plugin/" />
   <Folder Name="/Plugin/Esempi/">
     <Project Path="MultiEditorPCC.Plugin.TestPlugin/MultiEditorPCC.Plugin.TestPlugin.csproj" Id="0ac87ab5-53c3-4d80-b768-dfa09a2482b9" />
   </Folder>
@@ -18,4 +16,7 @@
     <File Path=".editorconfig" />
   </Folder>
   <Folder Name="/Test/" />
+  <Folder Name="/Test/Plugins/">
+    <Project Path="MultiEditorPCC.Test.Plugins/MultiEditorPCC.Test.Plugins.csproj" Id="6f57f6af-be73-4202-9836-a560cd2f0987" />
+  </Folder>
 </Solution>

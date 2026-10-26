@@ -11,6 +11,8 @@ public class EditorPlugin : IEditorPlugin
 
     public virtual String Descrizione { get; set; } = "";
 
+    public override String ToString() => Id;
+
     public String Load(String pluginCommand = "", Dictionary<string, string>? Param = null)
     {
         MethodInfo? method = this.GetType().GetMethod(pluginCommand);
@@ -24,6 +26,7 @@ public class EditorPlugin : IEditorPlugin
 
         try
         {
+
             result = method.Invoke(this, Param?.Values.ToArray());
 
         }
@@ -38,6 +41,8 @@ public class EditorPlugin : IEditorPlugin
         }
         return JsonSerializer.Serialize(new Output(true, result));
     }
+
+    public virtual void Show() { }
 }
 
 public record Output(bool OK, object Result);

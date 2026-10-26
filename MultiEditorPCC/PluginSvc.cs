@@ -1,26 +1,28 @@
-﻿using MultiEditorPCC.Plugin;
+﻿using MultiEditorPCC.Shared.Plugins;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
+using System.Text.Json;
 
 namespace MultiEditorPCC;
 
 public class PluginSvc : AssemblyLoadContext
 {
-
     private readonly AssemblyDependencyResolver _resolver;
 
-    private IEnumerable<IEditorPlugin> Plugins { get; set; }
+    private IEnumerable<object> Plugins { get; set; }
+
+
 
     public PluginSvc() : base(isCollectible: true)
     {
 
     }
 
-    public IEnumerable<IEditorPlugin> LoadPlugins()
+    public IEnumerable<object> LoadPlugins()
     {
         if (!Directory.Exists("Plugins"))
         {
@@ -28,15 +30,15 @@ public class PluginSvc : AssemblyLoadContext
             return Enumerable.Empty<IEditorPlugin>();
         }
 
-        List<IEditorPlugin> plugins = new List<IEditorPlugin>();
+        List<object> plugins = new List<object>();
 
         foreach (var path in Directory.GetFiles($"{AppContext.BaseDirectory}/Plugins", "*.dll"))
         {
             var assembly = this.LoadFromAssemblyPath(path);
 
             plugins.AddRange(assembly.GetTypes()
-                .Where(t => typeof(IEditorPlugin).IsAssignableFrom(t) && !t.IsAbstract)
-                .Select(t => (IEditorPlugin)Activator.CreateInstance(t)!));
+                .Where(t => t.BaseType != null && t.BaseType.FullName == typeof(EditorPlugin).FullName)
+                .Select(t => Activator.CreateInstance(t)!));
         }
 
         this.Plugins = plugins;
@@ -71,10 +73,57 @@ public class PluginSvc : AssemblyLoadContext
 
     public String Run(String pluginId, String pluginCommand = "", Dictionary<String, String>? Param = null)
     {
-        var plugin = Plugins.FirstOrDefault(p => p.Id == pluginId)
-            ?? throw new InvalidOperationException($"Plugin {pluginId} non trovato.");
+        foreach (var cercaPlugin in this.Plugins.ToList())
+        {
+            if (cercaPlugin.GetType().GetProperty("Id").GetValue(cercaPlugin) == pluginId)
+            {
+                MethodInfo? method = null;
 
-        return plugin.Load(pluginCommand, Param);
+                method = cercaPlugin.GetType().GetMethod("Show");
+
+                if (method != null) method.Invoke(cercaPlugin, null);
+
+                if (pluginCommand == "") return JsonSerializer.Serialize(new Output(true, null));
+
+                method = cercaPlugin.GetType().GetMethod(pluginCommand);
+                if (method != null)
+                {
+                    object result = String.Empty;
+
+                    try
+                    {
+
+                        result = method.Invoke(cercaPlugin, Param?.Values.ToArray());
+
+                    }
+                    catch (Exception e)
+                    {
+
+                        return JsonSerializer.Serialize(new Output(false, String.Empty));
+                    }
+                    finally
+                    {
+
+                    }
+                    return JsonSerializer.Serialize(new Output(true, result));
+                }
+
+            }
+
+        }
+
+        throw new InvalidOperationException($"Plugin {pluginId} non trovato.");
+    }
+
+    public List<EditorPlugin> InfoPlugins()
+    {
+        if (!Plugins.Any()) return new();
+
+        List<EditorPlugin> info = new List<EditorPlugin>();
+
+        foreach (var plugin in Plugins) { info.Add((EditorPlugin)plugin); }
+
+        return info;
     }
 
 }

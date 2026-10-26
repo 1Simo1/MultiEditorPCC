@@ -19,6 +19,8 @@ public class InitSvc
         m.SquadreViewModel = App.Services.GetRequiredService<SquadreViewModel>();
         m.GiocatoriViewModel = App.Services.GetRequiredService<GiocatoriViewModel>();
 
+        m.PluginViewModel = App.Services.GetRequiredService<PluginViewModel>();
+
         m.SalvataggioViewModel = App.Services.GetRequiredService<SalvataggioViewModel>();
 
         m.ProgettiViewModel.ElencoProgetti = await App.Client.Risposta<ObservableCollection<Progetto>>(HttpMethod.Get, "progetti", "");

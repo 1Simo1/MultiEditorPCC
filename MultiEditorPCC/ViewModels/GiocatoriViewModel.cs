@@ -5,7 +5,7 @@ using MvvmGen.ViewModels;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net.Http;
-using static MultiEditorPCC.EventiMVVM;
+using static MultiEditorPCC.Shared.EventiMVVM;
 
 namespace MultiEditorPCC.ViewModels;
 

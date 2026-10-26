@@ -1,0 +1,47 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:vm="using:MultiEditorPCC.ViewModels"
+             xmlns:views="using:MultiEditorPCC.Views"
+             x:DataType="vm:MainViewModel"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+             xmlns:sukiUi="clr-namespace:SukiUI.Controls;assembly=SukiUI"
+             xmlns:lng="clr-namespace:MultiEditorPCC.Locales;assembly=MultiEditorPCC"
+             x:Name="PaginaPlugins"
+             x:Class="MultiEditorPCC.Pagine.PluginView">
+    
+    <StackPanel Orientation="Vertical">
+        <TextBlock Text="Plugins" Margin="21"/>
+
+        <ItemsControl ItemsSource="{Binding PluginViewModel.ElencoPlugins,Mode=TwoWay}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <sukiUi:GlassCard Margin="0 3">
+                        <Grid ColumnDefinitions="*,Auto">
+
+                            <StackPanel Grid.Column="0" Orientation="Vertical">
+                                <TextBlock Text="{Binding DataContext.Testo,ElementName=PaginaPlugins,Converter={StaticResource LngConverter},ConverterParameter='Nome Plugin'}" FontWeight="DemiBold" />
+                                <TextBlock Text="{Binding Id,Mode=TwoWay}" />
+                                <TextBlock Text="{Binding DataContext.Testo,ElementName=PaginaPlugins,Converter={StaticResource LngConverter},ConverterParameter='Autore'}" FontWeight="DemiBold" />
+                                <TextBlock Text="{Binding Autore,Mode=TwoWay}" />
+                                <TextBlock Text="{Binding DataContext.Testo,ElementName=PaginaPlugins,Converter={StaticResource LngConverter},ConverterParameter='Descrizione'}" FontWeight="DemiBold" />
+                                <TextBlock Text="{Binding Descrizione,Mode=TwoWay}" />
+                            </StackPanel>
+
+                            <Button Grid.Column="1"
+                                    Command="{Binding DataContext.PluginViewModel.CaricaPluginCommand,ElementName=PaginaPlugins}"
+                                    CommandParameter="{Binding Id}"
+                                    >
+                                <TextBlock Text="{Binding DataContext.Testo,ElementName=PaginaPlugins,Converter={StaticResource LngConverter},ConverterParameter='Carica Plugin'}" FontWeight="DemiBold" />
+
+                            </Button>
+                        </Grid>
+                    </sukiUi:GlassCard>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+    </StackPanel>
+</UserControl>

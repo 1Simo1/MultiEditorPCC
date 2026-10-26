@@ -14,8 +14,12 @@
     <DebugType>embedded</DebugType>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\MultiEditorPCC.Plugin\MultiEditorPCC.Plugin.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="SukiUI" Version="7.0.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\MultiEditorPCC.Shared\MultiEditorPCC.Shared.csproj" />
+	</ItemGroup>
 
 </Project>

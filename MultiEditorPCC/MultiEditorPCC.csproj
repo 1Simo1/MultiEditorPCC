@@ -23,13 +23,12 @@
 	  <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.12" />
 	  <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.12" />
 	  <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.12" />
-	  <PackageReference Include="MvvmGen" Version="1.4.0" />
+	  
     <PackageReference Include="SukiUI" Version="7.0.1" />
     <PackageReference Include="SukiUI.Dock" Version="7.0.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MultiEditorPCC.Plugin\MultiEditorPCC.Plugin.csproj" />
     <ProjectReference Include="..\MultiEditorPCC.Shared\MultiEditorPCC.Shared.csproj" />
   </ItemGroup>
 </Project>
