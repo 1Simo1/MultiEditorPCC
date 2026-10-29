@@ -13,6 +13,8 @@ public class EditorPlugin : IEditorPlugin
 
     public override String ToString() => Id;
 
+    public virtual bool IsDialog { get; set; } = true;
+
     public String Load(String pluginCommand = "", Dictionary<string, string>? Param = null)
     {
         MethodInfo? method = this.GetType().GetMethod(pluginCommand);
@@ -43,6 +45,8 @@ public class EditorPlugin : IEditorPlugin
     }
 
     public virtual void Show() { }
+
+    public virtual object LoadGUI() => new();
 }
 
 public record Output(bool OK, object Result);
