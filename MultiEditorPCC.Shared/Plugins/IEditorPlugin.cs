@@ -7,7 +7,11 @@ public interface IEditorPlugin
     public String Autore { get; set; }
 
     public String Descrizione { get; set; }
+
+    public bool IsDialog { get; set; }
     public String Load(String pluginCommand = "", Dictionary<String, String>? Param = null);
+
+    public object LoadGUI();
 
     public void Show();
 
