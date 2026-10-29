@@ -32,7 +32,7 @@ public class PluginSvc : AssemblyLoadContext
 
         List<object> plugins = new List<object>();
 
-        foreach (var path in Directory.GetFiles($"{AppContext.BaseDirectory}/Plugins", "*.dll"))
+        foreach (var path in Directory.GetFiles($"{AppContext.BaseDirectory}/Plugins", "*.dll", SearchOption.AllDirectories))
         {
             var assembly = this.LoadFromAssemblyPath(path);
 
@@ -81,9 +81,19 @@ public class PluginSvc : AssemblyLoadContext
 
                 method = cercaPlugin.GetType().GetMethod("Show");
 
-                if (method != null) method.Invoke(cercaPlugin, null);
+                bool IsDialog = (bool)cercaPlugin.GetType().GetProperty("IsDialog").GetValue(cercaPlugin);
 
-                if (pluginCommand == "") return JsonSerializer.Serialize(new Output(true, null));
+                if (method != null && IsDialog) method.Invoke(cercaPlugin, null);
+
+                if (pluginCommand == "" && IsDialog) return JsonSerializer.Serialize(new Output(true, null));
+
+                if (pluginCommand == "" && !IsDialog)
+                {
+                    method = cercaPlugin.GetType().GetMethod("LoadGUI");
+
+                    return JsonSerializer.Serialize(new Output(true, method == null ? null : method.Invoke(cercaPlugin, null)));
+                }
+
 
                 method = cercaPlugin.GetType().GetMethod(pluginCommand);
                 if (method != null)
