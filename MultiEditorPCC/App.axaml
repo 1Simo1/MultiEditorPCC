@@ -3,7 +3,7 @@
              x:Class="MultiEditorPCC.App"
              xmlns:sukiUi="clr-namespace:SukiUI;assembly=SukiUI"
 			 xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
-			 xmlns:dc="using:MultiEditorPCC.DataConverters"
+			 xmlns:dc="using:MultiEditorPCC.Shared.Lng"
 			 RequestedThemeVariant="Dark"
 			 >
 

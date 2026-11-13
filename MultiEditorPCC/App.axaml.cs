@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using MultiEditorPCC.Pagine;
 using MultiEditorPCC.Shared;
+using MultiEditorPCC.Shared.Lng;
 using MultiEditorPCC.ViewModels;
 using MvvmGen.Events;
 using SukiUI.Dialogs;
@@ -43,6 +44,7 @@ public partial class App : Application
         svc.AddSingleton<IEventAggregator, EventAggregator>();
         svc.AddSingleton<DialogService>();
         svc.AddTransient<ISukiDialogManager, SukiUI.Dialogs.SukiDialogManager>();
+        svc.AddSingleton<LngService>();
 
         svc.AddScoped<MainViewModel>();
 
